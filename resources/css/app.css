@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@layer base {
+  :root {
+    --font-fanwood: 'Fanwood Text', serif;
+    --font-poiret: 'Poiret One', cursive;
+    --font-poly: 'Poly', serif;
+    --font-dancing: 'Dancing Script', cursive;
+  }
+}
