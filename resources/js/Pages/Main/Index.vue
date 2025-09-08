@@ -1,3 +1,4 @@
+<!-- index.vue -->
 <script setup>
 import GuestLayout from "@/Layouts/GuestLayout.vue";
 import { show, setShow, fetchData } from "./Utils/index";
@@ -7,9 +8,8 @@ import Main from "./Partials/Main.vue";
 import RegVeda from "./Partials/RegVeda.vue";
 import gsap from 'gsap';
 import ScrollTrigger from 'gsap/ScrollTrigger';
-import ScrollSmoother from 'gsap/ScrollSmoother';
 
-gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
+gsap.registerPlugin(ScrollTrigger);
 
 const props = defineProps({
   guest: String,
@@ -26,26 +26,12 @@ watch(show, (newValue) => {
 
 onMounted(() => {
   fetchData();
-
-  // Create smooth scroller only when popup is closed
-  if (!show.value) {
-    const smoother = ScrollSmoother.create({
-      wrapper: "#smooth-wrapper",
-      content: "#smooth-content",
-      smooth: 1.5,
-      effects: true,
-      smoothTouch: 0.1,
-    });
-  }
-
-  window.addEventListener('resize', () => {
-    ScrollTrigger.refresh();
-  });
 });
 </script>
 
 <template>
   <GuestLayout>
+    <!-- Popup -->
     <Popup 
       v-if="show" 
       :show="show" 
@@ -53,56 +39,24 @@ onMounted(() => {
       :guest="guest"
     />
 
+    <!-- Main Content -->
     <div 
-      id="smooth-wrapper"
+      class="relative w-full max-w-md mx-auto"
       :class="{ 'invisible': show }"
     >
-      <div id="smooth-content">
-        <main>
-          <Main />
-          <RegVeda :show="show" />
-        </main>
-      </div>
+      <Main />
+      <RegVeda />
     </div>
   </GuestLayout>
 </template>
 
 <style>
-#smooth-wrapper {
-  overflow: hidden;
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-}
-
-#smooth-content {
-  overflow: visible;
-  width: 100%;
-  transform: translateZ(0);
-  will-change: transform;
-}
-
-/* Hide scrollbar but keep functionality */
-::-webkit-scrollbar {
-  width: 0px;
-  background: transparent;
-}
-
-* {
-  -webkit-tap-highlight-color: transparent;
-}
-
-/* Add styles for popup state */
-.invisible {
-  visibility: hidden;
-}
-
 body {
   margin: 0;
   padding: 0;
+}
+
+.invisible {
+  visibility: hidden;
 }
 </style>

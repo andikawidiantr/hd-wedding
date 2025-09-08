@@ -17,6 +17,7 @@ export default {
                 'poiret': ['Poiret One', 'cursive'],
                 'poly': ['Poly', 'serif'],
                 'dancing': ['Dancing Script', 'cursive'],
+                'playball': ['Playball', 'cursive'],
             },
         },
     },
