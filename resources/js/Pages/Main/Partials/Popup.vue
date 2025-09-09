@@ -94,9 +94,9 @@ onMounted(() => {
           <!-- Title -->
           <h1 
             ref="titleRef"
-            class="title font-fanwood text-2xl tracking-wide"
+            class="title font-eyesome  text-7xl tracking-wide text-center"
           >
-            The Wedding Of
+            WEDDING <br>DAY
           </h1>
 
           <!-- Names -->
@@ -104,9 +104,8 @@ onMounted(() => {
             ref="namesRef"
             class="names flex items-center justify-center flex-col gap-4"
           >
-            <h2 class="font-poiret text-5xl tracking-wider">Dharma</h2>
-            <span class="font-poiret text-4xl">&</span>
-            <h2 class="font-poiret text-5xl tracking-wider">Astrid</h2>
+            <h2 class="font-eyesome  text-2xl tracking-wider font-light">Dharma & Astri</h2>
+           
           </div>
         </div>
 
@@ -116,10 +115,10 @@ onMounted(() => {
             ref="guestInfoRef"
             class="guest-info flex flex-col gap-4"
           >
-            <h3 class="font-poly text-white text-center text-2xl">Untuk</h3>
-            <div class="flex flex-col">
-              <p class="text-white text-center italic">Bapak/Ibu/Saudara/i</p>
-              <p class="text-white text-center text-xl">
+            <h3 class="font-eyesome text-white text-center text-2xl">Untuk</h3>
+            <div class="flex flex-col e">
+              <p class="text-white text-center  font-eyesome-script">Bapak/Ibu/Saudara/i</p>
+              <p class="text-white text-center text-xl font-eyesome">
                 {{ guest }}
               </p>
             </div>
@@ -130,7 +129,7 @@ onMounted(() => {
             ref="buttonRef"
             type="button"
             class="button-open flex items-center border rounded-xl px-12 py-2 text-white border-white gap-2 
-                   hover:bg-white hover:text-black transition-colors duration-300"
+                   hover:bg-white hover:text-black transition-colors duration-300 font-eyesome"
             @click="close"
           >
             <mdicon name="email-heart-outline" />

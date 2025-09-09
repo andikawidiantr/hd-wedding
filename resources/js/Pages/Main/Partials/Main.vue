@@ -136,12 +136,11 @@ onMounted(async () => {
     setupIntersectionObserver();
 
     // Handle focus event
-    window.addEventListener('focus', () => {
+    window.addEventListener("focus", () => {
       if (!show.value && imageLoaded.value) {
         startAnimation();
       }
     });
-
   } catch (error) {
     console.error("Error loading image:", error);
   }
@@ -152,7 +151,7 @@ onUnmounted(() => {
     observer.disconnect();
   }
   // Cleanup focus event listener
-  window.removeEventListener('focus', () => {});
+  window.removeEventListener("focus", () => {});
 });
 </script>
 
@@ -171,19 +170,19 @@ onUnmounted(() => {
     <div class="absolute inset-0 bg-[#4D4D4D]/30"></div>
 
     <div class="flex flex-col gap-4 justify-center items-center relative z-10 pt-20">
-      <h1 class="title font-dancing text-white text-4xl tracking-wide">
-        Dharma & Astrid
-      </h1>
+      <h1 class="subtitle font-eyesome text-6xl text-white">Wedding Day</h1>
 
-      <h6 class="subtitle font-poly text-xl text-white">Wedding Day</h6>
+      <h6 class="title font-eyesome text-white text-2xl tracking-wide">
+        Dharma & Astrid
+      </h6>
 
       <div class="divider border-r border-white h-20">&nbsp;</div>
 
-      <p class="date font-poly text-white text-center text-2xl">29.09.2025</p>
+      <p class="date font-eyesome text-white text-center text-2xl">29.09.2025</p>
     </div>
- <div 
+    <div
       class="absolute -top-20 left-0 right-0 h-20 pointer-events-none"
-      style="background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.1))"
+      style="background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.1))"
     ></div>
     <div
       v-if="!imageLoaded"

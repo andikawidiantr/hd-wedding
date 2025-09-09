@@ -53,32 +53,37 @@ onMounted(() => {
   <section
     ref="regVedaRef"
     id="regVeda"
-    class="min-h-screen flex items-start justify-center relative bg-cover bg-center -mt-20"
-    style="background-image: url('/assets/images/paper-top.png')"
+    class="min-h-screen flex items-start justify-center relative bg-cover bg-center -mt-20 z-[3]"
+    style="background-image: url('/assets/images/full-torn.png')"
   >
     <div
-      class="container mx-auto px-12 flex flex-col items-center justify-center"
+      class="container mx-auto px-12 flex flex-col items-center justify-center mt-20"
     >
       <h1 
         ref="titleRef"
-        class="font-playball text-2xl text-black mb-4"
+        class="font-wittgenstein text-2xl text-black mb-4"
       >
         Ṛg Veda X.85.47
       </h1>
       <p 
         ref="sanskritRef"
-        class="font-playball text-center text-black max-w-2xl text-xl"
+        class="font-wittgenstein text-center text-black max-w-2xl text-xl"
       >
         "Tvāṁ patīṁ gr̥hṇāmi, tvamasi me sahadharmacārīni."
       </p>
       <p 
         ref="translationRef"
-        class="font-platypi text-center text-black max-w-2xl mt-8"
+        class="font-wittgenstein text-center text-black max-w-2xl mt-8"
       >
         Aku menerima engkau sebagai suamiku/istriku; engkau adalah sahabatku dalam Dharma.
         Bersama kita akan hidup, mencintai, dan membangun kebahagiaan.
       </p>
     </div>
+
+    <div class="absolute -bottom-2 z-[3] ">
+      <img src="/assets/images/cambodia.png" alt="Decoration" class="w-24 h-24" />
+    </div>
+
   </section>
 </template>
 

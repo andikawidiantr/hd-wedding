@@ -8,6 +8,7 @@ import Main from "./Partials/Main.vue";
 import RegVeda from "./Partials/RegVeda.vue";
 import gsap from 'gsap';
 import ScrollTrigger from 'gsap/ScrollTrigger';
+import GroomMen from "./Partials/GroomMen.vue";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -46,6 +47,7 @@ onMounted(() => {
     >
       <Main />
       <RegVeda />
+      <GroomMen/>
     </div>
   </GuestLayout>
 </template>
