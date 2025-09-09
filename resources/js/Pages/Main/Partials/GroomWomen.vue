@@ -15,7 +15,7 @@ const preloadImage = (url) => {
 };
 onMounted(async () => {
   try {
-    await preloadImage("/assets/images/men-groom.webp");
+    await preloadImage("/assets/images/women-groom.webp");
 
     // Handle focus event
   } catch (error) {
@@ -25,25 +25,21 @@ onMounted(async () => {
 </script>
 <template>
   <section
-    ref="groomMenRef"
-    id="groomMen"
-    class="min-h-screen flex items-start justify-center relative bg-cover bg-center bg-gray-200 z-[2] -mt-10"
+    ref="groomWomenRef"
+    id="groomWomen"
+    class="min-h-screen flex items-start justify-center relative bg-cover bg-center bg-gray-200 z-[1]  relative"
     :style="{
-      backgroundImage: imageLoaded ? 'url(/assets/images/men-groom.webp)' : 'none',
+      backgroundImage: imageLoaded ? 'url(/assets/images/women-groom.webp)' : 'none',
       backgroundColor: '#4D4D4D',
     }"
   >
     <div class="w-full h-screen flex items-end justify-start z-[2] px-4 py-12">
       <div class="flex flex-col gap-4 p-4">
-        <h2 class="text-xl uppercase font-wittgenstein text-white drop-shadow-lg">
-          The Groom
-        </h2>
-        <div class="border-t w-48 border-white"></div>
-        <h1 class="text-3xl font-wittgenstein text-white">Wimala Dharma Kencana</h1>
-        <p class="font-wittgenstein text-white text-md">
-          Putra Kedua dari Bapak Sofyanto & Ibu Ni Ketut Yuni Somantari
-        </p>
-        <a
+        <h2 class="text-xl uppercase font-wittgenstein text-white drop-shadow-lg">The Groom</h2>
+        <div class="border-t w-48  border-white"></div>
+        <h1 class="text-3xl font-wittgenstein text-white">Ni Kadek Astri Cahyani</h1>
+        <p class="font-wittgenstein text-white text-md">Putri Kedua dari Bapak I Ketut Sudiarta & Ibu Ni Ketut Sri Yuliani</p>
+         <a
           href="https://www.instagram.com/"
           target="_blank"
           class="transition-all ease-in flex items-center gap-2 font-wittgenstein bg-green-700 text-white px-4 border-0 hover:border border-white py-1 rounded-lg w-fit text-xs"

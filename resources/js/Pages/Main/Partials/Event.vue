@@ -15,7 +15,7 @@ const preloadImage = (url) => {
 };
 onMounted(async () => {
   try {
-    await preloadImage("/assets/images/men-groom.webp");
+    await preloadImage("/assets/images/event.webp");
 
     // Handle focus event
   } catch (error) {
@@ -25,11 +25,11 @@ onMounted(async () => {
 </script>
 <template>
   <section
-    ref="groomMenRef"
-    id="groomMen"
+    ref="eventRef"
+    id="event"
     class="min-h-screen flex items-start justify-center relative bg-cover bg-center bg-gray-200 z-[2] -mt-10"
     :style="{
-      backgroundImage: imageLoaded ? 'url(/assets/images/men-groom.webp)' : 'none',
+      backgroundImage: imageLoaded ? 'url(/assets/images/event.webp)' : 'none',
       backgroundColor: '#4D4D4D',
     }"
   >
@@ -51,6 +51,6 @@ onMounted(async () => {
         >
       </div>
     </div>
-    <div class="absolute inset-0 bg-[#4D4D4D]/30"></div>
+    <div class="absolute inset-0 bg-[#4D4D4D]/10 backdrop-blur"></div>
   </section>
 </template>

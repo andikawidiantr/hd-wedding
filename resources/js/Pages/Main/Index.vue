@@ -9,6 +9,8 @@ import RegVeda from "./Partials/RegVeda.vue";
 import gsap from 'gsap';
 import ScrollTrigger from 'gsap/ScrollTrigger';
 import GroomMen from "./Partials/GroomMen.vue";
+import GroomWomen from "./Partials/GroomWomen.vue";
+import Event from "./Partials/Event.vue";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -48,6 +50,8 @@ onMounted(() => {
       <Main />
       <RegVeda />
       <GroomMen/>
+      <GroomWomen/>
+      <Event/>
     </div>
   </GuestLayout>
 </template>
