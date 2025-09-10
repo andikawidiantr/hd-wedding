@@ -11,11 +11,18 @@ import ScrollTrigger from 'gsap/ScrollTrigger';
 import GroomMen from "./Partials/GroomMen.vue";
 import GroomWomen from "./Partials/GroomWomen.vue";
 import Event from "./Partials/Event.vue";
+import Map from "./Partials/Map.vue";
+import Gallery from "./Partials/Gallery.vue";
+import Greeting from "./Partials/Greeting.vue";
+import Gift from "./Partials/Gift.vue";
+import Closed from "./Partials/Closed.vue";
+import Footer from "./Partials/Footer.vue";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const props = defineProps({
   guest: String,
+  greeting:Object,
 });
 
 // Prevent scroll when popup is active
@@ -45,13 +52,19 @@ onMounted(() => {
     <!-- Main Content -->
     <div 
       class="relative w-full max-w-md mx-auto"
-      :class="{ 'invisible': show }"
+     
     >
       <Main />
       <RegVeda />
       <GroomMen/>
       <GroomWomen/>
       <Event/>
+      <Map/>
+      <Gallery/>
+      <Greeting :greeting="greeting"/>
+      <Gift/>
+      <Closed/>
+      <Footer/>
     </div>
   </GuestLayout>
 </template>

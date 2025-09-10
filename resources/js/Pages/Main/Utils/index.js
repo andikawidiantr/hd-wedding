@@ -1,29 +1,19 @@
-import {
-    nextTick,
-    ref
-} from "vue";
+// Utils/index.js
+import { ref, nextTick } from "vue";
 
 export const show = ref(false);
+export const animationsInitialized = ref(false); // Add new ref for tracking
+
 export const setShow = (value) => {
-    // localStorage.setItem("showPopup", value);
     show.value = value;
+    if (!value) {
+        // Ketika popup ditutup, set animationsInitialized ke true
+        animationsInitialized.value = true;
+    }
 };
+
 export const fetchData = () => {
-    nextTick(() => {
-        // console.log(JSON.parse(localStorage.getItem("showPopup")));
-        // if (JSON.parse(localStorage.getItem("showPopup")) === false) {
-        //     show.value = false;
-        //     console.log('not show');
-        // } else {
-        //     show.value = true;
-        //     console.log('show');
-        // }
-
-        // console.log("fetchData called");
-
+    return nextTick(() => {
         show.value = true;
-        // console.log(show.value)
-
-    })
-
-}
+    });
+};
