@@ -59,7 +59,7 @@ onMounted(() => {
       <GroomMen/>
       <GroomWomen/>
       <Event/>
-      <Map/>
+      <!-- <Map/> -->
       <Gallery/>
       <Greeting :greeting="greeting"/>
       <Gift/>

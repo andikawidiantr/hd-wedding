@@ -117,8 +117,8 @@ onMounted(() => {
           >
             <h3 class="font-eyesome text-white text-center text-2xl">Untuk</h3>
             <div class="flex flex-col e">
-              <p class="text-white text-center  font-eyesome-script">Bapak/Ibu/Saudara/i</p>
-              <p class="text-white text-center text-xl font-eyesome">
+              <p class="text-white text-center  font-eyesome font-semibold">Bapak/Ibu/Saudara/i</p>
+              <p class="text-white text-center text-xl font-eyesome font-bold">
                 {{ guest }}
               </p>
             </div>
@@ -129,7 +129,7 @@ onMounted(() => {
             ref="buttonRef"
             type="button"
             class="button-open flex items-center border rounded-xl px-12 py-2 text-white border-white gap-2 
-                   hover:bg-white hover:text-black transition-colors duration-300 font-eyesome"
+                   hover:bg-white hover:text-black transition-colors duration-300 font-eyesome font-bold"
             @click="close"
           >
             <mdicon name="email-heart-outline" />

@@ -1,8 +1,8 @@
 <script setup>
 import { router, useForm } from "@inertiajs/vue3";
 import { onMounted, ref, watch, nextTick } from "vue";
-import gsap from 'gsap';
-import ScrollTrigger from 'gsap/ScrollTrigger';
+import gsap from "gsap";
+import ScrollTrigger from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -36,7 +36,8 @@ const form = useForm({
 
 const setupAnimations = () => {
   // Title Animation
-  gsap.fromTo(titleRef.value,
+  gsap.fromTo(
+    titleRef.value,
     { y: 30, opacity: 0 },
     {
       y: 0,
@@ -46,13 +47,14 @@ const setupAnimations = () => {
       scrollTrigger: {
         trigger: greetingRef.value,
         start: "top center+=100",
-        toggleActions: "play none none reverse"
-      }
+        toggleActions: "play none none reverse",
+      },
     }
   );
 
   // Form Animation
-  gsap.fromTo(formRef.value,
+  gsap.fromTo(
+    formRef.value,
     { y: 50, opacity: 0 },
     {
       y: 0,
@@ -63,15 +65,16 @@ const setupAnimations = () => {
       scrollTrigger: {
         trigger: greetingRef.value,
         start: "top center+=100",
-        toggleActions: "play none none reverse"
-      }
+        toggleActions: "play none none reverse",
+      },
     }
   );
 
   // Message List Animation
-  const messages = gsap.utils.toArray('.message-item');
+  const messages = gsap.utils.toArray(".message-item");
   messages.forEach((message, index) => {
-    gsap.fromTo(message,
+    gsap.fromTo(
+      message,
       { opacity: 0, y: 20 },
       {
         opacity: 1,
@@ -82,8 +85,8 @@ const setupAnimations = () => {
         scrollTrigger: {
           trigger: messageListRef.value,
           start: "top bottom-=100",
-          toggleActions: "play none none none"
-        }
+          toggleActions: "play none none none",
+        },
       }
     );
   });
@@ -98,16 +101,17 @@ const handleSubmit = async () => {
     })
     .then((response) => {
       // Animate new message
-      gsap.fromTo('.message-item:first-child',
+      gsap.fromTo(
+        ".message-item:first-child",
         { y: -20, opacity: 0 },
         {
           y: 0,
           opacity: 1,
           duration: 0.5,
-          ease: "power2.out"
+          ease: "power2.out",
         }
       );
-      
+
       form.reset();
       router.reload({
         only: ["greeting"],
@@ -124,25 +128,30 @@ const handleSubmit = async () => {
 };
 
 // Watch for greeting changes
-watch(() => props.greeting, (newGreeting) => {
-  if (newGreeting) {
-    nextTick(() => {
-      const messages = gsap.utils.toArray('.message-item');
-      messages.forEach((message, index) => {
-        gsap.fromTo(message,
-          { opacity: 0, y: 20 },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.5,
-            delay: 0.1 * index,
-            ease: "power2.out"
-          }
-        );
+watch(
+  () => props.greeting,
+  (newGreeting) => {
+    if (newGreeting) {
+      nextTick(() => {
+        const messages = gsap.utils.toArray(".message-item");
+        messages.forEach((message, index) => {
+          gsap.fromTo(
+            message,
+            { opacity: 0, y: 20 },
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.5,
+              delay: 0.1 * index,
+              ease: "power2.out",
+            }
+          );
+        });
       });
-    });
-  }
-}, { deep: true });
+    }
+  },
+  { deep: true }
+);
 
 onMounted(async () => {
   try {
@@ -174,11 +183,11 @@ onMounted(async () => {
 
         <form
           ref="formRef"
-          class="flex flex-col gap-2 border rounded-lg border-white bg-black/10 w-full p-4 transition-all duration-300 hover:bg-black/20"
+          class="flex flex-col gap-2 border rounded-lg border-white bg-white/90 w-full p-4 transition-all duration-300"
           @submit.prevent="handleSubmit"
         >
           <div class="flex flex-col gap-1">
-            <label for="nama" class="text-sm font-wittgenstein text-white">Nama</label>
+            <label for="nama" class="text-sm font-wittgenstein text-gray-400">Nama</label>
             <input
               type="text"
               v-model="form.name"
@@ -186,31 +195,35 @@ onMounted(async () => {
               id="nama"
               name="name"
               placeholder="Masukan nama anda"
-              class="transition-all duration-300 ease-in flex items-center justify-center border placeholder:text-gray-400 placeholder:text-sm text-white border-white bg-white/10 rounded-lg ring-0 focus:ring-0 focus:translate-y-[-2px]"
+              class="transition-all duration-300 ease-in flex items-center justify-center border placeholder:text-gray-400 placeholder:text-sm text-gray-400 border-gray-400 bg-gray-400/10 rounded-lg ring-0 focus:ring-0 focus:translate-y-[-2px]"
               :class="{ 'border-red-400': form.errors.name }"
             />
           </div>
 
           <div class="flex flex-col gap-1">
-            <label for="message" class="text-sm font-wittgenstein text-white">Ucapan</label>
+            <label for="message" class="text-sm font-wittgenstein text-gray-400"
+              >Ucapan</label
+            >
             <textarea
               v-model="form.message"
               :disabled="form.processing"
               id="message"
               name="message"
               placeholder="Masukan ucapan anda"
-              class="transition-all duration-300 ease-in flex items-center justify-center border placeholder:text-gray-400 placeholder:text-sm text-white border-white bg-white/10 rounded-lg ring-0 focus:ring-0 focus:translate-y-[-2px]"
+              class="transition-all duration-300 ease-in flex items-center justify-center border placeholder:text-gray-400 placeholder:text-sm text-gray-400 border-gray-400 bg-gray-400/10 rounded-lg ring-0 focus:ring-0 focus:translate-y-[-2px]"
               :class="{ 'border-red-400': form.errors.message }"
             />
           </div>
 
           <div class="flex flex-col gap-1">
-            <label for="kehadiran" class="text-sm font-wittgenstein text-white">Kehadiran</label>
+            <label for="kehadiran" class="text-sm font-wittgenstein text-gray-400"
+              >Kehadiran</label
+            >
             <select
               name="kehadiran"
               id="kehadiran"
               :disabled="form.processing"
-              class="transition-all duration-300 ease-in flex items-center justify-center border placeholder:text-gray-400 placeholder:text-sm text-white border-white bg-white/10 rounded-lg ring-0 focus:ring-0 focus:translate-y-[-2px]"
+              class="transition-all duration-300 ease-in flex items-center justify-center border placeholder:text-gray-400 placeholder:text-sm text-gray-400 border-gray-400 bg-gray-400/10 rounded-lg ring-0 focus:ring-0 focus:translate-y-[-2px]"
               :class="{ 'border-red-400': form.errors.attendance }"
               v-model="form.attendance"
             >
@@ -224,7 +237,7 @@ onMounted(async () => {
           <div class="w-full mt-2">
             <button
               :disabled="form.processing"
-              class="transition-all duration-300 border border-white bg-white/10 w-full rounded-lg px-4 py-2 text-white hover:bg-white/20 hover:translate-y-[-2px] active:translate-y-0"
+              class="transition-all duration-300 border border-gray-400 bg-gray-400/10 w-full rounded-lg px-4 py-2 text-gray-400 hover:bg-gray-400/20 hover:translate-y-[-2px] active:translate-y-0"
               :class="{
                 'opacity-50 cursor-not-allowed animate-pulse': form.processing,
               }"
@@ -244,25 +257,38 @@ onMounted(async () => {
               :style="{ opacity: 1 }"
             >
               <div class="flex items-center gap-2 py-2">
-                <h4 class="font-wittgenstein text-white text-md font-bold">{{ item.name }}</h4>
-                <span
-                  class="text-xs px-2 py-0.5 rounded-lg transition-all duration-300"
-                  :class="{
-                    'bg-green-600 text-white': item.attendance === 1,
-                    'bg-red-600 text-white': item.attendance === 2,
-                    'bg-yellow-400 text-black': item.attendance === 3,
-                  }"
-                >
-                  {{ item.attendance_status }}
-                </span>
-              </div>
+                <div class="text-white">
+                  <mdicon name="heart-circle-outline" width="40" />
+                </div>
+                <div class="flex flex-col gap-1">
+                  <div class="flex items-center gap-4">
+                    <h4 class="font-wittgenstein text-white text-md font-bold">
+                      {{ item.name }}
+                    </h4>
+                    <span
+                      class="text-xs px-2 py-0.5 rounded-lg transition-all duration-300"
+                      :class="{
+                        'bg-green-600 text-white': item.attendance === 1,
+                        'bg-red-600 text-white': item.attendance === 2,
+                        'bg-yellow-400 text-black': item.attendance === 3,
+                      }"
+                    >
+                      {{ item.attendance_status }}
+                    </span>
+                  </div>
               <p class="font-wittgenstein text-white text-sm">{{ item.message }}</p>
+
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="absolute inset-0 bg-gradient-to-t from-black/100 via-black/50 to-black/100"></div>
+    
+    <div
+      class="absolute inset-0 bg-gradient-to-t from-black/100 via-black/50 to-black/100"
+    ></div>
   </section>
 </template>
 
@@ -307,7 +333,9 @@ onMounted(async () => {
   background: transparent;
 }
 
-input:focus, textarea:focus, select:focus {
+input:focus,
+textarea:focus,
+select:focus {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 

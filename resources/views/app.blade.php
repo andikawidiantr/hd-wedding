@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title inertia>Dharma & Astrid Wedding</title>
+        <title inertia>Dharma & Astri Wedding</title>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">

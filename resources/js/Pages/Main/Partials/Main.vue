@@ -7,31 +7,84 @@ import { show } from "../Utils/index";
 gsap.registerPlugin(ScrollToPlugin);
 
 const sectionRef = ref(null);
-const imageLoaded = ref(false);
+const currentImageIndex = ref(0);
+const imagesLoaded = ref(0);
 const animationTriggered = ref(false);
 let observer = null;
+let slideInterval = null;
 
-// Preload image di awal
-const imageUrl = "/assets/images/main.webp";
-const img = new Image();
-img.src = imageUrl;
-img.onload = () => {
-  imageLoaded.value = true;
-  // Set background langsung visible setelah load
-  if (sectionRef.value) {
-    gsap.set(sectionRef.value, {
-      opacity: 1,
-      backgroundImage: `url(${imageUrl})`,
-    });
-  }
+// Array gambar background
+const imageUrls = [
+  "/assets/images/main.webp",
+  "/assets/images/main-2.webp",
+  "/assets/images/main-4.webp"
+];
+
+// Preload semua gambar
+const preloadImages = () => {
+  imageUrls.forEach((url) => {
+    const img = new Image();
+    img.src = url;
+    img.onload = () => {
+      imagesLoaded.value++;
+      if (imagesLoaded.value === imageUrls.length) {
+        initializeBackgrounds();
+      }
+    };
+  });
+};
+
+// Inisialisasi backgrounds
+const initializeBackgrounds = () => {
+  if (!sectionRef.value) return;
+
+  const slideContainer = document.createElement('div');
+  slideContainer.className = 'absolute inset-0 overflow-hidden';
+
+  imageUrls.forEach((url, index) => {
+    const slide = document.createElement('div');
+    slide.className = 'slide absolute inset-0 bg-cover bg-center';
+    slide.style.backgroundImage = `url(${url})`;
+    slide.style.zIndex = '0';
+    slide.style.opacity = index === 0 ? '1' : '0';
+    slideContainer.appendChild(slide);
+  });
+
+  sectionRef.value.insertBefore(slideContainer, sectionRef.value.firstChild);
+  startSlideshow();
+};
+
+// Fungsi untuk slideshow
+const startSlideshow = () => {
+  if (slideInterval) clearInterval(slideInterval);
+
+  slideInterval = setInterval(() => {
+    const nextIndex = (currentImageIndex.value + 1) % imageUrls.length;
+    transitionToNextImage(nextIndex);
+  }, 5000);
+};
+
+// Fungsi transisi ke gambar berikutnya
+const transitionToNextImage = (nextIndex) => {
+  const slides = sectionRef.value.querySelectorAll('.slide');
+  
+  gsap.to(slides[currentImageIndex.value], {
+    opacity: 0,
+    duration: 1.5,
+    ease: "power2.inOut"
+  });
+
+  gsap.to(slides[nextIndex], {
+    opacity: 1,
+    duration: 1.5,
+    ease: "power2.inOut"
+  });
+
+  currentImageIndex.value = nextIndex;
 };
 
 // Fungsi untuk mengatur initial state
 const setInitialState = () => {
-  gsap.set(sectionRef.value, {
-    opacity: 1,
-  });
-
   gsap.set([".title", ".subtitle", ".date"], {
     opacity: 0,
     y: 50,
@@ -46,48 +99,43 @@ const setInitialState = () => {
 // Animasi ketika show.value = true (hanya background)
 const showBackgroundOnly = () => {
   const tl = gsap.timeline();
- 
+   
   tl.to([".subtitle", ".title", ".date", ".divider"], {
     opacity: 0,
     y: 20,
-    duration: 0.3, // Dipercepat
+    duration: 0.3,
     ease: "power2.in",
   })
     .set(".divider", {
       scaleY: 0,
-      y:0,
+      y: 0,
       transformOrigin: "top",
-    })
-    .to(sectionRef.value, {
-      opacity: 1,
-      duration: 0.5, // Dipercepat
-      ease: "power2.out",
     });
 };
 
 const startAnimation = () => {
   if (animationTriggered.value) return;
   animationTriggered.value = true;
- 
+   
   const tl = gsap.timeline({
     defaults: {
-      duration: 0.6, // Dipercepat
+      duration: 0.6,
       ease: "power2.out",
     },
   });
- 
+   
   // Reset posisi awal
   gsap.set([".subtitle", ".title", ".date"], {
     opacity: 0,
-    y: 20, // Kurangi jarak
+    y: 20,
   });
- 
+   
   gsap.set(".divider", {
     opacity: 0,
     scaleY: 0,
     transformOrigin: "top",
   });
- 
+   
   // Animasi berurutan
   tl.to(".subtitle", {
     opacity: 1,
@@ -111,17 +159,16 @@ const startAnimation = () => {
       duration: 0.5,
     }, "-=0.2");
 };
- 
-// Modifikasi watch untuk show
+
+// Watch untuk show
 watch(show, (newValue) => {
   if (newValue) {
     animationTriggered.value = false;
     showBackgroundOnly();
   } else {
-    // Kurangi delay
     setTimeout(() => {
       startAnimation();
-    }, 100); // Dipercepat dari 300 ke 100
+    }, 100);
   }
 });
 
@@ -148,41 +195,28 @@ const setupIntersectionObserver = () => {
   observer.observe(sectionRef.value);
 };
 
-// Scroll to section function
-const scrollToSection = () => {
-  gsap.to(window, {
-    duration: 1,
-    scrollTo: {
-      y: "#main",
-      offsetY: 0,
-    },
-    ease: "power2.inOut",
-  });
-};
-
 onMounted(() => {
   setInitialState();
   setupIntersectionObserver();
+  preloadImages();
 
-  // Initial animation based on show value
   if (show.value) {
     showBackgroundOnly();
   }
 
-  // Event listeners
   window.addEventListener("focus", () => {
     if (!show.value) {
       startAnimation();
     }
   });
-
-  // Optional: Scroll to section on mount
-  // scrollToSection();
 });
 
 onUnmounted(() => {
   if (observer) {
     observer.disconnect();
+  }
+  if (slideInterval) {
+    clearInterval(slideInterval);
   }
   window.removeEventListener("focus", () => {});
 });
@@ -192,33 +226,36 @@ onUnmounted(() => {
   <section
     ref="sectionRef"
     id="main"
-    class="min-h-screen flex items-start justify-center relative bg-cover bg-center bg-[#4D4D4D]"
-    :style="{
-      backgroundImage: imageLoaded ? `url(${imageUrl})` : 'none',
-    }"
+    class="min-h-screen flex items-start justify-center relative bg-[#4D4D4D] overflow-hidden"
     tabindex="0"
     @focus="!show && startAnimation()"
   >
     <!-- Background Overlay -->
-    <div
-      class="absolute inset-0 bg-[#4D4D4D]/30 transition-opacity duration-500"
+    <!-- <div
+      class="absolute inset-0 bg-[#4D4D4D]/30 transition-opacity duration-500 z-[1]"
       :class="{ 'opacity-50': show, 'opacity-30': !show }"
+    ></div> -->
+     <!-- <div
+      class="absolute inset-0 bg-[#4D4D4D]/30 transition-opacity duration-500"
+      :class="{ 'opacity-100': show, 'opacity-0': !show }"
+    ></div> -->
+<div
+      class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/50 to-black/70"
     ></div>
-
     <!-- Main Content -->
     <div class="flex flex-col gap-4 justify-center items-center relative z-10 pt-20 px-4">
       <h1
-        class="subtitle font-eyesome text-6xl md:text-7xl text-white opacity-0 text-center"
+        class="subtitle font-eyesome text-7xl text-white opacity-0 text-center"
         :class="{ 'blur-sm': show }"
       >
         Wedding Day
       </h1>
 
       <h6
-        class="title font-eyesome text-white text-2xl md:text-3xl tracking-wide opacity-0 text-center"
+        class="title font-eyesome text-white text-3xl tracking-wide opacity-0 text-center"
         :class="{ 'blur-sm': show }"
       >
-        Dharma & Astrid
+        Dharma & Astri
       </h6>
 
       <div class="divider opacity-0 transform-gpu" :class="{ 'blur-sm': show }">
@@ -226,7 +263,7 @@ onUnmounted(() => {
       </div>
 
       <p
-        class="date font-eyesome text-white text-center text-2xl md:text-3xl opacity-0"
+        class="date font-eyesome text-white text-center text-3xl opacity-0"
         :class="{ 'blur-sm': show }"
       >
         29.09.2025
@@ -239,22 +276,23 @@ onUnmounted(() => {
       style="background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.1))"
     ></div>
 
-    <!-- Optional Loading Indicator -->
+    <!-- Loading Indicator -->
     <div
-      v-if="!imageLoaded"
+      v-if="imagesLoaded < imageUrls.length"
       class="absolute inset-0 flex items-center justify-center bg-[#4D4D4D] z-20"
     >
-      <div class="animate-pulse text-white font-poly"></div>
+      <div class="animate-pulse text-white font-poly">Loading...</div>
     </div>
   </section>
 </template>
+
 <style scoped>
 .title,
 .subtitle,
 .divider,
 .date {
   will-change: transform, opacity;
-  transition: all 0.3s ease-out; 
+  transition: all 0.3s ease-out;
   transform-style: preserve-3d;
   backface-visibility: hidden;
 }
@@ -264,7 +302,7 @@ onUnmounted(() => {
   height: 50px;
   width: 1px;
   position: relative;
-  margin: 0.5rem 0; 
+  margin: 0.5rem 0;
   transform-origin: top;
 }
 
@@ -278,7 +316,7 @@ onUnmounted(() => {
 
 /* Blur transition */
 .blur-sm {
-  filter: blur(3px); 
+  filter: blur(3px);
   transition: filter 0.3s ease;
 }
 
@@ -291,6 +329,28 @@ onUnmounted(() => {
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
+}
+
+/* Slide styling */
+.slide {
+  will-change: opacity;
+  transition: opacity 1.5s ease-in-out;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Ken Burns Effect */
+@keyframes kenBurns {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.1);
+  }
+}
+
+.slide {
+  animation: kenBurns 20s infinite alternate;
 }
 
 /* Responsive Design */

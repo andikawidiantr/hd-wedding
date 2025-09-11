@@ -235,9 +235,34 @@ onBeforeUnmount(() => {
             Save The Date
           </a>
         </div>
+         <div class="flex flex-col gap-12 mt-16">
+          <div ref="qrRef" class="flex gap-8 items-center justify-center">
+            <div
+              class="bg-white p-2 rounded-md shadow-lg transform transition-transform duration-300 hover:scale-105"
+            >
+              <img src="/assets/images/qr.png" alt="QR Code" class="w-24 h-24" />
+            </div>
+          </div>
+
+          <div ref="mapButtonRef" class="flex items-center justify-center">
+            <a
+              href="https://maps.app.goo.gl/7GP44pSQC3d3h8WN8"
+              target="_blank"
+              class="map-button border border-white rounded-xl px-6 py-1 text-white uppercase relative overflow-hidden group"
+            >
+              <span class="relative z-10">OPEN MAP</span>
+              <div
+                class="absolute inset-0 bg-white transform origin-bottom transition-transform duration-300 ease-out scale-y-0 group-hover:scale-y-100"
+              ></div>
+            </a>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-black/70"></div>
+     <div
+      class="absolute inset-0 bg-[#4D4D4D]/30 transition-opacity duration-500"
+      :class="{ 'opacity-100': imageLoaded, 'opacity-0': !imageLoaded }"
+    ></div>
   </section>
 </template>
 
