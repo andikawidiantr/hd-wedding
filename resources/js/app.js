@@ -7,7 +7,7 @@ import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy';
 import mdiVue from 'mdi-vue/v3';
 import * as mdijs from '@mdi/js';
-const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
+const appName = import.meta.env.VITE_APP_NAME ;
 import gsap from 'gsap'
 
 
@@ -19,7 +19,7 @@ import ScrollToPlugin from 'gsap/ScrollToPlugin'
 gsap.registerPlugin(ScrollTrigger, ScrollToPlugin)
 
 createInertiaApp({
-    title: (title) => `${title} - ${appName}`,
+    title: (title) => `${title}`,
     resolve: (name) => resolvePageComponent(`./Pages/${name}.vue`, import.meta.glob('./Pages/**/*.vue')),
       setup({ el, App, props, plugin }) {
     const app = createApp({ render: () => h(App, props) })

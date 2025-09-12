@@ -20,6 +20,7 @@ import Footer from "./Partials/Footer.vue";
 import Countdown from "./Partials/Countdown.vue";
 import Reservation from "./Partials/Reservation.vue";
 import Wallet from "./Components/Wallet.vue";
+import Music from "./Components/Music.vue";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -28,10 +29,15 @@ const props = defineProps({
   greeting: Object,
 });
 
+const play = ref(false);
+const setPlay = (value) => {
+  play.value = value;
+};
 // Prevent scroll when popup is active
 watch(show, (newValue) => {
   if (newValue) {
     document.body.style.overflow = "hidden";
+    play.value = true;
   } else {
     document.body.style.overflow = "";
   }
@@ -46,7 +52,7 @@ onMounted(() => {
   <Wallet :show="amplop" @close="() => setAmplop(false)" />
   <GuestLayout>
     <!-- Popup -->
-    <Popup v-if="show" :show="show" @close="() => setShow(false)" :guest="guest" />
+    <Popup v-if="show" :show="show" @close="() => setShow(false)" :guest="guest" @music="setPlay" />
 
     <!-- Main Content -->
     <div class="relative w-full max-w-md mx-auto">
@@ -62,6 +68,7 @@ onMounted(() => {
       <Greeting :greeting="greeting" />
       <Closed />
       <Footer />
+      <Music :play="play" @play="setPlay" />
     </div>
   </GuestLayout>
 </template>

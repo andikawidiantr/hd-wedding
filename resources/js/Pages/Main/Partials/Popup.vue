@@ -7,11 +7,14 @@ const props = defineProps({
   guest: String,
 });
 
-const emit = defineEmits(["close"]);
+const emit = defineEmits(["close", "music"]);
 const close = () => {
   // Animasi keluar
   const tl = gsap.timeline({
-    onComplete: () => emit("close")
+    onComplete: () =>{
+      emit("close");
+      emit("music", true);
+    }
   });
   
   tl.to(".button-open", { y: 50, opacity: 0, duration: 0.3 })
