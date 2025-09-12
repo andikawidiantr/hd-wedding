@@ -73,12 +73,12 @@ onMounted(() => {
   <section
     ref="sectionRef"
     id="closed"
-    class="min-h-screen flex items-center justify-center relative bg-cover bg-center -mt-20 z-[3] overflow-hidden"
+    class="min-h-screen flex items-start justify-center relative bg-cover bg-center -mt-20 z-[3] overflow-hidden"
     style="background-image: url('/assets/images/full-torn.png')"
   >
     <div
       ref="containerRef"
-      class="container mx-auto px-4 md:px-12 flex flex-col items-center justify-center"
+      class="container mx-auto px-4 md:px-12 flex flex-col items-start justify-center h-full pt-20"
       :style="{ transform: 'none' }"
     >
       <h1

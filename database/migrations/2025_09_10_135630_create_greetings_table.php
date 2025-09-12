@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->text('message')->nullable();
-            $table->smallInteger('attendance')->comment("1 Attendance,2 Not Attendance, 0 Unresponsive")->default(0);
             $table->timestamps();
         });
     }

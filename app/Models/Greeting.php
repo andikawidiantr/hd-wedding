@@ -21,7 +21,7 @@ class Greeting extends Model
      *
      * @var array
      */
-    protected $fillable = ['name', 'message', 'attendance'];
+    protected $fillable = ['name', 'message'];
 
     /**
      * The accessors to append to the model's array form.

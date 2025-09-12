@@ -20,3 +20,5 @@ use Inertia\Inertia;
 Route::get('/',[MainController::class,'index'])->name('main');
 
 Route::post('/greeting',[MainController::class,'storeGreeting'])->name('greeting.store');
+Route::post('/reservation',[MainController::class,'storeReservation'])->name('reservation.store');
+

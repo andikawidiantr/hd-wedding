@@ -1,58 +1,118 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, defineAsyncComponent } from 'vue';
 import { Swiper, SwiperSlide } from 'swiper/vue';
 import { Autoplay, EffectCards } from 'swiper/modules';
-import VueEasyLightbox from 'vue-easy-lightbox';
-import 'swiper/css';
-import 'swiper/css/effect-cards';
+
+// Lazy load lightbox
+const VueEasyLightbox = defineAsyncComponent(() => 
+  import('vue-easy-lightbox')
+);
+
+const loadStyles = async () => {
+  await Promise.all([
+    import('swiper/css'),
+    import('swiper/css/effect-cards')
+  ]);
+};
 
 const imageLoaded = ref(false);
 const images = ref([]);
 const isLoading = ref(true);
 const visibleRef = ref(false);
 const indexRef = ref(0);
+const swiperLoaded = ref(false);
+const loadingProgress = ref(0);
 
-// Simplified image preload
+// Constants
+const CHUNK_SIZE = 8;
+const TOTAL_IMAGES = 40;
+const DELAY_BETWEEN_CHUNKS = 800;
+
 const preloadImage = (url) => {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     const img = new Image();
     img.onload = () => {
       imageLoaded.value = true;
       resolve();
     };
+    img.onerror = reject;
     img.src = url;
   });
 };
 
-// Load only initial visible images
-const loadInitialImages = () => {
-  const initialImages = [];
-  // Load only first 12 images for better performance
-  for (let i = 1; i <= 40; i++) {
-    initialImages.push({
-      src: `/assets/images/gallery/${i}.webp`,
-      title: `Gallery Image ${i}`,
-    });
+const createImageObject = (index) => ({
+  id: index,
+  src: `/assets/images/gallery/${index}.webp`,
+  title: `Gallery Image ${index}`,
+});
+
+const loadImageChunk = async (startIndex) => {
+  const endIndex = Math.min(startIndex + CHUNK_SIZE, TOTAL_IMAGES);
+  const newImages = [];
+
+  for (let i = startIndex + 1; i <= endIndex; i++) {
+    newImages.push(createImageObject(i));
   }
-  images.value = initialImages;
-  isLoading.value = false;
+
+  images.value = [...images.value, ...newImages];
+  loadingProgress.value = (endIndex / TOTAL_IMAGES) * 100;
 };
 
-// Handle image click
+const loadInitialImages = async () => {
+  isLoading.value = true;
+  try {
+    await loadStyles(); // Load Swiper styles
+    await loadImageChunk(0);
+    isLoading.value = false;
+    loadRemainingImages();
+  } catch (error) {
+    console.error("Error loading initial images:", error);
+    isLoading.value = false;
+  }
+};
+
+const loadRemainingImages = async () => {
+  for (let i = CHUNK_SIZE; i < TOTAL_IMAGES; i += CHUNK_SIZE) {
+    await new Promise(resolve => setTimeout(resolve, DELAY_BETWEEN_CHUNKS));
+    try {
+      await loadImageChunk(i);
+    } catch (error) {
+      console.error(`Error loading chunk starting at ${i}:`, error);
+    }
+  }
+};
+
 const showImg = (index) => {
   indexRef.value = index;
   visibleRef.value = true;
 };
 
-// Handle lightbox close
 const handleHide = () => {
   visibleRef.value = false;
+};
+
+const observeGallery = () => {
+  const observer = new IntersectionObserver(
+    async (entries) => {
+      if (entries[0].isIntersecting && !swiperLoaded.value) {
+        swiperLoaded.value = true;
+        await loadInitialImages();
+      }
+    },
+    { threshold: 0.1 }
+  );
+
+  const gallerySection = document.getElementById('gallery');
+  if (gallerySection) {
+    observer.observe(gallerySection);
+    return () => observer.disconnect();
+  }
 };
 
 onMounted(async () => {
   try {
     await preloadImage("/assets/images/gallery.webp");
-    loadInitialImages();
+    observeGallery();
   } catch (error) {
     console.error("Error:", error);
     isLoading.value = false;
@@ -84,13 +144,18 @@ onMounted(async () => {
         </div>
 
         <!-- Loading State -->
-        <div v-if="isLoading" class="flex justify-center items-center min-h-[400px]">
+        <div 
+          v-if="isLoading || !swiperLoaded" 
+          class="flex flex-col gap-4 justify-center items-center min-h-[400px]"
+        >
           <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-white"></div>
+          <div class="text-white text-sm">
+            Loading Gallery...
+          </div>
         </div>
 
         <!-- Gallery Container -->
         <div v-else class="flex flex-col items-center justify-center gap-8">
-          <!-- Swiper Container with Fixed Width -->
           <div class="w-full mx-auto overflow-hidden" style="max-width: 240px;">
             <Swiper
               :modules="[Autoplay, EffectCards]"
@@ -104,8 +169,9 @@ onMounted(async () => {
             >
               <SwiperSlide
                 v-for="(image, index) in images"
-                :key="index"
+                :key="image.id"
                 @click="showImg(index)"
+                class="gallery-slide"
               >
                 <div class="w-full h-full rounded-lg overflow-hidden cursor-pointer">
                   <img
@@ -119,7 +185,6 @@ onMounted(async () => {
             </Swiper>
           </div>
 
-          <!-- Instruction Text -->
           <p class="text-white text-center text-sm opacity-80">
             Swipe to view more photos or tap to enlarge
           </p>
@@ -127,6 +192,7 @@ onMounted(async () => {
 
         <!-- Lightbox -->
         <vue-easy-lightbox
+          v-if="visibleRef"
           :visible="visibleRef"
           :imgs="images.map(img => img.src)"
           :index="indexRef"
@@ -138,15 +204,13 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-/* Gallery Swiper Styles */
 .gallery-swiper {
   width: 240px !important;
   height: 520px !important;
   margin: 0 auto;
 }
 
-/* Swiper Slide Styles */
-.swiper-slide {
+.gallery-slide {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -160,28 +224,16 @@ onMounted(async () => {
   overflow: hidden;
 }
 
-/* Swiper Wrapper Styles */
 :deep(.swiper-wrapper) {
   width: 240px !important;
   align-items: center;
 }
 
-/* Hover Effects */
-.swiper-slide:hover {
+.gallery-slide:hover {
   transform: scale(1.02);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
-/* Image Styles */
-img {
-  transform: translateZ(0);
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.3s ease;
-}
-
-/* Lightbox Styles */
 :deep(.vel-modal) {
   z-index: 9999;
 }
@@ -190,10 +242,9 @@ img {
   object-fit: contain;
 }
 
-/* Responsive Styles */
 @media (max-width: 640px) {
   .gallery-swiper,
-  .swiper-slide,
+  .gallery-slide,
   :deep(.swiper-wrapper) {
     width: 200px !important;
     height: 440px !important;
@@ -206,7 +257,6 @@ img {
   }
 }
 
-/* Loading Animation */
 @keyframes spin {
   to {
     transform: rotate(360deg);

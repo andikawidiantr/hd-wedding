@@ -27,20 +27,23 @@
         <div class="fixed inset-0 overflow-y-auto">
           <div class="min-h-screen flex items-center justify-center">
             <!-- Sesuaikan dengan layout utama -->
-            <DialogPanel class="bg-white w-full max-w-md mx-auto relative  overflow-hidden">
+            <DialogPanel class="bg-white w-full max-w-sm mx-auto relative  overflow-hidden  rounded-lg" >
               <!-- Header -->
-              <div class="flex justify-between items-center px-4 py-3 "  v-if="closeable">
-                <button
-                 
-                  @click="close"
-                  class="text-gray-400 hover:text-gray-500"
-                >
-                  <mdicon name="close" width="20" height="20" />
-                </button>
+              <div
+                class="flex justify-between items-center px-4 py-2 bg-white  rounded-t-md font-bold  sticky top-0 z-10 text-gray-500"
+              >
+                <DialogTitle>
+                  <slot name="title" />
+                </DialogTitle>
+                <div class="p-1">
+                  <button @click="close" v-if="closeable">
+                    <mdicon name="close" class="text-gray-500" width="20" height="20" />
+                  </button>
+                </div>
               </div>
 
               <!-- Content -->
-              <div class="px-4 py-4 overflow-hidden">
+              <div class="pt-2 pb-4 overflow-hidden">
                 <slot name="content" />
               </div>
             </DialogPanel>

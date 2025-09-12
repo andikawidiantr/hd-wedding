@@ -8,10 +8,11 @@ gsap.registerPlugin(ScrollTrigger);
 
 const imageLoaded = ref(false);
 const eventRef = ref(null);
-const countdownRef = ref(null);
 const dateLocationRef = ref(null);
 const timelineRef = ref(null);
 const saveTheDateRef = ref(null);
+const qrRef = ref(null);
+const mapButtonRef = ref(null);
 
 const preloadImage = (url) => {
   return new Promise((resolve, reject) => {
@@ -35,113 +36,65 @@ const createGoogleCalendarLink = () => {
     end: "20250929T235900",
   };
 
-  const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(
+  return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(
     event.title
   )}&dates=${event.start}/${event.end}&details=${encodeURIComponent(
     event.description
   )}&location=${encodeURIComponent(event.location)}&ctz=Asia/Makassar`;
-
-  return url;
-};
-
-const countdown = ref({
-  days: "00",
-  hours: "00",
-  minutes: "00",
-  seconds: "00",
-});
-
-const targetDate = moment("2025-09-29T05:00:00+08:00");
-let timer;
-
-const updateCountdown = () => {
-  const now = moment();
-  const diff = targetDate.diff(now);
-
-  if (diff <= 0) {
-    countdown.value = {
-      days: "00",
-      hours: "00",
-      minutes: "00",
-      seconds: "00",
-    };
-    if (timer) clearInterval(timer);
-    return;
-  }
-
-  const duration = moment.duration(diff);
-
-  countdown.value = {
-    days: String(Math.floor(duration.asDays())).padStart(2, "0"),
-    hours: String(duration.hours()).padStart(2, "0"),
-    minutes: String(duration.minutes()).padStart(2, "0"),
-    seconds: String(duration.seconds()).padStart(2, "0"),
-  };
 };
 
 onMounted(async () => {
   try {
     await preloadImage("/assets/images/event.webp");
-    updateCountdown();
-    timer = setInterval(updateCountdown, 1000);
 
-    // Animasi setelah gambar dimuat
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: eventRef.value,
-        start: "top center",
+        start: "top 60%",
         end: "center center",
-        toggleActions: "play none none reverse"
+        toggleActions: "play none none reverse",
       }
     });
 
     // Set initial states
-    gsap.set(countdownRef.value, {
-      y: 50,
-      opacity: 0
-    });
-    gsap.set(dateLocationRef.value, {
-      y: 30,
-      opacity: 0
-    });
-    gsap.set(timelineRef.value, {
-      x: -30,
-      opacity: 0
-    });
-    gsap.set(saveTheDateRef.value, {
-      y: 20,
+    gsap.set([dateLocationRef.value, timelineRef.value, saveTheDateRef.value, qrRef.value, mapButtonRef.value], {
       opacity: 0,
-      scale: 0.9
+      y: 30
     });
 
-    // Animasi sequence
-    tl.to(countdownRef.value, {
+    gsap.set(timelineRef.value, {
+      x: -30
+    });
+
+    // Animation sequence
+    tl.to(dateLocationRef.value, {
       y: 0,
       opacity: 1,
       duration: 1,
       ease: "power3.out"
     })
-    .to(dateLocationRef.value, {
-      y: 0,
-      opacity: 1,
-      duration: 0.8,
-      ease: "power3.out"
-    }, "-=0.5")
     .to(timelineRef.value, {
       x: 0,
+      y: 0,
       opacity: 1,
-      duration: 0.8,
+      duration: 1,
       ease: "power3.out"
-    }, "-=0.5")
+    }, "-=0.7")
     .to(saveTheDateRef.value, {
       y: 0,
       opacity: 1,
-      scale: 1,
-      duration: 0.8,
+      duration: 1,
       ease: "back.out(1.7)"
-    }, "-=0.5");
+    }, "-=0.7")
+    .to([qrRef.value, mapButtonRef.value], {
+      y: 0,
+      opacity: 1,
+      duration: 1,
+      stagger: 0.2,
+      ease: "power3.out"
+    }, "-=0.7");
 
-    // Parallax effect pada background
+    // Parallax effect
     gsap.to(eventRef.value, {
       backgroundPosition: "50% 30%",
       ease: "none",
@@ -149,7 +102,7 @@ onMounted(async () => {
         trigger: eventRef.value,
         start: "top top",
         end: "bottom top",
-        scrub: true
+        scrub: 1
       }
     });
 
@@ -157,17 +110,13 @@ onMounted(async () => {
     console.error("Error loading image:", error);
   }
 });
-
-onBeforeUnmount(() => {
-  if (timer) clearInterval(timer);
-});
 </script>
 
 <template>
   <section
     ref="eventRef"
     id="event"
-    class="min-h-screen flex items-start justify-center relative bg-cover bg-center bg-gray-200 z-[2]"
+    class="min-h-screen flex items-start justify-center relative bg-cover bg-center z-[2]"
     :style="{
       backgroundImage: imageLoaded ? 'url(/assets/images/event.webp)' : 'none',
       backgroundColor: '#4D4D4D',
@@ -175,35 +124,17 @@ onBeforeUnmount(() => {
   >
     <div class="w-full h-screen flex items-center justify-center z-[2] px-4 py-12">
       <div class="flex flex-col gap-12 p-4">
-        <div ref="countdownRef" class="flex gap-4 justify-center items-center">
-          <div class="flex flex-col items-center">
-            <span class="font-poly text-4xl text-white countdown-number">{{ countdown.days }}</span>
-            <span class="font-wittgenstein text-sm text-white">Hari</span>
-          </div>
-          <span class="font-poly text-4xl text-white">:</span>
-          <div class="flex flex-col items-center">
-            <span class="font-poly text-4xl text-white countdown-number">{{ countdown.hours }}</span>
-            <span class="font-wittgenstein text-sm text-white">Jam</span>
-          </div>
-          <span class="font-poly text-4xl text-white">:</span>
-          <div class="flex flex-col items-center">
-            <span class="font-poly text-4xl text-white countdown-number">{{ countdown.minutes }}</span>
-            <span class="font-wittgenstein text-sm text-white">Menit</span>
-          </div>
-          <span class="font-poly text-4xl text-white">:</span>
-          <div class="flex flex-col items-center">
-            <span class="font-poly text-4xl text-white countdown-number">{{ countdown.seconds }}</span>
-            <span class="font-wittgenstein text-sm text-white">Detik</span>
-          </div>
-        </div>
-
-        <div ref="dateLocationRef" class="flex flex-col gap-0">
+        <!-- Date and Location -->
+        <div ref="dateLocationRef" class="flex flex-col">
           <h2 class="font-poly text-center text-white text-3xl">
             Senin, 29 September 2025
           </h2>
-          <span class="font-poly text-white text-center">Delod Sema Village, Tegalalang, Taro</span>
+          <span class="font-poly text-white text-center">
+            Delod Sema Village, Tegalalang, Taro
+          </span>
         </div>
 
+        <!-- Timeline -->
         <div ref="timelineRef" class="flex gap-8">
           <div class="relative">
             <div class="border-r border-white mt-4 h-[135px]"></div>
@@ -226,20 +157,21 @@ onBeforeUnmount(() => {
           </div>
         </div>
 
+        <!-- Save the Date Button -->
         <div ref="saveTheDateRef" class="flex items-center justify-center">
           <a
             :href="createGoogleCalendarLink()"
             target="_blank"
-            class="save-date-button border border-white rounded-xl px-6 py-1 text-white uppercase transition-all duration-300 hover:bg-white hover:text-black"
+            class="save-date-button border border-white rounded-xl px-6 py-1 text-white uppercase"
           >
             Save The Date
           </a>
         </div>
-         <div class="flex flex-col gap-12 mt-16">
-          <div ref="qrRef" class="flex gap-8 items-center justify-center">
-            <div
-              class="bg-white p-2 rounded-md shadow-lg transform transition-transform duration-300 hover:scale-105"
-            >
+
+        <!-- QR Code and Map -->
+        <div class="flex flex-col gap-12 mt-16">
+          <div ref="qrRef" class="flex items-center justify-center">
+            <div class="bg-white p-2 rounded-md shadow-lg qr-container">
               <img src="/assets/images/qr.png" alt="QR Code" class="w-24 h-24" />
             </div>
           </div>
@@ -248,39 +180,70 @@ onBeforeUnmount(() => {
             <a
               href="https://maps.app.goo.gl/7GP44pSQC3d3h8WN8"
               target="_blank"
-              class="map-button border border-white rounded-xl px-6 py-1 text-white uppercase relative overflow-hidden group"
+              class="map-button border border-white rounded-xl px-6 py-1 text-white uppercase"
             >
               <span class="relative z-10">OPEN MAP</span>
-              <div
-                class="absolute inset-0 bg-white transform origin-bottom transition-transform duration-300 ease-out scale-y-0 group-hover:scale-y-100"
-              ></div>
+              <div class="absolute inset-0 bg-white transform origin-bottom scale-y-0 group-hover:scale-y-100"></div>
             </a>
           </div>
         </div>
       </div>
     </div>
-     <div
-      class="absolute inset-0 bg-[#4D4D4D]/30 transition-opacity duration-500"
+
+    <!-- Overlay -->
+    <div
+      class="absolute inset-0 bg-[#4D4D4D]/30"
       :class="{ 'opacity-100': imageLoaded, 'opacity-0': !imageLoaded }"
     ></div>
   </section>
 </template>
 
 <style scoped>
-.countdown-number {
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-}
-
 .save-date-button {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .save-date-button:hover {
   transform: translateY(-2px);
+  background-color: white;
+  color: #4D4D4D;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .save-date-button:active {
   transform: translateY(0);
+}
+
+.map-button {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.map-button:hover {
+  background-color: white;
+  color: #4D4D4D;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.map-button:active {
+  transform: translateY(0);
+}
+
+.qr-container {
+  transition: transform 0.3s ease;
+}
+
+.qr-container:hover {
+  transform: scale(1.05);
+}
+
+section {
+  transition: background-image 0.5s ease-in-out;
+}
+
+.absolute {
+  transition: opacity 0.5s ease-in-out;
 }
 </style>

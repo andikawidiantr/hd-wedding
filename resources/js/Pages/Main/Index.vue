@@ -1,13 +1,13 @@
 <!-- index.vue -->
 <script setup>
 import GuestLayout from "@/Layouts/GuestLayout.vue";
-import { show, setShow, fetchData } from "./Utils/index";
+import { show, setShow, fetchData, amplop, setAmplop } from "./Utils/index";
 import { onMounted, ref, watch } from "vue";
 import Popup from "./Partials/Popup.vue";
 import Main from "./Partials/Main.vue";
 import RegVeda from "./Partials/RegVeda.vue";
-import gsap from 'gsap';
-import ScrollTrigger from 'gsap/ScrollTrigger';
+import gsap from "gsap";
+import ScrollTrigger from "gsap/ScrollTrigger";
 import GroomMen from "./Partials/GroomMen.vue";
 import GroomWomen from "./Partials/GroomWomen.vue";
 import Event from "./Partials/Event.vue";
@@ -17,20 +17,23 @@ import Greeting from "./Partials/Greeting.vue";
 import Gift from "./Partials/Gift.vue";
 import Closed from "./Partials/Closed.vue";
 import Footer from "./Partials/Footer.vue";
+import Countdown from "./Partials/Countdown.vue";
+import Reservation from "./Partials/Reservation.vue";
+import Wallet from "./Components/Wallet.vue";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const props = defineProps({
   guest: String,
-  greeting:Object,
+  greeting: Object,
 });
 
 // Prevent scroll when popup is active
 watch(show, (newValue) => {
   if (newValue) {
-    document.body.style.overflow = 'hidden';
+    document.body.style.overflow = "hidden";
   } else {
-    document.body.style.overflow = '';
+    document.body.style.overflow = "";
   }
 });
 
@@ -40,31 +43,25 @@ onMounted(() => {
 </script>
 
 <template>
+  <Wallet :show="amplop" @close="() => setAmplop(false)" />
   <GuestLayout>
     <!-- Popup -->
-    <Popup 
-      v-if="show" 
-      :show="show" 
-      @close="() => setShow(false)" 
-      :guest="guest"
-    />
+    <Popup v-if="show" :show="show" @close="() => setShow(false)" :guest="guest" />
 
     <!-- Main Content -->
-    <div 
-      class="relative w-full max-w-md mx-auto"
-     
-    >
+    <div class="relative w-full max-w-md mx-auto">
       <Main />
       <RegVeda />
-      <GroomMen/>
-      <GroomWomen/>
-      <Event/>
+      <GroomMen />
+      <GroomWomen />
+      <Countdown />
+      <Event />
       <!-- <Map/> -->
-      <Gallery/>
-      <Greeting :greeting="greeting"/>
-      <Gift/>
-      <Closed/>
-      <Footer/>
+      <Gallery />
+      <Reservation />
+      <Greeting :greeting="greeting" />
+      <Closed />
+      <Footer />
     </div>
   </GuestLayout>
 </template>
