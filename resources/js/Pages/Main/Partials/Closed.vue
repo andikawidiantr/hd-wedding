@@ -90,7 +90,7 @@ onMounted(() => {
 
       <p
         ref="sanskritRef"
-        class="font-wittgenstein text-center text-black max-w-2xl text-lg md:text-xl mb-8 select-none opacity-0"
+        class="font-wittgenstein text-center text-black w-full text-lg md:text-xl mb-8 select-none opacity-0"
       >
            "Ekam iṣe viṣṇuḥ tvā anvetu..."
       </p>

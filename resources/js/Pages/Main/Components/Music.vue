@@ -50,7 +50,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 w-full max-w-md px-4">
+  <div class="fixed bottom-4  -translate-x-1/2 z-50 w-full max-w-md px-4">
     <div>
       <button
         class="bg-rose-400 w-10 h-10 flex items-center justify-center rounded-full text-white hover:bg-rose-500 transition-all duration-300 shadow-lg relative overflow-hidden group"
