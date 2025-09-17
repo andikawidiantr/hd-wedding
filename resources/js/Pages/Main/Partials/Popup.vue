@@ -1,6 +1,6 @@
 <script setup>
-import { onMounted, ref } from 'vue';
-import gsap from 'gsap';
+import { onMounted, ref } from "vue";
+import gsap from "gsap";
 
 const props = defineProps({
   show: Boolean,
@@ -9,7 +9,55 @@ const props = defineProps({
 
 const emit = defineEmits(["close", "music"]);
 const imageLoaded = ref(false);
+const loadingProgress = ref(0);
 
+// Preload gambar dengan progress
+const preloadImage = () => {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.src = "/assets/images/opening.webp";
+
+    // Simulasi progress loading
+    const simulateProgress = () => {
+      const interval = setInterval(() => {
+        if (loadingProgress.value < 98) {
+          loadingProgress.value += Math.floor(Math.random() * 10) + 1;
+          if (loadingProgress.value > 98) loadingProgress.value = 98;
+        }
+      }, 100);
+
+      return interval;
+    };
+
+    const interval = simulateProgress();
+
+    if (img.complete) {
+      clearInterval(interval);
+      loadingProgress.value = 100;
+      setTimeout(() => {
+        imageLoaded.value = true;
+        resolve();
+      }, 500);
+    } else {
+      img.onload = () => {
+        clearInterval(interval);
+        loadingProgress.value = 100;
+        setTimeout(() => {
+          imageLoaded.value = true;
+          resolve();
+        }, 500);
+      };
+      img.onerror = () => {
+        clearInterval(interval);
+        loadingProgress.value = 100;
+        setTimeout(() => {
+          imageLoaded.value = true;
+          resolve();
+        }, 500);
+      };
+    }
+  });
+};
 // Refs untuk GSAP
 const containerRef = ref(null);
 const titleRef = ref(null);
@@ -18,26 +66,26 @@ const guestInfoRef = ref(null);
 const buttonRef = ref(null);
 
 // Preload gambar
-const preloadImage = () => {
-  return new Promise((resolve) => {
-    const img = new Image();
-    img.src = '/assets/images/opening.webp';
-    
-    if (img.complete) {
-      imageLoaded.value = true;
-      resolve();
-    } else {
-      img.onload = () => {
-        imageLoaded.value = true;
-        resolve();
-      };
-      img.onerror = () => {
-        imageLoaded.value = true;
-        resolve();
-      };
-    }
-  });
-};
+// const preloadImage = () => {
+//   return new Promise((resolve) => {
+//     const img = new Image();
+//     img.src = '/assets/images/opening.webp';
+
+//     if (img.complete) {
+//       // imageLoaded.value = true;
+//       resolve();
+//     } else {
+//       img.onload = () => {
+//         // imageLoaded.value = true;
+//         resolve();
+//       };
+//       img.onerror = () => {
+//         // imageLoaded.value = true;
+//         resolve();
+//       };
+//     }
+//   });
+// };
 
 // Animasi close
 const close = () => {
@@ -45,9 +93,9 @@ const close = () => {
     onComplete: () => {
       emit("close");
       emit("music", true);
-    }
+    },
   });
-    
+
   tl.to(".button-open", { y: 50, opacity: 0, duration: 0.3 })
     .to(".guest-info", { y: 50, opacity: 0, duration: 0.3 }, "-=0.2")
     .to(".names", { y: 50, opacity: 0, duration: 0.3 }, "-=0.2")
@@ -60,40 +108,52 @@ const startEntryAnimation = () => {
   gsap.set(".container", { y: "100%" });
   gsap.set([".title", ".names", ".guest-info", ".button-open"], {
     y: 50,
-    opacity: 0
+    opacity: 0,
   });
 
   const tl = gsap.timeline();
-    
+
   tl.to(".container", {
     y: "0%",
     duration: 1,
-    ease: "power4.out"
+    ease: "power4.out",
   })
-  .to(".title", {
-    y: 0,
-    opacity: 1,
-    duration: 0.8,
-    ease: "back.out"
-  })
-  .to(".names", {
-    y: 0,
-    opacity: 1,
-    duration: 0.8,
-    ease: "back.out"
-  }, "-=0.4")
-  .to(".guest-info", {
-    y: 0,
-    opacity: 1,
-    duration: 0.8,
-    ease: "back.out"
-  }, "-=0.4")
-  .to(".button-open", {
-    y: 0,
-    opacity: 1,
-    duration: 0.8,
-    ease: "back.out"
-  }, "-=0.4");
+    .to(".title", {
+      y: 0,
+      opacity: 1,
+      duration: 0.8,
+      ease: "back.out",
+    })
+    .to(
+      ".names",
+      {
+        y: 0,
+        opacity: 1,
+        duration: 0.8,
+        ease: "back.out",
+      },
+      "-=0.4"
+    )
+    .to(
+      ".guest-info",
+      {
+        y: 0,
+        opacity: 1,
+        duration: 0.8,
+        ease: "back.out",
+      },
+      "-=0.4"
+    )
+    .to(
+      ".button-open",
+      {
+        y: 0,
+        opacity: 1,
+        duration: 0.8,
+        ease: "back.out",
+      },
+      "-=0.4"
+    );
 };
 
 onMounted(async () => {
@@ -109,16 +169,28 @@ onMounted(async () => {
 <template>
   <div class="fixed inset-0 flex items-center justify-center z-[100] overflow-hidden">
     <!-- Loading Screen -->
-    <div 
-      v-if="!imageLoaded" 
+    <div
+      v-if="!imageLoaded"
       class="fixed inset-0 bg-black flex items-center justify-center z-[101]"
     >
-      <div class="text-center">
-        <div class="loading-spinner mb-4"></div>
-        <p class="text-white font-eyesome">Loading...</p>
+      <div class="text-center flex flex-col items-center gap-6">
+        <!-- GIF Loading Animation -->
+        <div class="relative flex flex-col items-center">
+          <img
+            src="/assets/images/spinner.gif"
+            alt="Loading"
+            class="w-24 h-24 object-contain"
+          />
+          <!-- Percentage Text -->
+          <div class="mt-2">
+            <span class="text-white font-eyesome text-xl">
+              {{ Math.min(loadingProgress, 100) }}%
+            </span>
+            <p class="text-white font-eyesome animate-pulse text-xl">Loading...</p>
+          </div>
+        </div>
       </div>
     </div>
-
     <!-- Main Content -->
     <div
       v-show="imageLoaded"
@@ -150,7 +222,7 @@ onMounted(async () => {
             ref="titleRef"
             class="title font-eyesome text-7xl tracking-wide text-center"
           >
-            WEDDING <br>DAY
+            WEDDING <br />DAY
           </h1>
 
           <!-- Names -->
@@ -166,10 +238,7 @@ onMounted(async () => {
 
         <div class="p-6 flex flex-col gap-8 items-center">
           <!-- Guest Info -->
-          <div
-            ref="guestInfoRef"
-            class="guest-info flex flex-col gap-4"
-          >
+          <div ref="guestInfoRef" class="guest-info flex flex-col gap-4">
             <h3 class="font-eyesome text-white text-center text-2xl">Untuk</h3>
             <div class="flex flex-col">
               <p class="text-white text-center font-eyesome font-semibold">
@@ -185,8 +254,7 @@ onMounted(async () => {
           <button
             ref="buttonRef"
             type="button"
-            class="button-open flex items-center border rounded-xl px-12 py-2 text-white border-white gap-2
-                   hover:bg-white hover:text-black transition-colors duration-300 font-eyesome font-bold"
+            class="button-open flex items-center border rounded-xl px-12 py-2 text-white border-white gap-2 hover:bg-white hover:text-black transition-colors duration-300 font-eyesome font-bold"
             @click="close"
           >
             <mdicon name="email-heart-outline" />
@@ -219,7 +287,9 @@ onMounted(async () => {
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Mobile Optimizations */
