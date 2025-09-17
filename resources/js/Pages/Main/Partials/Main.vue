@@ -292,7 +292,7 @@ onUnmounted(() => {
         />
         <!-- Percentage Text -->
         <div class="mt-2">
-          <span class="text-white font-eyesome text-xl">
+          <span class="text-white text-center font-eyesome text-xl">
             {{ Math.round((imagesLoaded / imageUrls.length) * 100) }}%
           </span>
           <p class="text-white font-eyesome animate-pulse text-xl">Loading...</p>
