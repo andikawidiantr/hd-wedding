@@ -15,7 +15,7 @@ const isCopied = ref(false);
 const copyTimeout = ref(null);
 const copyToClipboard = async () => {
   try {
-    await navigator.clipboard.writeText("123 456 7890");
+    await navigator.clipboard.writeText("7730778842");
     isCopied.value = true;
 
     // Clear existing timeout if any
@@ -46,7 +46,7 @@ const copyToClipboard = async () => {
         <div class="w-full flex items-center justify-center gap-4">
           <div ref="bcaRef" class=" flex justify-start items-center gap-4">
             <div>
-              <img src="/assets/images/bca.png" alt="" class="max-w-[300px]" />
+              <img src="/assets/images/card.png" alt="" class="max-w-[300px]" />
             </div>
           </div>
           <div ref="bankInfoRef" class="flex items-center">

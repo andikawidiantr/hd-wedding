@@ -1,71 +1,35 @@
 <script setup>
 import { onMounted, ref } from "vue";
-import gsap from "gsap";
-import ScrollTrigger from "gsap/ScrollTrigger";
-
-gsap.registerPlugin(ScrollTrigger);
 
 const sectionRef = ref(null);
-const containerRef = ref(null);
-const titleRef = ref(null);
-const sanskritRef = ref(null);
-const translationRef = ref(null);
-const decorationRef = ref(null);
+const isVisible = ref(false);
 
-const initAnimations = () => {
-  // Reset transform pada container
-  gsap.set(containerRef.value, {
-    clearProps: "all",
-    transform: "none",
-  });
-
-  // Reset initial states
-  gsap.set([titleRef.value, sanskritRef.value, translationRef.value], {
-    autoAlpha: 0,
-    y: 50,
-  });
-
-  gsap.set(decorationRef.value, {
-    autoAlpha: 0,
-  });
-
-  // Animasi konten
-  const tl = gsap.timeline({
-    scrollTrigger: {
-      trigger: sectionRef.value,
-      start: "top center",
-      end: "center center",
-      toggleActions: "play none none reverse",
+// Simple Intersection Observer setup
+const setupIntersectionObserver = () => {
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          isVisible.value = true;
+        }
+      });
     },
-  });
+    {
+      threshold: 0.2,
+      rootMargin: "-100px"
+    }
+  );
 
-  tl.to(containerRef.value, {
-    y: 0,
-    duration: 0,
-    immediateRender: true,
-  })
-    .to([titleRef.value, sanskritRef.value, translationRef.value], {
-      duration: 1.2,
-      autoAlpha: 1,
-      y: 0,
-      ease: "power3.out",
-      stagger: 0.2,
-    })
-    .to(
-      decorationRef.value,
-      {
-        duration: 1,
-        autoAlpha: 1,
-        ease: "power2.out",
-      },
-      "-=1"
-    );
+  if (sectionRef.value) {
+    observer.observe(sectionRef.value);
+  }
+
+  return observer;
 };
 
 onMounted(() => {
-  requestAnimationFrame(() => {
-    initAnimations();
-  });
+  const observer = setupIntersectionObserver();
+  return () => observer.disconnect();
 });
 </script>
 
@@ -77,29 +41,30 @@ onMounted(() => {
     style="background-image: url('/assets/images/full-torn.png')"
   >
     <div
-      ref="containerRef"
-      class="container h-full mx-auto px-4 md:px-12 flex flex-col items-start justify-center h-full "
-      :style="{ transform: 'none' }"
+      class=" h-full mx-auto px-4 md:px-12 flex flex-col items-start justify-center"
     >
+      <!-- Title -->
       <h1
-        ref="titleRef"
-        class="font-wittgenstein text-2xl md:text-3xl text-black mb-6 text-center select-none opacity-0"
+        class="font-wittgenstein text-2xl md:text-3xl text-black mb-6 text-center select-none transition-all duration-700 delay-100"
+        :class="{ 'translate-y-8 opacity-0': !isVisible }"
       >
-         Sapta Padi (Tujuh Langkah Suci)
+        Sapta Padi (Tujuh Langkah Suci)
       </h1>
 
+      <!-- Sanskrit Text -->
       <p
-        ref="sanskritRef"
-        class="font-wittgenstein text-center text-black w-full text-lg md:text-xl mb-8 select-none opacity-0"
+        class="font-wittgenstein text-center text-black w-full text-lg md:text-xl mb-8 select-none transition-all duration-700 delay-300"
+        :class="{ 'translate-y-8 opacity-0': !isVisible }"
       >
-           "Ekam iṣe viṣṇuḥ tvā anvetu..."
+        "Ekam iṣe viṣṇuḥ tvā anvetu..."
       </p>
 
+      <!-- Translation -->
       <p
-        ref="translationRef"
-        class="font-wittgenstein text-center text-black max-w-2xl text-md leading-relaxed select-none opacity-0"
+        class="font-wittgenstein text-center text-black max-w-2xl text-md leading-relaxed select-none transition-all duration-700 delay-500"
+        :class="{ 'translate-y-8 opacity-0': !isVisible }"
       >
-       Dengan langkah pertama, semoga kita mendapatkan kesejahteraan. Dengan langkah
+        Dengan langkah pertama, semoga kita mendapatkan kesejahteraan. Dengan langkah
         kedua, semoga kita mendapatkan kekuatan. Dengan langkah ketiga, semoga kita
         memperoleh kekayaan. Dengan langkah keempat, semoga kita memperoleh kebahagiaan.
         Dengan langkah kelima, semoga kita diberkati dengan anak-anak. Dengan langkah
@@ -110,15 +75,16 @@ onMounted(() => {
       </p>
     </div>
 
+    <!-- Decoration -->
     <div
-      ref="decorationRef"
-      class="absolute -bottom-4 z-[3] opacity-0 transition-opacity duration-300"
+      class="absolute -bottom-5 z-[3] transition-all duration-700 delay-700"
+      :class="{ 'opacity-0 translate-y-8': !isVisible }"
     >
       <div class="p-4">
         <img
           src="/assets/images/flower.png"
           alt="Decoration"
-          class="w-32 h-32 lg:w-48 lg:h-48"
+          class="w-32 h-32 lg:w-40 lg:h-40"
         />
       </div>
     </div>
@@ -126,30 +92,31 @@ onMounted(() => {
 </template>
 
 <style scoped>
+/* Optimize transitions */
+.transition-all {
+  will-change: transform, opacity;
+}
+
+/* Smooth background transition */
 section {
   transition: background-image 0.5s ease-in-out;
 }
 
-/* Reset transform pada container */
-.container {
-  transform: none !important;
-  translate: none !important;
-  rotate: none !important;
-  scale: none !important;
-}
-
+/* Mobile padding */
 @media (max-width: 640px) {
   .container {
     padding: 2rem;
   }
 }
 
-/* Transisi opacity untuk dekorasi */
-.opacity-0 {
-  opacity: 0;
-}
-
-.transition-opacity {
-  transition: opacity 0.3s ease-in-out;
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .transition-all {
+    transition: none !important;
+  }
+  
+  section {
+    transition: none !important;
+  }
 }
 </style>
