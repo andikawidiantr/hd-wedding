@@ -282,9 +282,9 @@ onUnmounted(() => {
     <!-- Loading Screen -->
     <div
       v-if="isLoading"
-      class="fixed inset-0 flex items-center justify-center bg-[#4D4D4D] z-[100]"
+      class="fixed inset-0 bg-black flex items-center justify-center z-[101]"
     >
-      <div class="relative flex flex-col items-center">
+      <div class="relative flex flex-col justify-center items-center">
         <img
           src="/assets/images/spinner.gif"
           alt="Loading"
