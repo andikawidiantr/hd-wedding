@@ -18,7 +18,7 @@ let slideInterval = null;
 const imageUrls = [
   "/assets/images/main.webp",
   "/assets/images/main-2.webp",
-  "/assets/images/main-4.webp"
+  "/assets/images/main-4.webp",
 ];
 
 // Preload gambar dengan strategi progressive loading
@@ -27,19 +27,20 @@ const preloadImages = async () => {
     const loadImage = (url) => {
       return new Promise((resolve, reject) => {
         const img = new Image();
-        
+
         img.onload = () => {
           imagesLoaded.value++;
           resolve(img);
         };
-        
+
         img.onerror = () => {
           console.error(`Failed to load image: ${url}`);
           reject(new Error(`Failed to load image: ${url}`));
         };
-        
+
         // Cache busting untuk development
-        const cacheBuster = process.env.NODE_ENV === 'development' ? `?t=${Date.now()}` : '';
+        const cacheBuster =
+          process.env.NODE_ENV === "development" ? `?t=${Date.now()}` : "";
         img.src = url + cacheBuster;
       });
     };
@@ -47,14 +48,14 @@ const preloadImages = async () => {
     // Load gambar pertama dengan prioritas
     await loadImage(imageUrls[0]);
     initializeBackgrounds(); // Mulai dengan gambar pertama
-    
+
     // Load gambar sisanya
     const remainingImages = imageUrls.slice(1);
-    await Promise.all(remainingImages.map(url => loadImage(url)));
-    
+    await Promise.all(remainingImages.map((url) => loadImage(url)));
+
     isLoading.value = false;
   } catch (error) {
-    console.error('Image loading failed:', error);
+    console.error("Image loading failed:", error);
     loadingError.value = true;
     isLoading.value = false;
   }
@@ -64,21 +65,21 @@ const preloadImages = async () => {
 const initializeBackgrounds = () => {
   if (!sectionRef.value) return;
 
-  const slideContainer = document.createElement('div');
-  slideContainer.className = 'absolute inset-0 overflow-hidden';
+  const slideContainer = document.createElement("div");
+  slideContainer.className = "absolute inset-0 overflow-hidden";
 
   imageUrls.forEach((url, index) => {
-    const slide = document.createElement('div');
-    slide.className = 'slide absolute inset-0 bg-cover bg-center transform-gpu';
+    const slide = document.createElement("div");
+    slide.className = "slide absolute inset-0 bg-cover bg-center transform-gpu";
     slide.style.backgroundImage = `url(${url})`;
-    slide.style.opacity = index === 0 ? '1' : '0';
-    
+    slide.style.opacity = index === 0 ? "1" : "0";
+
     // Optimasi untuk mobile
     if (window.innerWidth <= 768) {
-      slide.style.transform = 'translateZ(0)';
-      slide.style.willChange = 'opacity';
+      slide.style.transform = "translateZ(0)";
+      slide.style.willChange = "opacity";
     }
-    
+
     slideContainer.appendChild(slide);
   });
 
@@ -98,18 +99,18 @@ const startSlideshow = () => {
 
 // Fungsi transisi dengan GSAP
 const transitionToNextImage = (nextIndex) => {
-  const slides = sectionRef.value.querySelectorAll('.slide');
-    
+  const slides = sectionRef.value.querySelectorAll(".slide");
+
   gsap.to(slides[currentImageIndex.value], {
     opacity: 0,
     duration: 1.5,
-    ease: "power2.inOut"
+    ease: "power2.inOut",
   });
 
   gsap.to(slides[nextIndex], {
     opacity: 1,
     duration: 1.5,
-    ease: "power2.inOut"
+    ease: "power2.inOut",
   });
 
   currentImageIndex.value = nextIndex;
@@ -131,14 +132,13 @@ const setInitialState = () => {
 // Show background only animation
 const showBackgroundOnly = () => {
   const tl = gsap.timeline();
-     
+
   tl.to([".subtitle", ".title", ".date", ".divider"], {
     opacity: 0,
     y: 20,
     duration: 0.3,
     ease: "power2.in",
-  })
-  .set(".divider", {
+  }).set(".divider", {
     scaleY: 0,
     y: 0,
     transformOrigin: "top",
@@ -149,46 +149,58 @@ const showBackgroundOnly = () => {
 const startAnimation = () => {
   if (animationTriggered.value) return;
   animationTriggered.value = true;
-     
+
   const tl = gsap.timeline({
     defaults: {
       duration: 0.6,
       ease: "power2.out",
     },
   });
-     
+
   gsap.set([".subtitle", ".title", ".date"], {
     opacity: 0,
     y: 20,
   });
-     
+
   gsap.set(".divider", {
     opacity: 0,
     scaleY: 0,
     transformOrigin: "top",
   });
-     
+
   tl.to(".subtitle", {
     opacity: 1,
     y: 0,
     duration: 0.5,
   })
-  .to(".title", {
-    opacity: 1,
-    y: 0,
-    duration: 0.5,
-  }, "-=0.3")
-  .to(".divider", {
-    opacity: 1,
-    scaleY: 1,
-    duration: 0.4,
-    ease: "power1.out",
-  }, "-=0.2")
-  .to(".date", {
-    opacity: 1,
-    y: 0,
-    duration: 0.5,
-  }, "-=0.2");
+    .to(
+      ".title",
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.5,
+      },
+      "-=0.3"
+    )
+    .to(
+      ".divider",
+      {
+        opacity: 1,
+        scaleY: 1,
+        duration: 0.4,
+        ease: "power1.out",
+      },
+      "-=0.2"
+    )
+    .to(
+      ".date",
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.5,
+      },
+      "-=0.2"
+    );
 };
 
 // Watch for show changes
@@ -272,11 +284,19 @@ onUnmounted(() => {
       v-if="isLoading"
       class="fixed inset-0 flex items-center justify-center bg-[#4D4D4D] z-[100]"
     >
-      <div class="text-center">
-        <div class="loading-spinner mb-4"></div>
-        <p class="text-white font-eyesome">
-          Loading {{ Math.round((imagesLoaded / imageUrls.length) * 100) }}%
-        </p>
+      <div class="relative flex flex-col items-center">
+        <img
+          src="/assets/images/spinner.gif"
+          alt="Loading"
+          class="w-24 h-24 object-contain"
+        />
+        <!-- Percentage Text -->
+        <div class="mt-2">
+          <span class="text-white font-eyesome text-xl">
+            {{ Math.round((imagesLoaded / imageUrls.length) * 100) }}%
+          </span>
+          <p class="text-white font-eyesome animate-pulse text-xl">Loading...</p>
+        </div>
       </div>
     </div>
 
@@ -302,7 +322,7 @@ onUnmounted(() => {
     ></div>
 
     <!-- Main Content -->
-    <div 
+    <div
       class="flex flex-col gap-4 justify-center items-center relative z-10 pt-20 px-4"
       :style="{ visibility: isLoading ? 'hidden' : 'visible' }"
     >
@@ -370,7 +390,9 @@ onUnmounted(() => {
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Slide Transitions */
@@ -384,8 +406,12 @@ onUnmounted(() => {
 /* Ken Burns Effect - Desktop Only */
 @media (min-width: 769px) {
   @keyframes kenBurns {
-    0% { transform: scale(1); }
-    100% { transform: scale(1.1); }
+    0% {
+      transform: scale(1);
+    }
+    100% {
+      transform: scale(1.1);
+    }
   }
 
   .slide {
