@@ -132,7 +132,7 @@ onMounted(async () => {
     <div class="w-full h-screen flex items-center justify-center z-[2] px-4 py-12">
       <div class="w-full flex flex-col gap-12 p-4">
         <div ref="titleRef" class="flex flex-col gap-0">
-          <h2 class="font-wittgenstein text-center text-white text-3xl">Reservasi</h2>
+          <h2 class="font-wittgenstein text-center text-white text-2xl lg:text-3xl">Reservasi</h2>
         </div>
 
         <form
@@ -142,7 +142,7 @@ onMounted(async () => {
         >
           <!-- Nama Field -->
           <div class="flex flex-col gap-1 nama-field">
-            <label for="nama" class="text-sm font-wittgenstein text-gray-400">Nama</label>
+            <label for="nama" class=" font-wittgenstein text-xs lg:text-md text-gray-400">Nama</label>
             <input
               type="text"
               v-model="form.name"
@@ -150,21 +150,21 @@ onMounted(async () => {
               id="nama"
               name="name"
               placeholder="Masukan nama anda"
-              class="transition-all duration-300 ease-in flex items-center justify-center border placeholder:text-gray-400 placeholder:text-sm text-gray-400 border-gray-400 bg-gray-400/10 rounded-lg ring-0 focus:ring-0 focus:translate-y-[-2px]"
+              class="transition-all duration-300 ease-in flex items-center justify-center text-xs h-9  lg:h-10 border placeholder:text-gray-400 placeholder:text-sm text-gray-400 border-gray-400 bg-gray-400/10 rounded-lg ring-0 focus:ring-0 focus:translate-y-[-2px]"
               :class="{ 'border-red-400': form.errors.name }"
             />
           </div>
 
           <!-- Kehadiran Field -->
           <div class="flex flex-col gap-1 kehadiran-field">
-            <label for="kehadiran" class="text-sm font-wittgenstein text-gray-400">
+            <label for="kehadiran" class="font-wittgenstein text-xs lg:text-md text-gray-400">
               Kehadiran
             </label>
             <select
               name="kehadiran"
               id="kehadiran"
               :disabled="form.processing"
-              class="transition-all duration-300 ease-in flex items-center justify-center border placeholder:text-gray-400 placeholder:text-sm text-gray-400 border-gray-400 bg-gray-400/10 rounded-lg ring-0 focus:ring-0 focus:translate-y-[-2px]"
+              class="transition-all duration-300 ease-in flex items-center justify-center text-xs h-9  lg:h-10 border placeholder:text-gray-400 placeholder:text-sm text-gray-400 border-gray-400 bg-gray-400/10 rounded-lg ring-0 focus:ring-0 focus:translate-y-[-2px]"
               :class="{ 'border-red-400': form.errors.attendance }"
               v-model="form.attendance"
             >
@@ -177,14 +177,14 @@ onMounted(async () => {
 
           <!-- Jumlah Tamu Field -->
           <div class="flex flex-col gap-1 tamu-field">
-            <label for="jumlah_tamu" class="text-sm font-wittgenstein text-gray-400">
+            <label for="jumlah_tamu" class=" font-wittgenstein text-xs lg:text-md text-gray-400">
               Jumlah Tamu
             </label>
             <select
               name="jumlah_tamu"
               id="jumlah_tamu"
               :disabled="form.processing"
-              class="transition-all duration-300 ease-in flex items-center justify-center border placeholder:text-gray-400 placeholder:text-sm text-gray-400 border-gray-400 bg-gray-400/10 rounded-lg ring-0 focus:ring-0 focus:translate-y-[-2px]"
+              class="transition-all duration-300 ease-in flex items-center justify-center  text-xs h-9  lg:h-10 border placeholder:text-gray-400 placeholder:text-sm text-gray-400 border-gray-400 bg-gray-400/10 rounded-lg ring-0 focus:ring-0 focus:translate-y-[-2px]"
               :class="{ 'border-red-400': form.errors.guest }"
               v-model="form.guest"
             >
@@ -195,13 +195,13 @@ onMounted(async () => {
             </select>
           </div>
           <div v-show="messages">
-            <h6 class="text-sm message-alert text-green-800">{{ messages }}</h6>
+            <h6 class="text-xs message-alert text-green-800">{{ messages }}</h6>
           </div>
           <!-- Submit Button -->
           <div class="w-full mt-2 submit-button">
             <button
               :disabled="form.processing"
-              class="transition-all duration-300 border border-gray-400 bg-green-700/50 w-full rounded-lg px-4 py-2 text-white hover:bg-primary-900/20 hover:translate-y-[-2px] active:translate-y-0"
+              class="transition-all duration-300 border border-gray-400 bg-green-700/50 w-full rounded-lg px-4 py-1 text-sm text-white hover:bg-primary-900/20 hover:translate-y-[-2px] active:translate-y-0"
               :class="{
                 'opacity-50 cursor-not-allowed animate-pulse': form.processing,
               }"
@@ -213,14 +213,14 @@ onMounted(async () => {
 
         <!-- Amplop Section -->
         <div class="flex flex-col gap-4 amplop-section">
-          <h6 class="font-wittgenstein text-center text-white text-md tracking-wide">
+          <h6 class="font-wittgenstein text-center text-white text-xs lg:text-md tracking-wide">
             Kehadiran Anda merupakan hadiah terindah. Namun, apabila Anda hendak
             memberikan tanda kasih kepada kami, dapat melalui fitur di bawah ini.
           </h6>
           <div class="w-full flex items-center justify-center">
             <button
               @click="setAmplop(true)"
-              class="flex items-center gap-2 bg-green-700/80 font-poly text-sm w-fit uppercase rounded-lg text-white hover:bg-primary-900/80 hover:translate-y-[-2px] active:translate-y-0 px-6 py-2"
+              class="flex items-center gap-2 bg-green-700/80 font-poly text-xs lg:text-sm w-fit uppercase rounded-lg text-white hover:bg-primary-900/80 hover:translate-y-[-2px] active:translate-y-0 px-6 py-1"
             >
               <mdicon name="email-heart-outline" height="20" width="20" />
               Amplop Digital

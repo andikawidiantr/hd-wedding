@@ -126,10 +126,10 @@ onMounted(async () => {
       <div class="flex flex-col gap-12 p-4">
         <!-- Date and Location -->
         <div ref="dateLocationRef" class="flex flex-col">
-          <h2 class="font-poly text-center text-white text-3xl">
+          <h2 class="font-poly text-center text-white text-2xl lg:text-3xl">
             Senin, 29 September 2025
           </h2>
-          <span class="font-poly text-white text-center">
+          <span class="font-poly text-white text-center tracking-widest">
             Delod Sema Village, Tegalalang, Taro
           </span>
         </div>
@@ -169,7 +169,7 @@ onMounted(async () => {
         </div>
 
         <!-- QR Code and Map -->
-        <div class="flex flex-col gap-12 mt-16">
+        <div class="flex flex-col gap-12 mt-4 lg:mt-16">
           <div ref="qrRef" class="flex items-center justify-center">
             <div class="bg-white p-2 rounded-md shadow-lg qr-container">
               <img src="/assets/images/qr.png" alt="QR Code" class="w-24 h-24" />

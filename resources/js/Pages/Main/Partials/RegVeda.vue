@@ -123,7 +123,7 @@ onMounted(() => {
       <img
         src="/assets/images/flower.png"
         alt="Decoration"
-        class="w-48 h-48 transition-opacity duration-300 object-contain"
+        class="w-32 h-32 lg:w-48 lg:h-48 transition-opacity duration-300 object-contain"
       />
     </div>
   </div>

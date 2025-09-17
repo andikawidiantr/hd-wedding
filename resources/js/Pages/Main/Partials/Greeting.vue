@@ -1,6 +1,6 @@
 <script setup>
 import { router, useForm } from "@inertiajs/vue3";
-import { onMounted, ref, watch, nextTick } from "vue";
+import { onMounted, ref, watch, nextTick, computed } from "vue";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
 import moment from "moment";
@@ -179,6 +179,22 @@ onMounted(async () => {
     console.error("Error loading image:", error);
   }
 });
+const isSmallScreen = computed(() => {
+  console.log(window.innerHeight)
+
+  if (typeof window !== 'undefined') {
+    return window.innerHeight <= 895
+  }
+  return false
+})
+
+// Tambahkan event listener untuk window resize
+onMounted(() => {
+  window.addEventListener('resize', () => {
+    // Trigger recompute isSmallScreen
+    isSmallScreen.value = window.innerHeight <= 700
+  })
+})
 </script>
 
 <template>
@@ -195,7 +211,7 @@ onMounted(async () => {
       <div class="w-full flex flex-col justify-start gap-4 h-full p-4">
         <div class="w-full flex flex-col gap-12">
           <div ref="titleRef" class="flex flex-col gap-0">
-            <h2 class="font-wittgenstein text-center text-white text-3xl">
+            <h2 class="font-wittgenstein text-center text-white text-2xl lg:text-3xl">
               Ucapan dan Doa
             </h2>
           </div>
@@ -206,7 +222,7 @@ onMounted(async () => {
             @submit.prevent="handleSubmit"
           >
             <div class="flex flex-col gap-1">
-              <label for="nama" class="text-sm font-wittgenstein text-gray-400">Nama</label>
+              <label for="nama" class="text-xs lg:text-sm font-wittgenstein text-gray-400">Nama</label>
               <input
                 type="text"
                 v-model="form.name"
@@ -214,7 +230,7 @@ onMounted(async () => {
                 id="nama"
                 name="name"
                 placeholder="Masukan nama anda"
-                class="transition-all duration-300 ease-in flex text-xs items-center justify-center border placeholder:text-gray-400 placeholder:text-sm text-gray-400 border-gray-400 bg-gray-400/10 rounded-lg ring-0 focus:ring-0 focus:translate-y-[-2px]"
+                class="transition-all duration-300 ease-in flex text-xs h-9 lg:h-10 items-center justify-center border placeholder:text-gray-400 placeholder:text-sm text-gray-400 border-gray-400 bg-gray-400/10 rounded-lg ring-0 focus:ring-0 focus:translate-y-[-2px]"
                 :class="{ 'border-red-400': form.errors.name }"
               />
             </div>
@@ -235,7 +251,7 @@ onMounted(async () => {
             <div class="w-full mt-2">
               <button
                 :disabled="form.processing"
-                class="transition-all duration-300 border border-gray-400 bg-green-700/50 w-full rounded-lg px-4 py-2 text-white hover:bg-primary-900/20 hover:translate-y-[-2px] active:translate-y-0"
+                class="transition-all duration-300 border border-gray-400 bg-green-700/50 w-full rounded-lg px-4 py-1 text-sm text-white hover:bg-primary-900/20 hover:translate-y-[-2px] active:translate-y-0"
                 :class="{
                   'opacity-50 cursor-not-allowed': form.processing,
                 }"
@@ -253,43 +269,54 @@ onMounted(async () => {
           </form>
         </div>
 
-        <div
-          ref="messageListRef"
-          class="flex flex-col gap-2 rounded-md h-[22rem] bg-white/90"
-        >
-          <h3 class="font-wittgenstein text-gray-700 px-4 pt-4">Ucapan yang telah dikirim</h3>
-          <div class="overflow-auto w-full max-h-[20rem] custom-scrollbar px-4 pb-4">
-            <template v-if="!greeting || greeting.length === 0">
-              <p class="text-xs text-gray-500 text-start mt-4">
-                Belum ada ucapan yang dikirim.
-              </p>
-            </template>
-            <div
-              v-for="(item, index) in greeting"
-              :key="item.id || index"
-              class="message-item w-full flex flex-col gap-0 border-b border-white/20 pb-2 transition-all duration-300 hover:bg-white/5"
-            >
-              <div class="flex w-full items-center gap-2 py-2">
-                <div class="text-rose-400">
-                  <mdicon name="heart-circle-outline" width="40" />
-                </div>
-                <div class="w-full flex flex-col gap-1">
-                  <div class="flex justify-between w-full items-center gap-4">
-                    <h4 class="font-wittgenstein text-gray-500 text-sm font-bold truncate max-w-[200px]">
-                      {{ item.name }}
-                    </h4>
-                    <span class="text-xs text-gray-400 shrink-0">
-                      {{ moment(item.created_at).fromNow() }}
-                    </span>
-                  </div>
-                  <p class="font-wittgenstein text-gray-400 text-xs">
-                    {{ item.message }}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <div  
+    ref="messageListRef"  
+    class="flex flex-col gap-2 rounded-md bg-white/90"
+    :class="[
+      isSmallScreen ? 'h-[16rem]' : 'h-[22rem]'
+    ]"
+  >  
+    <h3 class="font-wittgenstein text-gray-700 px-4 pt-4">Ucapan yang telah dikirim</h3>  
+    <div 
+      class="overflow-auto w-full custom-scrollbar px-4 pb-4"
+      :class="[
+        isSmallScreen ? 'max-h-[14rem]' : 'max-h-[20rem]'
+      ]"
+    >  
+      <template v-if="!greeting || greeting.length === 0">  
+        <p class="text-xs text-gray-500 text-start mt-4">  
+          Belum ada ucapan yang dikirim.  
+        </p>  
+      </template>
+      <div  
+        v-for="(item, index) in greeting"  
+        :key="item.id || index"  
+        class="message-item w-full flex flex-col gap-0 border-b border-white/20 pb-2 transition-all duration-300 hover:bg-white/5"  
+      >  
+        <div class="flex w-full items-center gap-2 py-2">  
+          <div class="text-rose-400">  
+            <mdicon 
+              name="heart-circle-outline" 
+              :width="isSmallScreen ? 32 : 40" 
+            />  
+          </div>  
+          <div class="w-full flex flex-col gap-1">  
+            <div class="flex justify-between w-full items-center gap-4">  
+              <h4 class="font-wittgenstein text-gray-500 text-sm font-bold truncate max-w-[200px]">  
+                {{ item.name }}  
+              </h4>  
+              <span class="text-xs text-gray-400 shrink-0">  
+                {{ moment(item.created_at).fromNow() }}  
+              </span>  
+            </div>  
+            <p class="font-wittgenstein text-gray-400 text-xs">  
+              {{ item.message }}  
+            </p>  
+          </div>  
+        </div>  
+      </div>  
+    </div>  
+  </div>  
       </div>
     </div>
 
@@ -308,7 +335,24 @@ onMounted(async () => {
   scrollbar-width: thin;
   scrollbar-color: rgba(54, 54, 54, 0.3) transparent;
 }
-
+@media (max-height: 700px) {
+  .custom-scrollbar {
+    scrollbar-width: thin;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+  }
+}
 .custom-scrollbar::-webkit-scrollbar {
   width: 4px;
 }

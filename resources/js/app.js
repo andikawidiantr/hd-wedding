@@ -9,6 +9,8 @@ import mdiVue from 'mdi-vue/v3';
 import * as mdijs from '@mdi/js';
 const appName = import.meta.env.VITE_APP_NAME ;
 import gsap from 'gsap'
+import 'viewerjs/dist/viewer.css'
+import VueViewer from 'v-viewer'
 
 
 // Jika Anda menggunakan plugin GSAP tambahan
@@ -38,6 +40,7 @@ createInertiaApp({
   
     app.use(mdiVue, { icons: mdijs })
     app.use(ZiggyVue)
+    app.use(VueViewer)
     app.use(plugin)
     app.mount(el)
   },

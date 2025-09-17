@@ -73,12 +73,12 @@ onMounted(() => {
   <section
     ref="sectionRef"
     id="closed"
-    class="min-h-screen flex items-start justify-center relative bg-cover bg-center -mt-20 z-[3] overflow-hidden"
+    class="min-h-screen flex items-center justify-center relative bg-cover bg-center -mt-20 z-[3] overflow-hidden"
     style="background-image: url('/assets/images/full-torn.png')"
   >
     <div
       ref="containerRef"
-      class="container mx-auto px-4 md:px-12 flex flex-col items-start justify-center h-full pt-20"
+      class="container h-full mx-auto px-4 md:px-12 flex flex-col items-start justify-center h-full "
       :style="{ transform: 'none' }"
     >
       <h1
@@ -118,7 +118,7 @@ onMounted(() => {
         <img
           src="/assets/images/flower.png"
           alt="Decoration"
-          class="w-48 h-48"
+          class="w-32 h-32 lg:w-48 lg:h-48"
         />
       </div>
     </div>

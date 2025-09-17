@@ -3,31 +3,31 @@ import moment from "moment";
 import { onBeforeUnmount, onMounted, ref } from "vue";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
- 
+
 gsap.registerPlugin(ScrollTrigger);
- 
+
 const videoLoaded = ref(false);
 const thumbnailLoaded = ref(false);
 const eventRef = ref(null);
 const countdownRef = ref(null);
 const videoRef = ref(null);
 const isInViewport = ref(false);
- 
+
 const countdown = ref({
   days: "00",
   hours: "00",
   minutes: "00",
   seconds: "00",
 });
- 
+
 const targetDate = moment("2025-09-29T05:00:00+08:00");
 let timer;
 let observer;
- 
+
 const updateCountdown = () => {
   const now = moment();
   const diff = targetDate.diff(now);
- 
+
   if (diff <= 0) {
     countdown.value = {
       days: "00",
@@ -38,9 +38,9 @@ const updateCountdown = () => {
     if (timer) clearInterval(timer);
     return;
   }
- 
+
   const duration = moment.duration(diff);
- 
+
   countdown.value = {
     days: String(Math.floor(duration.asDays())).padStart(2, "0"),
     hours: String(duration.hours()).padStart(2, "0"),
@@ -48,7 +48,7 @@ const updateCountdown = () => {
     seconds: String(duration.seconds()).padStart(2, "0"),
   };
 };
- 
+
 const preloadThumbnail = (url) => {
   return new Promise((resolve) => {
     const img = new Image();
@@ -59,7 +59,7 @@ const preloadThumbnail = (url) => {
     img.src = url;
   });
 };
- 
+
 const handleVideoLoad = () => {
   videoLoaded.value = true;
   // Video akan diplay hanya jika dalam viewport
@@ -67,7 +67,7 @@ const handleVideoLoad = () => {
     playVideo();
   }
 };
- 
+
 const playVideo = async () => {
   if (videoRef.value) {
     try {
@@ -75,25 +75,25 @@ const playVideo = async () => {
       videoRef.value.muted = true;
       videoRef.value.volume = 0;
       await videoRef.value.play();
-      console.log('Video playing');
+      console.log("Video playing");
     } catch (error) {
       console.error("Video play failed:", error);
     }
   }
 };
- 
+
 const pauseVideo = () => {
   if (videoRef.value) {
     videoRef.value.pause();
-    console.log('Video paused');
+    console.log("Video paused");
   }
 };
- 
+
 // Intersection Observer callback
 const handleIntersection = (entries) => {
   entries.forEach((entry) => {
     isInViewport.value = entry.isIntersecting;
-    
+
     if (entry.isIntersecting) {
       if (videoLoaded.value) {
         playVideo();
@@ -103,22 +103,22 @@ const handleIntersection = (entries) => {
     }
   });
 };
- 
+
 onMounted(async () => {
   try {
     await preloadThumbnail("/assets/images/thumbnail.webp");
     updateCountdown();
     timer = setInterval(updateCountdown, 1000);
- 
+
     // Setup Intersection Observer
     observer = new IntersectionObserver(handleIntersection, {
       threshold: 0.3, // Trigger ketika 30% section terlihat
     });
- 
+
     if (eventRef.value) {
       observer.observe(eventRef.value);
     }
- 
+
     // GSAP animation
     const tl = gsap.timeline({
       scrollTrigger: {
@@ -128,24 +128,23 @@ onMounted(async () => {
         toggleActions: "play none none reverse",
       },
     });
- 
+
     gsap.set(countdownRef.value, {
       y: 50,
       opacity: 0,
     });
- 
+
     tl.to(countdownRef.value, {
       y: 0,
       opacity: 1,
       duration: 1,
       ease: "power3.out",
     });
- 
   } catch (error) {
     console.error("Error:", error);
   }
 });
- 
+
 onBeforeUnmount(() => {
   if (timer) clearInterval(timer);
   if (observer) observer.disconnect();
@@ -194,50 +193,46 @@ onBeforeUnmount(() => {
       <div class="flex flex-col gap-12 p-4">
         <div ref="countdownRef" class="flex gap-4 justify-center items-center">
           <!-- Days -->
-          <div 
-            class="flex flex-col items-center bg-white/20 p-4 rounded-lg backdrop-blur-sm 
-                   transition-all duration-300 ease-in-out hover:bg-white/30 hover:scale-105"
+          <div
+            class="flex flex-col items-center bg-white/20 p-3 lg:p-4 rounded-lg backdrop-blur-sm transition-all duration-300 ease-in-out hover:bg-white/30 hover:scale-105"
           >
-            <span class="font-poly text-3xl text-white countdown-number">
+            <span class="font-poly text-2xl lg:text-3xl text-white countdown-number">
               {{ countdown.days }}
             </span>
             <span class="font-wittgenstein text-sm md:text-base text-white">Hari</span>
           </div>
-          
+
           <span class="font-poly text-3xl text-white">:</span>
-          
+
           <!-- Hours -->
-          <div 
-            class="flex flex-col items-center bg-white/20 p-4 rounded-lg backdrop-blur-sm 
-                   transition-all duration-300 ease-in-out hover:bg-white/30 hover:scale-105"
+          <div
+            class="flex flex-col items-center bg-white/20  p-3 lg:p-4 rounded-lg backdrop-blur-sm transition-all duration-300 ease-in-out hover:bg-white/30 hover:scale-105"
           >
-            <span class="font-poly text-3xl text-white countdown-number">
+            <span class="font-poly text-2xl lg:text-3xl text-white countdown-number">
               {{ countdown.hours }}
             </span>
             <span class="font-wittgenstein text-sm md:text-base text-white">Jam</span>
           </div>
-          
+
           <span class="font-poly text-3xl text-white">:</span>
-          
+
           <!-- Minutes -->
-          <div 
-            class="flex flex-col items-center bg-white/20 p-4 rounded-lg backdrop-blur-sm 
-                   transition-all duration-300 ease-in-out hover:bg-white/30 hover:scale-105"
+          <div
+            class="flex flex-col items-center bg-white/20  p-3 lg:p-4 rounded-lg backdrop-blur-sm transition-all duration-300 ease-in-out hover:bg-white/30 hover:scale-105"
           >
-            <span class="font-poly text-3xl text-white countdown-number">
+            <span class="font-poly text-2xl lg:text-3xl text-white countdown-number">
               {{ countdown.minutes }}
             </span>
             <span class="font-wittgenstein text-sm md:text-base text-white">Menit</span>
           </div>
-          
-          <span class="font-poly text-3xl text-white">:</span>
-          
+
+          <span class="font-poly text-2xl lg:text-3xl text-white">:</span>
+
           <!-- Seconds -->
-          <div 
-            class="flex flex-col items-center bg-white/20 p-4 rounded-lg backdrop-blur-sm 
-                   transition-all duration-300 ease-in-out hover:bg-white/30 hover:scale-105"
+          <div
+            class="flex flex-col items-center bg-white/20  p-3 lg:p-4 rounded-lg backdrop-blur-sm transition-all duration-300 ease-in-out hover:bg-white/30 hover:scale-105"
           >
-            <span class="font-poly text-3xl text-white countdown-number">
+            <span class="font-poly text-2xl lg:text-3xl text-white countdown-number">
               {{ countdown.seconds }}
             </span>
             <span class="font-wittgenstein text-sm md:text-base text-white">Detik</span>
