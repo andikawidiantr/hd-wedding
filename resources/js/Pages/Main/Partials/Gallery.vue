@@ -6,36 +6,28 @@ import "viewerjs/dist/viewer.css";
 import "swiper/css";
 import "swiper/css/navigation";
 import Viewer from "viewerjs";
+ 
 const imageLoaded = ref(false);
-const containerRef = ref(null);
 const swiperRef = ref(null);
 let viewer = null;
-const isViewerInitialized = ref(false);
-
-// Kurangi jumlah gambar di slider untuk performa lebih baik
-const slideImages = ref([
-  { id: 1, src: '/assets/images/gallery/1.webp' },
-  { id: 2, src: '/assets/images/gallery/2.webp' },
-  { id: 3, src: '/assets/images/gallery/3.webp' },
-  { id: 4, src: '/assets/images/gallery/4.webp' },
-  { id: 5, src: '/assets/images/gallery/5.webp' },
-  { id: 6, src: '/assets/images/gallery/6.webp' },
-]);
-
-// Generate thumbnail versions dari gambar
-const allImages = Array.from({ length: 40 }, (_, i) => ({
+ 
+// Kurangi jumlah gambar total
+const allImages = Array.from({ length: 30 }, (_, i) => ({
   id: i + 1,
   src: `/assets/images/gallery/${i + 1}.webp`,
 }));
-
+ 
+// Data slider tetap 6 gambar
+const slideImages = ref(allImages.slice(0, 6));
+ 
 const swiperOptions = {
   modules: [Autoplay, Navigation],
   slidesPerView: 1,
   spaceBetween: 30,
   centeredSlides: true,
   autoplay: {
-    delay: 2500,
-    disableOnInteraction: false,
+    delay: 3000, // Perlambat autoplay
+    disableOnInteraction: true, // Hentikan autoplay saat user interaksi
   },
   navigation: {
     nextEl: ".swiper-button-next",
@@ -43,135 +35,89 @@ const swiperOptions = {
   },
   loop: true,
 };
-
-// Fungsi untuk lazy load gambar
-const loadImage = (src) => {
-  console.log('Loading image:', src);
-  return new Promise((resolve, reject) => {
+ 
+// Sederhanakan preload image
+const preloadImage = (url) => {
+  return new Promise((resolve) => {
     const img = new Image();
-    img.onload = () => resolve(img);
-    img.onerror = reject;
-    img.src = src;
+    img.onload = () => {
+      imageLoaded.value = true;
+      resolve();
+    };
+    img.onerror = () => resolve(); // Tetap resolve meski error
+    img.src = url;
   });
 };
-
-const initGallery = async () => {
-  if (isViewerInitialized.value) return;
-
-  // Buat container untuk gallery
+ 
+// Sederhanakan viewer initialization
+const initViewer = () => {
+  if (viewer) return;
+ 
   const container = document.createElement('div');
   container.className = 'hidden-gallery';
   
-  // Tambahkan thumbnail terlebih dahulu
   allImages.forEach(image => {
     const img = document.createElement('img');
-    img.src = image.thumbnail || image.src; // Gunakan thumbnail jika ada
-    img.dataset.originalSrc = image.src; // Simpan URL asli
+    img.src = image.src;
     img.alt = `Gallery Image ${image.id}`;
-    img.loading = 'lazy';
     container.appendChild(img);
   });
   
   document.body.appendChild(container);
   
-  // Inisialisasi viewer dengan optimasi
   viewer = new Viewer(container, {
-    inline: false,
     navbar: true,
     title: false,
-    toolbar: {
-      zoomIn: true,
-      zoomOut: true,
-      oneToOne: false,
-      reset: true,
-      prev: true,
-      play: false,
-      next: true,
-      rotateLeft: false,
-      rotateRight: false,
-      flipHorizontal: false,
-      flipVertical: false,
-    },
-    transition: false, // Matikan transisi untuk performa
+    toolbar: false, // Hilangkan toolbar untuk ringankan
+    transition: false,
     loading: true,
     loop: true,
-    keyboard: true,
+    keyboard: false, // Matikan keyboard control
     zoomRatio: 0.3,
     minZoomRatio: 0.1,
     maxZoomRatio: 3,
     zIndex: 2015,
-    url: 'data-original-src', // Gunakan URL asli saat view
-    viewed(event) {
-      const image = event.detail.image;
-      const index = event.detail.index;
-      
-      // Load gambar resolusi tinggi saat dilihat
-      // if (image.src !== image.dataset.originalSrc) {
-      //   loadImage(image.dataset.originalSrc).then(loadedImg => {
-      //     image.src = loadedImg.src;
-      //     console.log(image.src)
-      //   });
-      // }
-      
-      // Pre-load gambar sebelum dan sesudah
-      const preloadIndexes = [
-        index - 2,
-        index - 1,
-        index + 1,
-        index + 2
-      ].filter(i => i >= 0 && i < allImages.length);
-      
-      preloadIndexes.forEach(i => {
-        const preloadImg = container.children[i];
-        if (preloadImg && preloadImg.src !== preloadImg.dataset.originalSrc) {
-          loadImage(preloadImg.dataset.originalSrc);
-        }
-      });
-    },
+    hidden() {
+      // Bersihkan viewer setelah ditutup
+      viewer.destroy();
+      container.remove();
+      viewer = null;
+    }
   });
-
-  isViewerInitialized.value = true;
 };
-
-const showGallery = async (index = 0) => {
-  if (!isViewerInitialized.value) {
-    await initGallery();
-  }
-  
+ 
+// Sederhanakan show gallery
+const showGallery = (index = 0) => {
+  initViewer();
   if (viewer) {
     viewer.show();
-    viewer.view(index);
+    setTimeout(() => viewer.view(index), 50);
   }
 };
-const preloadImage = (url) => {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.src = url;
-    img.onload = () => {
-      imageLoaded.value = true;
-      resolve();
-    };
-    img.onerror = reject;
-  });
-};
+ 
+// Gunakan lazy mounting
+let isMounted = false;
 onMounted(async () => {
+  if (isMounted) return;
   try {
     await preloadImage("/assets/images/gallery.webp");
-    // Tidak perlu inisialisasi viewer di sini
+    isMounted = true;
   } catch (error) {
     console.error("Error loading gallery:", error);
   }
 });
-
+ 
+// Cleanup yang lebih agresif
 onUnmounted(() => {
   if (viewer) {
     viewer.destroy();
+    viewer = null;
   }
   const container = document.querySelector('.hidden-gallery');
   if (container) {
     container.remove();
   }
-  isViewerInitialized.value = false;
+  isMounted = false;
 });
 </script>
 
