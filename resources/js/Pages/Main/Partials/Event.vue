@@ -30,7 +30,7 @@ const createGoogleCalendarLink = () => {
   const event = {
     title: "Pawiwahan & Resepsi Dharma & Astri",
     description:
-      "Pawiwahan: 05:00 - 15:00 Wita\nResepsi: 16:00 Wita - Selesai\nLokasi: Delod Sema Village, Tegalalang, Taro",
+      "Pawiwahan: 08:00 - 15:00 Wita\nResepsi: 16:00 Wita - Selesai\nLokasi: Delod Sema Village, Tegalalang, Taro",
     location: "Delod Sema Village, Tegalalang, Taro",
     start: "20250929T050000",
     end: "20250929T235900",
@@ -146,7 +146,7 @@ onMounted(async () => {
               <h1 class="font-wittgenstein text-left text-white text-2xl font-bold">
                 Pawiwahan
               </h1>
-              <h6 class="text-white font-wittgenstein">05:00 - 15:00 Wita</h6>
+              <h6 class="text-white font-wittgenstein">08:00 - 15:00 Wita</h6>
             </div>
             <div class="flex flex-col gap-1">
               <h1 class="font-wittgenstein text-left text-white text-2xl font-bold">

@@ -12,8 +12,9 @@ const close = () => {
   emit("close");
 };
 const isCopied = ref(false);
+const isCopiedAstri = ref(false);
 const copyTimeout = ref(null);
-const copyToClipboard = async () => {
+const copyToClipboardDharma = async () => {
   try {
     await navigator.clipboard.writeText("7730778842");
     isCopied.value = true;
@@ -37,6 +38,30 @@ const copyToClipboard = async () => {
     console.error("Failed to copy:", err);
   }
 };
+const copyToClipboardAstri = async () => {
+  try {
+    await navigator.clipboard.writeText("6690587066");
+    isCopiedAstri.value = true;
+
+    // Clear existing timeout if any
+    if (copyTimeout.value) clearTimeout(copyTimeout.value);
+
+    // Reset after 5 seconds
+    copyTimeout.value = setTimeout(() => {
+      isCopiedAstri.value = false;
+    }, 5000);
+
+    // Animate the copy icon
+    gsap.from(".copy-icon-astri", {
+      scale: 0.5,
+      rotation: 360,
+      duration: 0.5,
+      ease: "back.out",
+    });
+  } catch (err) {
+    console.error("Failed to copy:", err);
+  }
+};
 </script>
 <template>
   <Popup :show="show" @close="close" max-width="max-w-sm">
@@ -51,13 +76,33 @@ const copyToClipboard = async () => {
           </div>
           <div ref="bankInfoRef" class="flex items-center">
             <button
-              @click="copyToClipboard"
+              @click="copyToClipboardDharma"
               class="text-gray-500 px-2 py-1 rounded-full hover:bg-gray-100 transition-all duration-300"
             >
               <mdicon
                 :name="isCopied ? 'check-all' : 'content-copy'"
                 class="copy-icon transition-all duration-300"
                 :class="{ 'text-green-400': isCopied }"
+                width="15"
+              />
+            </button>
+          </div>
+        </div>
+        <div class="w-full flex items-center justify-center gap-4">
+          <div ref="bcaRef" class=" flex justify-start items-center gap-4">
+            <div>
+              <img src="/assets/images/card-bca-astri.png" alt="" class="max-w-[300px]" />
+            </div>
+          </div>
+          <div ref="bankInfoRef" class="flex items-center">
+            <button
+              @click="copyToClipboardAstri"
+              class="text-gray-500 px-2 py-1 rounded-full hover:bg-gray-100 transition-all duration-300"
+            >
+              <mdicon
+                :name="isCopiedAstri ? 'check-all' : 'content-copy'"
+                class="copy-icon-astri transition-all duration-300"
+                :class="{ 'text-green-400': isCopiedAstri }"
                 width="15"
               />
             </button>
