@@ -1,38 +1,33 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, onUnmounted } from "vue";
 import { Swiper, SwiperSlide } from "swiper/vue";
 import { Autoplay, Navigation } from "swiper/modules";
 import "viewerjs/dist/viewer.css";
 import "swiper/css";
 import "swiper/css/navigation";
 import Viewer from "viewerjs";
-
 const imageLoaded = ref(false);
-const preloadImage = (url) => {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.src = url;
-    img.onload = () => {
-      imageLoaded.value = true;
-      resolve();
-    };
-    img.onerror = reject;
-  });
-};
+const containerRef = ref(null);
+const swiperRef = ref(null);
+let viewer = null;
+const isViewerInitialized = ref(false);
 
-// Data untuk semua gambar (40 gambar)
+// Kurangi jumlah gambar di slider untuk performa lebih baik
+const slideImages = ref([
+  { id: 1, src: '/assets/images/gallery/1.webp' },
+  { id: 2, src: '/assets/images/gallery/2.webp' },
+  { id: 3, src: '/assets/images/gallery/3.webp' },
+  { id: 4, src: '/assets/images/gallery/4.webp' },
+  { id: 5, src: '/assets/images/gallery/5.webp' },
+  { id: 6, src: '/assets/images/gallery/6.webp' },
+]);
+
+// Generate thumbnail versions dari gambar
 const allImages = Array.from({ length: 40 }, (_, i) => ({
   id: i + 1,
   src: `/assets/images/gallery/${i + 1}.webp`,
 }));
 
-// Data untuk 6 gambar yang ditampilkan di slideshow
-const slideImages = ref(allImages.slice(0, 6));
-const containerRef = ref(null);
-const swiperRef = ref(null);
-let viewer = null;
-
-// Konfigurasi Swiper
 const swiperOptions = {
   modules: [Autoplay, Navigation],
   slidesPerView: 1,
@@ -49,61 +44,135 @@ const swiperOptions = {
   loop: true,
 };
 
-onMounted(async () => {
-  try {
-    await preloadImage("/assets/images/gallery.webp");
-    // Initialize viewer dengan semua gambar
-    const viewerContainer = containerRef.value;
-
-    // Tambahkan hidden container untuk semua gambar
-    const hiddenContainer = document.createElement("div");
-    hiddenContainer.style.display = "none";
-
-    // Tambahkan semua gambar ke hidden container
-    allImages.forEach((image) => {
-      const img = document.createElement("img");
-      img.src = image.src;
-      hiddenContainer.appendChild(img);
-    });
-
-    viewerContainer.appendChild(hiddenContainer);
-
-    // Initialize viewer
-    viewer = new Viewer(viewerContainer, {
-      navbar: true,
-      title: false,
-      toolbar: false,
-      tooltip: false,
-      loading: true,
-      hidden: function () {
-        viewer.destroy();
-        initializeViewer();
-      },
-    });
-  } catch (error) {
-    console.error("Error loading background image:", error);
-  }
-});
-
-const initializeViewer = () => {
-  viewer = new Viewer(containerRef.value, {
-    navbar: true,
-    title: false,
-    toolbar: false,
-    tooltip: false,
-    loading: true,
-    hidden: function () {
-      viewer.destroy();
-      initializeViewer();
-    },
+// Fungsi untuk lazy load gambar
+const loadImage = (src) => {
+  console.log('Loading image:', src);
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = reject;
+    img.src = src;
   });
 };
 
-const showAllImages = () => {
+const initGallery = async () => {
+  if (isViewerInitialized.value) return;
+
+  // Buat container untuk gallery
+  const container = document.createElement('div');
+  container.className = 'hidden-gallery';
+  
+  // Tambahkan thumbnail terlebih dahulu
+  allImages.forEach(image => {
+    const img = document.createElement('img');
+    img.src = image.thumbnail || image.src; // Gunakan thumbnail jika ada
+    img.dataset.originalSrc = image.src; // Simpan URL asli
+    img.alt = `Gallery Image ${image.id}`;
+    img.loading = 'lazy';
+    container.appendChild(img);
+  });
+  
+  document.body.appendChild(container);
+  
+  // Inisialisasi viewer dengan optimasi
+  viewer = new Viewer(container, {
+    inline: false,
+    navbar: true,
+    title: false,
+    toolbar: {
+      zoomIn: true,
+      zoomOut: true,
+      oneToOne: false,
+      reset: true,
+      prev: true,
+      play: false,
+      next: true,
+      rotateLeft: false,
+      rotateRight: false,
+      flipHorizontal: false,
+      flipVertical: false,
+    },
+    transition: false, // Matikan transisi untuk performa
+    loading: true,
+    loop: true,
+    keyboard: true,
+    zoomRatio: 0.3,
+    minZoomRatio: 0.1,
+    maxZoomRatio: 3,
+    zIndex: 2015,
+    url: 'data-original-src', // Gunakan URL asli saat view
+    viewed(event) {
+      const image = event.detail.image;
+      const index = event.detail.index;
+      
+      // Load gambar resolusi tinggi saat dilihat
+      // if (image.src !== image.dataset.originalSrc) {
+      //   loadImage(image.dataset.originalSrc).then(loadedImg => {
+      //     image.src = loadedImg.src;
+      //     console.log(image.src)
+      //   });
+      // }
+      
+      // Pre-load gambar sebelum dan sesudah
+      const preloadIndexes = [
+        index - 2,
+        index - 1,
+        index + 1,
+        index + 2
+      ].filter(i => i >= 0 && i < allImages.length);
+      
+      preloadIndexes.forEach(i => {
+        const preloadImg = container.children[i];
+        if (preloadImg && preloadImg.src !== preloadImg.dataset.originalSrc) {
+          loadImage(preloadImg.dataset.originalSrc);
+        }
+      });
+    },
+  });
+
+  isViewerInitialized.value = true;
+};
+
+const showGallery = async (index = 0) => {
+  if (!isViewerInitialized.value) {
+    await initGallery();
+  }
+  
   if (viewer) {
     viewer.show();
+    viewer.view(index);
   }
 };
+const preloadImage = (url) => {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.src = url;
+    img.onload = () => {
+      imageLoaded.value = true;
+      resolve();
+    };
+    img.onerror = reject;
+  });
+};
+onMounted(async () => {
+  try {
+    await preloadImage("/assets/images/gallery.webp");
+    // Tidak perlu inisialisasi viewer di sini
+  } catch (error) {
+    console.error("Error loading gallery:", error);
+  }
+});
+
+onUnmounted(() => {
+  if (viewer) {
+    viewer.destroy();
+  }
+  const container = document.querySelector('.hidden-gallery');
+  if (container) {
+    container.remove();
+  }
+  isViewerInitialized.value = false;
+});
 </script>
 
 <template>
@@ -119,9 +188,7 @@ const showAllImages = () => {
       <div class="h-full w-full flex flex-col gap-16">
         <!-- Header -->
         <div class="flex flex-col gap-2">
-          <h1
-            class="text-4xl text-white text-center font-wittgenstein uppercase tracking-wider"
-          >
+          <h1 class="text-4xl text-white text-center font-wittgenstein uppercase tracking-wider">
             Our Gallery
           </h1>
           <h6 class="text-white text-center font-wittgenstein tracking-widest uppercase">
@@ -129,22 +196,23 @@ const showAllImages = () => {
           </h6>
         </div>
 
-        <!-- Gallery Container -->
-        <div ref="containerRef" class="flex flex-col items-center justify-center gap-8">
+        <!-- Gallery -->
+        <div class="flex flex-col items-center justify-center gap-8">
           <div class="w-full mx-auto overflow-hidden relative max-w-md px-4">
             <Swiper
               v-bind="swiperOptions"
               ref="swiperRef"
               class="gallery-swiper"
-              @click="showAllImages"
             >
               <SwiperSlide
-                v-for="image in slideImages"
+                v-for="(image, index) in slideImages"
                 :key="image.id"
                 class="gallery-slide"
               >
-                <div class="w-full h-[500px] overflow-hidden cursor-pointer rounded-lg">
-                  <!-- Ubah dari h-80 ke h-[500px] -->
+                <div 
+                  class="w-full h-[500px] overflow-hidden cursor-pointer rounded-lg"
+                  @click="showGallery(index)"
+                >
                   <img
                     :src="image.src"
                     :alt="`Gallery Image ${image.id}`"
@@ -154,12 +222,11 @@ const showAllImages = () => {
                 </div>
               </SwiperSlide>
 
-              <!-- Custom Navigation Arrows -->
               <div class="navigation-wrapper">
-                <button class="swiper-button-prev custom-nav-btn" @click.stop>
+                <button class="swiper-button-prev custom-nav-btn">
                   <mdicon name="chevron-left" size="24" />
                 </button>
-                <button class="swiper-button-next custom-nav-btn" @click.stop>
+                <button class="swiper-button-next custom-nav-btn">
                   <mdicon name="chevron-right" size="24" />
                 </button>
               </div>
@@ -172,18 +239,42 @@ const showAllImages = () => {
         </div>
       </div>
     </div>
-    <div
-      class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/60 to-black/80"
-    ></div>
+    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/60 to-black/80"></div>
   </section>
 </template>
 
 <style scoped>
-/* Gallery swiper styles */
+/* Styles untuk gallery tersembunyi */
+:deep(.hidden-gallery) {
+  display: none;
+}
+
+/* Viewer custom styles */
+:deep(.viewer-container) {
+  background-color: rgba(0, 0, 0, 0.9);
+}
+
+:deep(.viewer-toolbar) {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+:deep(.viewer-navbar) {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+:deep(.viewer-loading) {
+  color: #fff;
+}
+
+:deep(.viewer-loading::after) {
+  border-color: rgba(255, 255, 255, 0.2);
+  border-top-color: white;
+}
+
+
+/* Swiper styles */
 .gallery-swiper {
-  width: 100% !important;
-  height: 500px !important;
-  margin: 0 auto;
+  width: 100%;
+  height: 500px;
 }
 
 .gallery-slide {
@@ -191,9 +282,6 @@ const showAllImages = () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #fff;
-  cursor: pointer;
-  overflow: hidden;
 }
 
 .navigation-wrapper {
@@ -202,7 +290,7 @@ const showAllImages = () => {
   left: 0;
   right: 0;
   bottom: 0;
-  pointer-events: none; /* Agar tidak menghalangi klik pada slide */
+  pointer-events: none;
   z-index: 10;
 }
 
@@ -220,7 +308,7 @@ const showAllImages = () => {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  pointer-events: auto; /* Mengaktifkan klik pada tombol */
+  pointer-events: auto;
 }
 
 .swiper-button-prev {
@@ -232,65 +320,23 @@ const showAllImages = () => {
 }
 
 .custom-nav-btn:hover {
-  background-color: rgba(255, 255, 255, 1);
-  transform: translateY(-50%) scale(1.1);
+  background-color: rgba(255, 255, 255, 0.8);
 }
 
-/* Hide default navigation arrows */
+/* Hide default swiper navigation */
 :deep(.swiper-button-next::after),
 :deep(.swiper-button-prev::after) {
   display: none;
 }
 
-/* Hapus style yang menyembunyikan default navigation */
-/* :deep(.swiper-button-next),
-:deep(.swiper-button-prev) {
-  display: none;
-} */
-
-/* Responsive styles */
 @media (max-width: 640px) {
+  .gallery-swiper {
+    height: 400px;
+  }
+  
   .custom-nav-btn {
     width: 32px;
     height: 32px;
-  }
-
-  .swiper-button-prev {
-    left: 5px;
-  }
-
-  .swiper-button-next {
-    right: 5px;
-  }
-}
-/* ViewerJS Custom Styles */
-:deep(.viewer-container) {
-  z-index: 99999;
-}
-
-:deep(.viewer-canvas) {
-  background-color: rgba(0, 0, 0, 0.9);
-}
-
-:deep(.viewer-footer),
-:deep(.viewer-navbar) {
-  background-color: rgba(0, 0, 0, 0.7);
-}
-
-:deep(.viewer-tooltip) {
-  display: none;
-}
-
-/* Responsive styles */
-@media (max-width: 640px) {
-  .gallery-swiper {
-    height: 400px !important; /* Ubah dari 300px ke 400px */
-  }
-}
-
-@media (max-height: 700px) {
-  .gallery-swiper {
-    height: 350px !important; /* Ubah dari 280px ke 350px */
   }
 }
 </style>

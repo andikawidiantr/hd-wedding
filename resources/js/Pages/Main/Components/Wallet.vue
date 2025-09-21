@@ -46,7 +46,7 @@ const copyToClipboard = async () => {
         <div class="w-full flex items-center justify-center gap-4">
           <div ref="bcaRef" class=" flex justify-start items-center gap-4">
             <div>
-              <img src="/assets/images/card.png" alt="" class="max-w-[300px]" />
+              <img src="/assets/images/card-bca.png" alt="" class="max-w-[300px]" />
             </div>
           </div>
           <div ref="bankInfoRef" class="flex items-center">
