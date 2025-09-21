@@ -179,8 +179,8 @@ onBeforeUnmount(() => {
       crossorigin="anonymous"
       @loadeddata="handleVideoLoad"
     >
-      <source src="/assets/images/video.mp4" type="video/mp4" />
-      <source src="/assets/images/video.webm" type="video/webm" />
+      <source src="/assets/images/video-new.mp4" type="video/mp4" />
+      <source src="/assets/images/video-new.webm" type="video/webm" />
       <!-- Pesan fallback jika video tidak dapat diputar -->
       Your browser does not support the video tag.
     </video>
