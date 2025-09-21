@@ -2,32 +2,41 @@
 import { ref, onMounted, onUnmounted } from "vue";
 import { Swiper, SwiperSlide } from "swiper/vue";
 import { Autoplay, Navigation } from "swiper/modules";
-import "viewerjs/dist/viewer.css";
 import "swiper/css";
 import "swiper/css/navigation";
-import Viewer from "viewerjs";
- 
+import lightGallery from 'lightgallery';
+import lgZoom from 'lightgallery/plugins/zoom';
+import 'lightgallery/css/lightgallery.css';
+import 'lightgallery/css/lg-zoom.css';
+
 const imageLoaded = ref(false);
 const swiperRef = ref(null);
-let viewer = null;
- 
-// Kurangi jumlah gambar total
-const allImages = Array.from({ length: 30 }, (_, i) => ({
+let gallery = null;
+
+// Kurangi jumlah gambar di slider
+const slideImages = ref([
+  { id: 1, src: '/assets/images/gallery/1.webp' },
+  { id: 2, src: '/assets/images/gallery/2.webp' },
+  { id: 3, src: '/assets/images/gallery/3.webp' },
+  { id: 4, src: '/assets/images/gallery/4.webp' },
+  { id: 5, src: '/assets/images/gallery/5.webp' },
+  { id: 6, src: '/assets/images/gallery/6.webp' },
+]);
+
+// Semua gambar untuk gallery
+const allImages = Array.from({ length: 40 }, (_, i) => ({
   id: i + 1,
   src: `/assets/images/gallery/${i + 1}.webp`,
 }));
- 
-// Data slider tetap 6 gambar
-const slideImages = ref(allImages.slice(0, 6));
- 
+
 const swiperOptions = {
   modules: [Autoplay, Navigation],
   slidesPerView: 1,
   spaceBetween: 30,
   centeredSlides: true,
   autoplay: {
-    delay: 3000, // Perlambat autoplay
-    disableOnInteraction: true, // Hentikan autoplay saat user interaksi
+    delay: 3000,
+    disableOnInteraction: true,
   },
   navigation: {
     nextEl: ".swiper-button-next",
@@ -35,8 +44,7 @@ const swiperOptions = {
   },
   loop: true,
 };
- 
-// Sederhanakan preload image
+
 const preloadImage = (url) => {
   return new Promise((resolve) => {
     const img = new Image();
@@ -44,80 +52,76 @@ const preloadImage = (url) => {
       imageLoaded.value = true;
       resolve();
     };
-    img.onerror = () => resolve(); // Tetap resolve meski error
+    img.onerror = () => resolve();
     img.src = url;
   });
 };
- 
-// Sederhanakan viewer initialization
-const initViewer = () => {
-  if (viewer) return;
- 
-  const container = document.createElement('div');
-  container.className = 'hidden-gallery';
-  
-  allImages.forEach(image => {
-    const img = document.createElement('img');
-    img.src = image.src;
-    img.alt = `Gallery Image ${image.id}`;
-    container.appendChild(img);
-  });
-  
-  document.body.appendChild(container);
-  
-  viewer = new Viewer(container, {
-    navbar: true,
-    title: false,
-    toolbar: false, // Hilangkan toolbar untuk ringankan
-    transition: false,
-    loading: true,
-    loop: true,
-    keyboard: false, // Matikan keyboard control
-    zoomRatio: 0.3,
-    minZoomRatio: 0.1,
-    maxZoomRatio: 3,
-    zIndex: 2015,
-    hidden() {
-      // Bersihkan viewer setelah ditutup
-      viewer.destroy();
-      container.remove();
-      viewer = null;
-    }
-  });
-};
- 
-// Sederhanakan show gallery
+
 const showGallery = (index = 0) => {
-  initViewer();
-  if (viewer) {
-    viewer.show();
-    setTimeout(() => viewer.view(index), 50);
+  try {
+    if (!gallery) {
+      const container = document.createElement('div');
+      container.id = 'gallery-container';
+      document.body.appendChild(container);
+      
+      // Buat element untuk setiap gambar
+      allImages.forEach(image => {
+        const a = document.createElement('a');
+        a.href = image.src;
+        a.dataset.src = image.src;
+        container.appendChild(a);
+      });
+
+      // Inisialisasi lightGallery
+      gallery = lightGallery(container, {
+        plugins: [lgZoom],
+        speed: 500,
+        download: false,
+        counter: false,
+        closeOnTap: true,
+        hideBarsDelay: 3000,
+        enableSwipe: true,
+        enableDrag: true,
+        swipeToClose: true,
+        mobileSettings: {
+          showCloseIcon: true,
+          download: false
+        }
+      });
+
+      // Cleanup saat gallery ditutup
+      container.addEventListener('lgAfterClose', () => {
+        gallery.destroy();
+        gallery = null;
+        container.remove();
+      });
+    }
+
+    // Buka gallery pada index tertentu
+    gallery.openGallery(index);
+
+  } catch (error) {
+    console.error('Error showing gallery:', error);
+    if (gallery) {
+      gallery.destroy();
+      gallery = null;
+    }
   }
 };
- 
-// Gunakan lazy mounting
-let isMounted = false;
+
 onMounted(async () => {
-  if (isMounted) return;
   try {
     await preloadImage("/assets/images/gallery.webp");
-    isMounted = true;
   } catch (error) {
     console.error("Error loading gallery:", error);
   }
 });
- 
-// Cleanup yang lebih agresif
+
 onUnmounted(() => {
-  if (viewer) {
-    viewer.destroy();
-    viewer = null;
+  if (gallery) {
+    gallery.destroy();
+    gallery = null;
   }
-  const container = document.querySelector('.hidden-gallery');
-  if (container) {
-    container.remove();
-  }
-  isMounted = false;
 });
 </script>
 
@@ -169,12 +173,12 @@ onUnmounted(() => {
               </SwiperSlide>
 
               <div class="navigation-wrapper">
-                <button class="swiper-button-prev custom-nav-btn">
-                  <mdicon name="chevron-left" size="24" />
-                </button>
-                <button class="swiper-button-next custom-nav-btn">
-                  <mdicon name="chevron-right" size="24" />
-                </button>
+                <div class="swiper-button-prev custom-nav-btn">
+                  <mdicon name="chevron-left" size="24" class="text-white" />
+                </div>
+                <div class="swiper-button-next custom-nav-btn">
+                  <mdicon name="chevron-right" size="24" class="text-white" />
+                </div>
               </div>
             </Swiper>
           </div>
@@ -189,35 +193,7 @@ onUnmounted(() => {
   </section>
 </template>
 
-<style scoped>
-/* Styles untuk gallery tersembunyi */
-:deep(.hidden-gallery) {
-  display: none;
-}
-
-/* Viewer custom styles */
-:deep(.viewer-container) {
-  background-color: rgba(0, 0, 0, 0.9);
-}
-
-:deep(.viewer-toolbar) {
-  background-color: rgba(0, 0, 0, 0.5);
-}
-
-:deep(.viewer-navbar) {
-  background-color: rgba(0, 0, 0, 0.5);
-}
-:deep(.viewer-loading) {
-  color: #fff;
-}
-
-:deep(.viewer-loading::after) {
-  border-color: rgba(255, 255, 255, 0.2);
-  border-top-color: white;
-}
-
-
-/* Swiper styles */
+<style>
 .gallery-swiper {
   width: 100%;
   height: 500px;
@@ -232,10 +208,7 @@ onUnmounted(() => {
 
 .navigation-wrapper {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   pointer-events: none;
   z-index: 10;
 }
@@ -245,16 +218,12 @@ onUnmounted(() => {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #000;
-  cursor: pointer;
-  transition: all 0.3s ease;
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
   pointer-events: auto;
+  display: grid;
+  place-items: center;
 }
 
 .swiper-button-prev {
@@ -265,13 +234,9 @@ onUnmounted(() => {
   right: 10px;
 }
 
-.custom-nav-btn:hover {
-  background-color: rgba(255, 255, 255, 0.8);
-}
-
-/* Hide default swiper navigation */
-:deep(.swiper-button-next::after),
-:deep(.swiper-button-prev::after) {
+/* Hide default swiper arrows */
+.swiper-button-prev::after,
+.swiper-button-next::after {
   display: none;
 }
 
@@ -284,5 +249,10 @@ onUnmounted(() => {
     width: 32px;
     height: 32px;
   }
+}
+
+/* Hide gallery container */
+#gallery-container {
+  display: none;
 }
 </style>
