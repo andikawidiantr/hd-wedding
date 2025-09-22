@@ -13,7 +13,7 @@ const audio = ref(null);
 const canAutoPlay = ref(false);
 
 onMounted(() => {
-  audio.value = new Audio('/assets/music/music.mp3');
+  audio.value = new Audio('/assets/music/music-new.mp3');
   audio.value.preload = 'auto';
 });
 
