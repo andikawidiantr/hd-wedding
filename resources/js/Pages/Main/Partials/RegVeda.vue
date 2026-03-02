@@ -1,5 +1,9 @@
 <script setup>
 import { onMounted, ref, onUnmounted } from "vue";
+import { useI18n } from 'vue-i18n'; // Import useI18n
+
+// Initialize i18n
+const { t } = useI18n();
 
 const regVedaRef = ref(null);
 const isVisible = ref(false);
@@ -42,8 +46,11 @@ onUnmounted(() => {
     ref="regVedaRef"
     id="regVeda"
     class="min-h-screen flex items-center justify-center relative bg-cover bg-center -mt-20 z-[3]"
-    style="background-image: url('/assets/images/full-torn.png')"
   >
+    <!-- Background Gradient Overlay -->  
+    <!-- <div  
+      class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/50 to-black/70 z-1"  
+    ></div> -->
     <!-- Reset Container Style -->
     <div 
       class="container mx-auto px-12"
@@ -53,38 +60,37 @@ onUnmounted(() => {
         <!-- Title -->
         <div class="overflow-hidden mb-4">
           <h1
-            class="font-wittgenstein text-2xl md:text-3xl text-black text-center select-none animate-item"
+            class="font-wittgenstein text-2xl md:text-3xl text-white text-center select-none animate-item"
             :class="{ 'show': isVisible }"
           >
-            Ṛg Veda X.85.47
+            {{ t('regveda.title', 'Ṛg Veda X.85.47') }}
           </h1>
         </div>
 
         <!-- Sanskrit Text -->
         <div class="overflow-hidden mb-8">
           <p
-            class="font-wittgenstein text-center text-black max-w-2xl text-lg md:text-xl select-none animate-item delay-200"
+            class="font-wittgenstein text-center text-white max-w-2xl text-lg md:text-xl select-none animate-item delay-200"
             :class="{ 'show': isVisible }"
           >
-            "Tvāṁ patīṁ gr̥hṇāmi, tvamasi me sahadharmacārīni."
+            {{ t('regveda.sanskrit_text', '"Tvāṁ patīṁ gr̥hṇāmi, tvamasi me sahadharmacārīni."') }}
           </p>
         </div>
 
         <!-- Translation -->
         <div class="overflow-hidden">
           <p
-            class="font-wittgenstein text-center text-black max-w-2xl text-base md:text-lg leading-relaxed select-none animate-item delay-400"
+            class="font-wittgenstein text-center text-white max-w-2xl text-base md:text-lg leading-relaxed select-none animate-item delay-400"
             :class="{ 'show': isVisible }"
           >
-            Aku menerima engkau sebagai suamiku/istriku; engkau adalah sahabatku dalam Dharma.
-            Bersama kita akan hidup, mencintai, dan membangun kebahagiaan.
+            {{ t('regveda.translation', 'Aku menerima engkau sebagai suamiku/istriku; engkau adalah sahabatku dalam Dharma. Bersama kita akan hidup, mencintai, dan membangun kebahagiaan.') }}
           </p>
         </div>
       </div>
     </div>
 
     <!-- Decoration -->
-    <div 
+    <!-- <div 
       class="absolute bottom-[-2rem] left-1/2 -translate-x-1/2 z-[4]"
       style="transform: translateX(-50%); translate: none;"
     >
@@ -98,7 +104,7 @@ onUnmounted(() => {
           class="w-32 h-32 lg:w-48 lg:h-48 object-contain transition-transform duration-300 hover:scale-110"
         />
       </div>
-    </div>
+    </div> -->
   </section>
 </template>
 

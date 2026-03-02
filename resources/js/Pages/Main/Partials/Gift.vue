@@ -2,16 +2,35 @@
 import { onMounted, ref } from "vue";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useI18n } from "vue-i18n"; // Import useI18n
+
+// Initialize i18n
+const { t } = useI18n();
 
 gsap.registerPlugin(ScrollTrigger);
 
 const imageLoaded = ref(false);
 const titleRef = ref(null);
-const bcaRef = ref(null);
-const sectionRef = ref(null);
+const messageRef = ref(null);
 const bankInfoRef = ref(null);
-const isCopied = ref(false);
-const copyTimeout = ref(null);
+const sectionRef = ref(null);
+const imageRef = ref(null);
+const copiedBank = ref(null);
+const copyTimeouts = ref({});
+
+const banks = [
+  {
+    name: t('gift.bank_bca', 'BANK BCA'),
+    number: "6485670681",
+    owner: t('gift.bank_owner', 'a.n. I Gede Agus Hendrawan')
+  },
+  // {
+  //   name: "BANK CA",
+  //   number: "123xxx",
+  //   owner: "a.n. LOREM IPSUM"
+  // }
+];
+
 
 const preloadImage = (url) => {
   return new Promise((resolve, reject) => {
@@ -25,24 +44,25 @@ const preloadImage = (url) => {
   });
 };
 
-const copyToClipboard = async () => {
+const copyToClipboard = async (text, type) => {
   try {
-    await navigator.clipboard.writeText("123 456 7890");
-    isCopied.value = true;
+    await navigator.clipboard.writeText(text);
+    copiedBank.value = type;
     
     // Clear existing timeout if any
-    if (copyTimeout.value) clearTimeout(copyTimeout.value);
+    if (copyTimeouts.value[type]) clearTimeout(copyTimeouts.value[type]);
     
-    // Reset after 5 seconds
-    copyTimeout.value = setTimeout(() => {
-      isCopied.value = false;
-    }, 5000);
+    // Reset after 3 seconds
+    copyTimeouts.value[type] = setTimeout(() => {
+      if (copiedBank.value === type) {
+        copiedBank.value = null;
+      }
+    }, 3000);
 
-    // Animate the copy icon
-    gsap.from(".copy-icon", {
-      scale: 0.5,
-      rotation: 360,
-      duration: 0.5,
+    // Animate the copy button
+    gsap.from(`#copy-btn-${type}`, {
+      scale: 0.9,
+      duration: 0.3,
       ease: "back.out"
     });
   } catch (err) {
@@ -51,42 +71,57 @@ const copyToClipboard = async () => {
 };
 
 const initAnimations = () => {
+  // Fade in animation for image
+  gsap.from(imageRef.value, {
+    opacity: 0,
+    y: 10,
+    duration: 1.2,
+    ease: "power2.out",
+    scrollTrigger: {
+      trigger: sectionRef.value,
+      start: "top bottom-=50",
+      toggleActions: "play none none reverse",
+    },
+  });
+
   // Fade in animation for title
   gsap.from(titleRef.value, {
     opacity: 0,
     y: 30,
     duration: 1.2,
+    delay: 0.2,
     ease: "power2.out",
     scrollTrigger: {
-      trigger: sectionRef.value,
-      start: "top center",
-      toggleActions: "play none none reverse",
-    },
-  });
-
-  // Animate bank info
-  gsap.from(bankInfoRef.value, {
-    opacity: 0,
-    x: -30,
-    duration: 1,
-    delay: 0.3,
-    ease: "power2.out",
-    scrollTrigger: {
-      trigger: bankInfoRef.value,
+      trigger: titleRef.value,
       start: "top bottom-=100",
       toggleActions: "play none none reverse",
     },
   });
 
-  // Slide in animation for BCA logo
-  gsap.from(bcaRef.value, {
-    x: -50,
+  // Fade in animation for message
+  gsap.from(messageRef.value, {
     opacity: 0,
+    y: 20,
     duration: 1,
+    delay: 0.3,
+    ease: "power2.out",
+    scrollTrigger: {
+      trigger: messageRef.value,
+      start: "top bottom-=100",
+      toggleActions: "play none none reverse",
+    },
+  });
+
+  // Animate bank info
+  gsap.from(bankInfoRef.value.children, {
+    opacity: 0,
+    y: 20,
+    stagger: 0.2,
+    duration: 0.8,
     delay: 0.5,
     ease: "power2.out",
     scrollTrigger: {
-      trigger: bcaRef.value,
+      trigger: bankInfoRef.value,
       start: "top bottom-=100",
       toggleActions: "play none none reverse",
     },
@@ -95,86 +130,116 @@ const initAnimations = () => {
 
 onMounted(async () => {
   try {
-    await preloadImage("/assets/images/gift.webp");
+    await preloadImage("/assets/images/raw-1582.jpg");
     initAnimations();
   } catch (error) {
     console.error("Error loading image:", error);
+    // Still initialize animations even if image fails to load
+    initAnimations();
   }
 });
 </script>
 
 <template>
+  <!-- Image at the top -->
+  <div ref="imageRef" class="px-4 pt-20">
+    <img 
+      src="/assets/images/raw-1582.jpg" 
+      :alt="t('gift.image_alt', 'Couple on the beach')" 
+      class="object-cover rounded-sm"
+    />
+  </div>
   <section
     ref="sectionRef"
     id="gift"
-    class="min-h-screen flex items-start justify-center relative bg-cover bg-center bg-gray-200 z-[2] pb-20 "
-    :style="{
-      backgroundImage: imageLoaded ? 'url(/assets/images/gift.webp)' : 'none',
-      backgroundColor: '#4D4D4D',
-    }"
-  >
-    <div class="w-full h-screen flex items-start z-[2] px-4 py-12 relative">
-      <div class="h-full w-full flex flex-col justify-between gap-12 p-4">
-        <div class="flex flex-col gap-0">
-          <h2 ref="titleRef" class="font-poly text-center text-white text-3xl">
-            Wedding Gift
-          </h2>
-        </div>
-        <div class="flex flex-col gap-4">
-          <div ref="bankInfoRef" class="flex items-center gap-12">
-            <div>
-              <h3 class="text-white">BCA</h3>
-              <p class="text-white">123 456 7890</p>
-              <p class="text-white">a/n Dharma Kumala</p>
-            </div>
-            <div>
-              <button 
-                @click="copyToClipboard" 
-                class="text-white p-2 rounded-full hover:bg-white/10 transition-all duration-300"
-              >
-                <mdicon 
-                  :name="isCopied ? 'check-all' : 'content-copy'" 
-                  class="copy-icon transition-all duration-300"
-                  :class="{ 'text-green-400': isCopied }"
-                  width="15"
-                />
-              </button>
-            </div>
+    class="min-h-screen flex items-start justify-center relative z-[2] overflow-hidden px-4">
+    <div class="w-full max-w-md flex flex-col items-center z-[2] relative pb-8">
+      <!-- Title -->
+      <h2 ref="titleRef" class="font-serif text-center text-white text-5xl tracking-wider my-8">
+        {{ t('gift.title', 'WEDDING') }}<br>{{ t('gift.subtitle', 'GIFT') }}
+      </h2>
+      
+      <!-- Message -->
+      <p ref="messageRef" class="text-white text-center mb-10 mx-4 leading-relaxed">
+        {{ t('gift.message', 'Your presence and prayers are the greatest wedding gifts we could ever ask for. No other gifts are needed nor expected. However, if giving is a sign of love, we are happy to receive it, and, of course, it will enhance our happiness even more.') }}
+      </p>
+      
+      <!-- Bank Information -->
+      <div ref="bankInfoRef" class="w-full flex flex-col gap-4 px-4">
+        <!-- First Bank -->
+        <div 
+          v-for="(bank, index) in banks" 
+          :key="bank.name"
+          class="w-full border border-white/40 p-5 relative pb-16"
+        >
+          <div class="flex flex-col">
+            <span class="text-white font-medium">{{ bank.name }}</span>
+            <span class="text-white">{{ bank.number }}</span>
+            <span class="text-white">{{ bank.owner }}</span>
           </div>
-
-          <div 
-            ref="bcaRef" 
-            class="w-fit flex justify-start items-center gap-4"
+          <button 
+            :id="`copy-btn-${index}`"
+            @click="copyToClipboard(bank.number, index)" 
+            class="absolute bottom-4 right-4 text-white border border-white/40 px-4 py-1 text-sm hover:bg-white/10 transition-all duration-300"
           >
-            <div>
-              <img src="/assets/images/bca.png" alt="" class="max-w-[200px]" />
-            </div>
-          </div>
+            <span class="flex items-center">
+              <mdicon 
+                :name="copiedBank === index ? 'check' : 'content-copy'" 
+                class="mr-1"
+                width="16"
+              />
+              {{ copiedBank === index ? t('gift.copied', 'Copied') : t('gift.copy', 'Copy') }}
+            </span>
+          </button>
+        </div>
+        
+        <!-- Address -->
+        <div class="w-full border border-white/40 p-5 relative pb-16">
+          <p class="text-white">Home Address: Jalan Gunung Lebah I Gang VII No. 10, Denpasar, Bali</p>
+          <button 
+            id="copy-btn-address"
+            @click="copyToClipboard('Home Address: Jalan Gunung Lebah I Gang VII No. 10, Denpasar, Bali', 'address')" 
+            class="absolute bottom-4 right-4 text-white border border-white/40 px-4 py-1 text-sm hover:bg-white/10 transition-all duration-300"
+          >
+            <span class="flex items-center">
+              <mdicon 
+                :name="copiedBank === 'address' ? 'check' : 'content-copy'" 
+                class="mr-1"
+                width="16"
+              />
+              {{ copiedBank === 'address' ? t('gift.copied', 'Copied') : t('gift.copy', 'Copy') }}
+            </span>
+          </button>
         </div>
       </div>
+      <!-- Overlay gradient -->
+      <div
+        class="absolute inset-x-0 top-0 bottom-0 bg-[#4D4D4D]/90 -z-[1]"
+      ></div>
     </div>
-    <div
-      class="absolute inset-0 bg-gradient-to-t from-black/100 via-black/10 to-black/100"
-    ></div>
   </section>
 </template>
 
 <style scoped>
-section {
-  transition: background-image 0.5s ease-in-out;
+.font-serif {
+  font-family: 'Playfair Display', serif;
 }
 
-.copy-icon {
-  transform-origin: center;
+/* Style for buttons when copied */
+button:has(mdicon[name="check"]) {
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
-@keyframes copied {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.2); }
-  100% { transform: scale(1); }
+/* Image transition */
+img {
+  transition: opacity 0.5s ease-in-out;
 }
 
-.copied {
-  animation: copied 0.3s ease-in-out;
+/* Ensure content is properly spaced */
+@media (max-width: 640px) {
+  section {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+  }
 }
 </style>

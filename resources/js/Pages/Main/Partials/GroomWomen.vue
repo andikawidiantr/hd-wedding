@@ -2,6 +2,10 @@
 import { onMounted, ref } from "vue";
 import gsap from 'gsap';
 import ScrollTrigger from 'gsap/ScrollTrigger';
+import { useI18n } from 'vue-i18n'; // Import useI18n
+
+// Initialize i18n
+const { t } = useI18n();
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -12,6 +16,7 @@ const lineRef = ref(null);
 const nameRef = ref(null);
 const descRef = ref(null);
 const socialRef = ref(null);
+const animationTriggered = ref(false); 
 
 const preloadImage = (url) => {
   return new Promise((resolve, reject) => {
@@ -27,22 +32,28 @@ const preloadImage = (url) => {
 
 onMounted(async () => {
   try {
-    await preloadImage("/assets/images/women-groom.webp");
+    await preloadImage("/assets/images/045.JPG");
 
+    // Set initial states - do this immediately after image loads
+    gsap.set(
+      [titleRef.value, lineRef.value, nameRef.value, descRef.value, socialRef.value],
+      {
+        x: 50,
+        opacity: 0,
+      }
+    );
+    
     // Animasi setelah gambar dimuat
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: groomWomenRef.value,
         start: "top center+=100",
         end: "center center",
-        toggleActions: "play none none reverse"
+        toggleActions: "play none none reverse",
+        onEnter: () => {
+          animationTriggered.value = true;
+        }
       }
-    });
-
-    // Set initial states
-    gsap.set([titleRef.value, lineRef.value, nameRef.value, descRef.value, socialRef.value], {
-      x: 50, // Berubah dari -50 menjadi 50 untuk animasi dari kanan
-      opacity: 0
     });
 
     // Animasi sequence
@@ -78,7 +89,7 @@ onMounted(async () => {
     }, "-=0.4");
 
     // Parallax effect pada background
-    gsap.to(groomWomenRef.value, {
+    gsap.to(".background-image", {  // Target the background div directly
       backgroundPosition: "50% 30%",
       ease: "none",
       scrollTrigger: {
@@ -99,53 +110,52 @@ onMounted(async () => {
   <section
     ref="groomWomenRef"
     id="groomWomen"
-    class="min-h-screen flex items-start justify-center relative bg-cover bg-center bg-gray-200 z-[1] overflow-hidden"
+    class="min-h-screen flex items-start justify-center relative z-[2] mt-10 overflow-hidden py-4 md:py-8 lg:py-12 px-0"
     :style="{
-      backgroundImage: imageLoaded ? 'url(/assets/images/women-groom.webp)' : 'none',
-      backgroundColor: '#4D4D4D',
-      backgroundPosition: '50% 50%'
+      backgroundColor: 'transparent',
     }"
   >
-    <div class="w-full h-screen flex items-end justify-end z-[2] px-4 py-12"> <!-- Ubah justify-start menjadi justify-end -->
+    <!-- Background div with padding effect -->
+    <div
+      class="absolute inset-0 m-4 md:m-8 lg:m-12 background-image"
+      :style="{
+        backgroundImage: imageLoaded ? 'url(/assets/images/045.jpg)' : 'none',
+        backgroundPosition: '50% 50%',
+        backgroundSize: 'cover',
+        backgroundRepeat: 'no-repeat',
+      }"
+    ></div>
+    <div class="w-full h-screen flex items-end justify-end z-[2] px-4 py-12 relative"> <!-- Ubah justify-start menjadi justify-end -->
       <div class="flex flex-col gap-4 p-4 items-end"> <!-- Tambah items-end untuk align kanan -->
-        <h2 
+        <h2
           ref="titleRef"
-          class="text-xl uppercase font-wittgenstein text-white drop-shadow-lg opacity-0 text-right"
+          class="text-xl uppercase font-wittgenstein text-white drop-shadow-lg"
         >
-          The Bride
+          {{ t('bride.title', 'The Bride') }}
         </h2>
-        <div 
-          ref="lineRef"
-          class="border-t w-48 border-white opacity-0"
-        ></div>
-        <h1 
-          ref="nameRef"
-          class="text-3xl font-wittgenstein text-white opacity-0 text-right"
-        >
-          Ni Kadek Astri Cahyani
+        <div ref="lineRef" class="border-t w-48 border-white"></div>
+        <h1 ref="nameRef" class="text-3xl font-wittgenstein text-white">
+          {{ t('bride.name', 'dr. Ni Luh Putu Dinda Rahayu Dermana, S.Ked') }}
         </h1>
-        <p 
-          ref="descRef"
-          class="font-wittgenstein text-white text-md opacity-0 text-right"
-        >
-          Putri Kedua dari Bapak I Ketut Sudiarta & Ibu Ni Ketut Sri Yuliani
+        <p ref="descRef" class="font-wittgenstein text-white text-md text-right">
+          {{ t('bride.description', 'Putri Pertama dari Bapak I Wayan Dermana Putra & Ibu Ns. Ni Wayan Sudianingsih, S.Kep') }}
         </p>
-        <a
-    ref="socialRef"
-    href="https://www.instagram.com/"
-    target="_blank"
-    class="social-button transition-all ease-in flex items-center gap-2 font-wittgenstein bg-green-700 text-white px-4 border-0 py-1 rounded-lg w-fit text-xs opacity-0 relative group"
-  >
-    <div class="relative z-10 flex items-center gap-2">
-      <mdicon name="instagram" width="15" height="15" class="icon-instagram"/> 
-      <span class="button-text">Instagram</span>
-    </div>
-    <div class="absolute inset-0 bg-green-800 rounded-lg transform origin-bottom transition-transform duration-300 ease-out scale-y-0 group-hover:scale-y-100"></div>
-  </a>
+        <a  
+          ref="socialRef"  
+          href="https://www.instagram.com/"  
+          target="_blank"  
+          class="social-button transition-all ease-in flex items-center gap-2 font-wittgenstein text-white px-4 py-1 rounded-xl w-fit text-xs relative group border border-white bg-black/30 backdrop-blur-sm"  
+        >  
+          <div class="relative z-10 flex items-center gap-2">  
+            <mdicon name="instagram" width="15" height="15" class="icon-instagram"/>   
+            <span class="button-text">Instagram</span>  
+          </div>  
+          <div class="absolute inset-0 bg-black/50 rounded-xl transform origin-bottom transition-transform duration-300 ease-out scale-y-0 group-hover:scale-y-100"></div>  
+        </a>
       </div>
     </div>
     <div 
-      class="absolute inset-0 bg-[#4D4D4D]/30 transition-opacity duration-500"
+      class="absolute inset-0 m-4 md:m-8 lg:m-12 bg-black/10 transition-opacity duration-500"
       :class="{ 'opacity-100': imageLoaded, 'opacity-0': !imageLoaded }"
     ></div>
   </section>
@@ -154,16 +164,6 @@ onMounted(async () => {
 <style scoped>
 .transition-all {
   transition: all 0.3s ease-in-out;
-}
- 
-/* Tambahan untuk smooth reveal */
-[ref="titleRef"],
-[ref="lineRef"],
-[ref="nameRef"],
-[ref="descRef"],
-[ref="socialRef"] {
-  transform: translateX(50px);
-  will-change: transform, opacity;
 }
  
 .social-button {

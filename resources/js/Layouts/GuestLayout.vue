@@ -21,7 +21,7 @@ onMounted(() => {
 </script>  
 
 <template>  
-  <Head title="Dharma & Astrid Wedding" />  
+  <Head title="Hendra & Dinda Wedding" />  
   <div class="min-h-screen bg-black flex items-center justify-center relative">  
     <!-- Left Image -->  
     <!-- <div class="hidden lg:block fixed left-0 top-0 bottom-0 w-[30vw]">  

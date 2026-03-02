@@ -8,6 +8,10 @@ import lightGallery from 'lightgallery';
 import lgZoom from 'lightgallery/plugins/zoom';
 import 'lightgallery/css/lightgallery.css';
 import 'lightgallery/css/lg-zoom.css';
+import { useI18n } from 'vue-i18n'; // Import useI18n
+
+// Initialize i18n
+const { t } = useI18n();
 
 const imageLoaded = ref(false);
 const swiperRef = ref(null);
@@ -128,10 +132,10 @@ onUnmounted(() => {
 <template>
   <section
     id="gallery"
-    class="relative min-h-screen flex items-center justify-center bg-gray-200 z-[2]"
+    class="relative flex items-center justify-center bg-gray-200 z-[2]"
     :class="{ 'bg-cover bg-center': imageLoaded }"
     :style="{
-      backgroundImage: imageLoaded ? 'url(/assets/images/gallery.webp)' : 'none',
+      backgroundColor: 'transparent',  
     }"
   >
     <div class="relative w-full h-full flex items-center justify-center z-[2] px-4 py-12">
@@ -139,10 +143,10 @@ onUnmounted(() => {
         <!-- Header -->
         <div class="flex flex-col gap-2">
           <h1 class="text-4xl text-white text-center font-wittgenstein uppercase tracking-wider">
-            Our Gallery
+            {{ t('gallery.title', 'Our Gallery') }}
           </h1>
           <h6 class="text-white text-center font-wittgenstein tracking-widest uppercase">
-            Dharma & Astri
+            Hendra & Dinda
           </h6>
         </div>
 
@@ -165,7 +169,7 @@ onUnmounted(() => {
                 >
                   <img
                     :src="image.src"
-                    :alt="`Gallery Image ${image.id}`"
+                    :alt="t('gallery.image_alt', 'Gallery Image') + ' ' + image.id"
                     class="w-full h-full object-cover"
                     loading="lazy"
                   />
@@ -184,12 +188,11 @@ onUnmounted(() => {
           </div>
 
           <p class="text-white text-center text-sm opacity-80">
-            Tap image to view all photos
+            {{ t('gallery.tap_to_view', 'Tap image to view all photos') }}
           </p>
         </div>
       </div>
     </div>
-    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/60 to-black/80"></div>
   </section>
 </template>
 

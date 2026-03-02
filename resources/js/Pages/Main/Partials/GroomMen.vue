@@ -2,6 +2,10 @@
 import { onMounted, ref } from "vue";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
+import { useI18n } from 'vue-i18n'; // Import useI18n
+
+// Initialize i18n
+const { t } = useI18n();
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -12,6 +16,7 @@ const lineRef = ref(null);
 const nameRef = ref(null);
 const descRef = ref(null);
 const socialRef = ref(null);
+const animationTriggered = ref(false); 
 
 const preloadImage = (url) => {
   return new Promise((resolve, reject) => {
@@ -27,7 +32,16 @@ const preloadImage = (url) => {
 
 onMounted(async () => {
   try {
-    await preloadImage("/assets/images/men-groom.webp");
+    await preloadImage("/assets/images/170.jpg");
+
+    // Set initial states - do this immediately after image loads
+    gsap.set(
+      [titleRef.value, lineRef.value, nameRef.value, descRef.value, socialRef.value],
+      {
+        x: -50,
+        opacity: 0,
+      }
+    );
 
     // Animasi setelah gambar dimuat
     const tl = gsap.timeline({
@@ -36,17 +50,11 @@ onMounted(async () => {
         start: "top center+=100",
         end: "center center",
         toggleActions: "play none none reverse",
+        onEnter: () => {
+          animationTriggered.value = true;
+        }
       },
     });
-
-    // Set initial states
-    gsap.set(
-      [titleRef.value, lineRef.value, nameRef.value, descRef.value, socialRef.value],
-      {
-        x: -50,
-        opacity: 0,
-      }
-    );
 
     // Animasi sequence
     tl.to(titleRef.value, {
@@ -97,7 +105,7 @@ onMounted(async () => {
       );
 
     // Parallax effect pada background
-    gsap.to(groomMenRef.value, {
+    gsap.to(".background-image", {
       backgroundPosition: "50% 30%",
       ease: "none",
       scrollTrigger: {
@@ -117,44 +125,56 @@ onMounted(async () => {
   <section
     ref="groomMenRef"
     id="groomMen"
-    class="min-h-screen flex items-start justify-center relative bg-cover bg-center bg-gray-200 z-[2] -mt-10 overflow-hidden"
+    class="min-h-screen flex items-start justify-center relative z-[2] -mt-10 overflow-hidden py-4 md:py-8 lg:py-12 px-0"
     :style="{
-      backgroundImage: imageLoaded ? 'url(/assets/images/men-groom.webp)' : 'none',
-      backgroundColor: '#4D4D4D',
-      backgroundPosition: '50% 50%',
+      backgroundColor: 'transparent',
     }"
   >
-    <div class="w-full h-screen flex items-end justify-start z-[2] px-4 py-12">
+    <!-- Background div with padding effect -->
+    <div
+      class="absolute inset-0 m-4 md:m-8 lg:m-12 background-image"
+      :style="{
+        backgroundImage: imageLoaded ? 'url(/assets/images/170.jpg)' : 'none',
+        backgroundPosition: '50% 50%',
+        backgroundSize: 'cover',
+        backgroundRepeat: 'no-repeat',
+      }"
+    ></div>
+    
+    <!-- Content -->
+    <div class="w-full h-screen flex items-end justify-start z-[2] px-4 py-12 relative">
       <div class="flex flex-col gap-4 p-4">
         <h2
           ref="titleRef"
-          class="text-xl uppercase font-wittgenstein text-white drop-shadow-lg opacity-0"
+          class="text-xl uppercase font-wittgenstein text-white drop-shadow-lg"
         >
-          The Groom
+          {{ t('groom.title', 'The Groom') }}
         </h2>
-        <div ref="lineRef" class="border-t w-48 border-white opacity-0"></div>
-        <h1 ref="nameRef" class="text-3xl font-wittgenstein text-white opacity-0">
-          Wimala Dharma Kencana
+        <div ref="lineRef" class="border-t w-48 border-white"></div>
+        <h1 ref="nameRef" class="text-3xl font-wittgenstein text-white">
+          {{ t('groom.name', 'Ir. I Gede Agus Hendrawan, ST') }}
         </h1>
-        <p ref="descRef" class="font-wittgenstein text-white text-md opacity-0">
-          Putra Kedua dari Bapak Sofyanto & Ibu Ni Ketut Yuni Somantari
+        <p ref="descRef" class="font-wittgenstein text-white text-md">
+          {{ t('groom.description', 'Putra Pertama dari Bapak I Made Rama & Ibu Ni Ketut Rumaheni') }}
         </p>
-       <a
-    ref="socialRef"
-    href="https://www.instagram.com/"
-    target="_blank"
-    class="social-button transition-all ease-in flex items-center gap-2 font-wittgenstein bg-green-700 text-white px-4 border-0 py-1 rounded-lg w-fit text-xs opacity-0 relative group"
-  >
-    <div class="relative z-10 flex items-center gap-2">
-      <mdicon name="instagram" width="15" height="15" class="icon-instagram"/> 
-      <span class="button-text">Instagram</span>
-    </div>
-    <div class="absolute inset-0 bg-green-800 rounded-lg transform origin-bottom transition-transform duration-300 ease-out scale-y-0 group-hover:scale-y-100"></div>
-  </a>
+        <a
+          ref="socialRef"
+          href="https://www.instagram.com/agushendrawan/"
+          target="_blank"
+          class="social-button transition-all ease-in flex items-center gap-2 font-wittgenstein text-white px-4 py-1 rounded-xl w-fit text-xs relative group border border-white bg-black/30 backdrop-blur-sm"  
+        >
+          <div class="relative z-10 flex items-center gap-2">
+            <mdicon name="instagram" width="15" height="15" class="icon-instagram"/>   
+            <span class="button-text">Instagram</span>
+          </div>
+          <div class="absolute inset-0 bg-black/50 rounded-xl transform origin-bottom transition-transform duration-300 ease-out scale-y-0 group-hover:scale-y-100"></div>  
+        </a>
       </div>
     </div>
+    
+    <!-- Overlay - adjusted to be transparent or with minimal opacity -->
     <div
-      class="absolute inset-0 bg-[#4D4D4D]/30 transition-opacity duration-500"
+      class="absolute inset-0 m-4 md:m-8 lg:m-12 bg-black/10 transition-opacity duration-500"
       :class="{ 'opacity-100': imageLoaded, 'opacity-0': !imageLoaded }"
     ></div>
   </section>
@@ -163,16 +183,6 @@ onMounted(async () => {
 <style scoped>
 .transition-all {
   transition: all 0.3s ease-in-out;
-}
- 
-/* Tambahan untuk smooth reveal */
-[ref="titleRef"],
-[ref="lineRef"],
-[ref="nameRef"],
-[ref="descRef"],
-[ref="socialRef"] {
-  transform: translateX(50px);
-  will-change: transform, opacity;
 }
  
 .social-button {

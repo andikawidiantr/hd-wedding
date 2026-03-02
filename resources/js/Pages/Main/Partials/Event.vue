@@ -1,249 +1,388 @@
 <script setup>
-import moment from "moment";
-import { onBeforeUnmount, onMounted, ref } from "vue";
-import gsap from 'gsap';
-import ScrollTrigger from 'gsap/ScrollTrigger';
+import { onMounted, ref, computed } from "vue";    
+import gsap from "gsap";
+import ScrollTrigger from "gsap/ScrollTrigger";
 
+// Register ScrollTrigger plugin
 gsap.registerPlugin(ScrollTrigger);
+    
+const boxSectionRef = ref(null);   
+const imageRef = ref(null);  
+const eventDetailsRef = ref(null);
 
-const imageLoaded = ref(false);
-const eventRef = ref(null);
-const dateLocationRef = ref(null);
-const timelineRef = ref(null);
-const saveTheDateRef = ref(null);
-const qrRef = ref(null);
-const mapButtonRef = ref(null);
+const props = defineProps({
+  code: String,
+});
 
-const preloadImage = (url) => {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.src = url;
-    img.onload = () => {
-      imageLoaded.value = true;
-      resolve();
-    };
-    img.onerror = reject;
-  });
-};
+// Define all three events
+const allEvents = [
+  {
+    code: "23",
+    title: "Tipat Bantal",
+    date: "Rabu, 23 Maret 2026",
+    time: "Pukul 10.00 - Selesai",
+    venue: "Desa Jagapati",
+    address: "Jl. jagapati, Pertima, Badung",
+    mapsUrl: "https://maps.app.goo.gl/mhtjeGGvWJd1arz76"
+  },
+  {
+    code: "25",
+    title: "PAWIWAHAN",
+    date: "Rabu, 25 Maret 2026",
+    time: "Pukul 10.00 - Selesai",
+    venue: "Desa Asak",
+    address: "Jl. Asak, Pertima, Karangasem",
+    mapsUrl: "https://maps.app.goo.gl/PAWztaF2QjtRPNdc6"
+  },
+  {
+    code: "28",
+    title: "Resepsi",
+    date: "Rabu, 28 Maret 2026",
+    time: "Pukul 18.00 - Selesai",
+    venue: "Villa D'carik",
+    address: "Jalan Kaswari, Penatih, Denpasar Timur, Bali",
+    mapsUrl: "https://maps.app.goo.gl/85hCXpMEsPaby18m7?g_st=iw"
+  }
+];
 
-const createGoogleCalendarLink = () => {
-  const event = {
-    title: "Pawiwahan & Resepsi Dharma & Astri",
-    description:
-      "Pawiwahan: 08:00 - 15:00 Wita\nResepsi: 16:00 Wita - Selesai\nLokasi: Delod Sema Village, Tegalalang, Taro",
-    location: "Delod Sema Village, Tegalalang, Taro",
-    start: "20250929T050000",
-    end: "20250929T235900",
-  };
-
-  return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(
-    event.title
-  )}&dates=${event.start}/${event.end}&details=${encodeURIComponent(
-    event.description
-  )}&location=${encodeURIComponent(event.location)}&ctz=Asia/Makassar`;
-};
-
-onMounted(async () => {
-  try {
-    await preloadImage("/assets/images/event.webp");
-
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: eventRef.value,
-        start: "top 60%",
-        end: "center center",
-        toggleActions: "play none none reverse",
-      }
-    });
-
-    // Set initial states
-    gsap.set([dateLocationRef.value, timelineRef.value, saveTheDateRef.value, qrRef.value, mapButtonRef.value], {
-      opacity: 0,
-      y: 30
-    });
-
-    gsap.set(timelineRef.value, {
-      x: -30
-    });
-
-    // Animation sequence
-    tl.to(dateLocationRef.value, {
-      y: 0,
-      opacity: 1,
-      duration: 1,
-      ease: "power3.out"
-    })
-    .to(timelineRef.value, {
-      x: 0,
-      y: 0,
-      opacity: 1,
-      duration: 1,
-      ease: "power3.out"
-    }, "-=0.7")
-    .to(saveTheDateRef.value, {
-      y: 0,
-      opacity: 1,
-      duration: 1,
-      ease: "back.out(1.7)"
-    }, "-=0.7")
-    .to([qrRef.value, mapButtonRef.value], {
-      y: 0,
-      opacity: 1,
-      duration: 1,
-      stagger: 0.2,
-      ease: "power3.out"
-    }, "-=0.7");
-
-    // Parallax effect
-    gsap.to(eventRef.value, {
-      backgroundPosition: "50% 30%",
-      ease: "none",
-      scrollTrigger: {
-        trigger: eventRef.value,
-        start: "top top",
-        end: "bottom top",
-        scrub: 1
-      }
-    });
-
-  } catch (error) {
-    console.error("Error loading image:", error);
+// Determine which events to show based on code
+const eventsToShow = computed(() => {
+  if (!props.code) {
+    // If no code is provided, show all events
+    return allEvents;
+  } else {
+    // Otherwise, show only the event that matches the code
+    const event = allEvents.find(event => event.code === props.code);
+    return event ? [event] : [allEvents[2]]; // Default to Resepsi if code doesn't match
   }
 });
-</script>
 
-<template>
-  <section
-    ref="eventRef"
-    id="event"
-    class="min-h-screen flex items-start justify-center relative bg-cover bg-center z-[2]"
-    :style="{
-      backgroundImage: imageLoaded ? 'url(/assets/images/event.webp)' : 'none',
-      backgroundColor: '#4D4D4D',
-    }"
-  >
-    <div class="w-full h-screen flex items-center justify-center z-[2] px-4 py-12">
-      <div class="flex flex-col gap-12 p-4">
-        <!-- Date and Location -->
-        <div ref="dateLocationRef" class="flex flex-col">
-          <h2 class="font-poly text-center text-white text-2xl lg:text-3xl">
-            Senin, 29 September 2025
-          </h2>
-          <span class="font-poly text-white text-center tracking-widest">
-            Delod Sema Village, Tegalalang, Taro
-          </span>
+// Compute section height based on number of events
+const sectionHeight = computed(() => {
+  return eventsToShow.value.length > 1 ? 'auto' : 'min-h-screen';
+});
+
+// Compute container class based on code
+const containerClass = computed(() => {
+  return !props.code ? 'container-wrapper pb-40' : 'container-wrapper';
+});
+
+onMounted(() => {  
+  // Create animation that shows/hides the image based on scroll direction
+  gsap.fromTo(imageRef.value,   
+    { 
+      y: 100,   
+      opacity: 0   
+    },  
+    {   
+      y: 0,   
+      opacity: 1,   
+      duration: 1,   
+      ease: "power3.out",
+      scrollTrigger: {  
+        trigger: boxSectionRef.value,  
+        start: "top 80%",
+        end: "bottom 20%",
+        toggleActions: "play reverse play reverse", 
+        markers: false
+      }  
+    }  
+  );  
+  
+  // Animation for the wedding details section
+  gsap.fromTo(eventDetailsRef.value,     
+    {   
+      y: 50,     
+      opacity: 0     
+    },    
+    {     
+      y: 0,     
+      opacity: 1,     
+      duration: 1,
+      delay: 0.3,     
+      ease: "power3.out",  
+      scrollTrigger: {    
+        trigger: eventDetailsRef.value,    
+        start: "top 80%",  
+        end: "bottom 20%",  
+        toggleActions: "play reverse play reverse",
+        markers: false
+      }    
+    }    
+  );   
+});  
+</script>    
+    
+<template>    
+  <div ref="containerRef" :class="containerClass">
+    <section    
+      ref="boxSectionRef"    
+      id="box-section"    
+      :class="[
+        'flex items-center justify-center relative z-[2] overflow-visible pt-20 mt-12 mb-12',
+        sectionHeight,
+        {'extended-section': eventsToShow.length > 1}
+      ]"
+    >    
+      <!-- Decorative box with rounded top corners (radius 200px) -->    
+      <div ref="decorativeBoxRef" class="decorative-box" :class="{ 'all-events': eventsToShow.length > 1 }">  
+        <!-- Image container inside the box -->  
+        <div class="image-container">  
+          <img   
+            ref="imageRef"  
+            src="/assets/images/edit-26.jpg"   
+            alt="Decorative image"   
+            class="decorative-image"  
+          />  
         </div>
-
-        <!-- Timeline -->
-        <div ref="timelineRef" class="flex gap-8">
-          <div class="relative">
-            <div class="border-r border-white mt-4 h-[135px]"></div>
-            <div class="absolute left-[-4px] top-[12px] w-2 h-2 bg-white rounded-full"></div>
-            <div class="absolute left-[-4px] top-[105px] w-2 h-2 bg-white rounded-full"></div>
-          </div>
-          <div class="flex flex-col gap-8">
-            <div class="flex flex-col gap-1">
-              <h1 class="font-wittgenstein text-left text-white text-2xl font-bold">
-                Pawiwahan
-              </h1>
-              <h6 class="text-white font-wittgenstein">08:00 - 15:00 Wita</h6>
-            </div>
-            <div class="flex flex-col gap-1">
-              <h1 class="font-wittgenstein text-left text-white text-2xl font-bold">
-                Resepsi
-              </h1>
-              <h6 class="text-white font-wittgenstein">16:00 Wita - Selesai</h6>
-            </div>
-          </div>
-        </div>
-
-        <!-- Save the Date Button -->
-        <div ref="saveTheDateRef" class="flex items-center justify-center">
-          <a
-            :href="createGoogleCalendarLink()"
-            target="_blank"
-            class="save-date-button border border-white rounded-xl px-6 py-1 text-white uppercase"
-          >
-            Save The Date
-          </a>
-        </div>
-
-        <!-- QR Code and Map -->
-        <div class="flex flex-col gap-12 mt-4 lg:mt-16">
-          <div ref="qrRef" class="flex items-center justify-center">
-            <div class="bg-white p-2 rounded-md shadow-lg qr-container">
-              <img src="/assets/images/qr.png" alt="QR Code" class="w-24 h-24" />
-            </div>
-          </div>
-
-          <div ref="mapButtonRef" class="flex items-center justify-center">
+        <div ref="eventDetailsRef" class="event-two">
+          <!-- Loop through events to show -->
+          <div v-for="(event, index) in eventsToShow" :key="event.code" class="event-item" :class="{ 'mt-8': index > 0 }">
+            <h2 class="event-title">{{ event.title }}</h2>
+            <p class="event-date">{{ event.date }}</p>
+            <p class="event-time">{{ event.time }}</p>
+            <p class="event-location">Bertempat di</p>
+            <p class="event-venue">{{ event.venue }}</p>
+            <p class="event-address">{{ event.address }}</p>
+            
             <a
-              href="https://maps.app.goo.gl/7GP44pSQC3d3h8WN8"
-              target="_blank"
-              class="map-button border border-white rounded-xl px-6 py-1 text-white uppercase"
-            >
-              <span class="relative z-10">OPEN MAP</span>
-              <div class="absolute inset-0 bg-white transform origin-bottom scale-y-0 group-hover:scale-y-100"></div>
+                :href="event.mapsUrl"
+                target="_blank"
+                class="map-button">
+              <span class="map-icon"></span> Google Maps
             </a>
+            
+            <!-- Add divider if not the last event -->
+            <div v-if="index < eventsToShow.length - 1" class="event-divider"></div>
           </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Overlay -->
-    <div
-      class="absolute inset-0 bg-[#4D4D4D]/30"
-      :class="{ 'opacity-100': imageLoaded, 'opacity-0': !imageLoaded }"
-    ></div>
-  </section>
-</template>
-
+        </div>  
+      </div>  
+    </section>
+  </div>
+</template>    
+    
 <style scoped>
-.save-date-button {
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Montserrat:wght@300;400;500&display=swap');
+
+.container-wrapper {
+  position: relative;
+  width: 100%;
+  overflow: visible;
 }
 
-.save-date-button:hover {
-  transform: translateY(-2px);
-  background-color: white;
-  color: #4D4D4D;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+/* Extended section for multiple events */
+.extended-section {
+  min-height: 200vh; /* Minimum height for multiple events */
+  height: auto;
+  padding-bottom: 10vh;
 }
 
-.save-date-button:active {
-  transform: translateY(0);
+.decorative-box {    
+  position: absolute;    
+  top: 0;    
+  left: 50%;    
+  transform: translateX(-50%);    
+  width: 80%;    
+  height: 150vh;    
+  border: 2px solid rgba(255, 255, 255, 0.7);    
+  border-top-left-radius: 200px;    
+  border-top-right-radius: 200px;  
+  z-index: 10;  
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; 
+  align-items: center; 
+  padding-top: 10vh;
+}
+
+/* Make the box taller when showing all events */
+.decorative-box.all-events {
+  height: auto; /* Auto height based on content */
+  min-height: 250vh; /* Minimum height */
+  bottom: 0; /* Extend to bottom */
+}
+  
+.image-container {  
+  position: relative;  
+  width: 100%;
+  height: 70vh;
+  overflow: hidden;
+  border-top-left-radius: 180px;    
+  border-top-right-radius: 180px;
+  flex-shrink: 0; /* Prevent image from shrinking */
+}
+  
+.decorative-image {  
+  width: 100%;  
+  height: 100%;  
+  object-fit: cover;
+  object-position: center;
+  border-top-left-radius: 200px;    
+  border-top-right-radius: 200px;
+}
+         
+/* EVENT TWO: Text content styling */
+.event-two {
+  width: 100%;
+  color: white;
+  padding: 3rem 2rem;
+  text-align: center;
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* Removed scroll functionality */
+}
+
+.event-item {
+  width: 100%;
+  margin-bottom: 2rem;
+}
+
+.event-divider {
+  width: 50%;
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.3);
+  margin: 3rem auto;
+}
+
+.event-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.5rem;
+  font-weight: 400;
+  letter-spacing: 2px;
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+}
+
+.event-date, .event-time {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.event-location {
+  font-family: 'Montserrat', sans-serif;
+  margin-top: 1.5rem;
+  font-size: 1rem;
+  font-weight: 300;
+}
+
+.event-venue {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 400;
+  margin-bottom: 0.25rem;
+}
+
+.event-address {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1rem;
+  font-weight: 300;
+  margin-bottom: 2rem;
 }
 
 .map-button {
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 2rem;
+  border: 1px solid white;
+  border-radius: 50px;
+  color: white;
+  text-decoration: none;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1rem;
+  font-weight: 400;
+  transition: all 0.3s ease;
+  width: 80%;
+  max-width: 300px;
 }
 
 .map-button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.map-icon {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
   background-color: white;
-  color: #4D4D4D;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-radius: 50%;
+  margin-right: 10px;
+  position: relative;
 }
 
-.map-button:active {
-  transform: translateY(0);
+/* Add this to create the black circle in the center */
+.map-icon::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background-color: black;
 }
 
-.qr-container {
-  transition: transform 0.3s ease;
+.map-icon::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 6px solid white;
 }
 
-.qr-container:hover {
-  transform: scale(1.05);
-}
-
-section {
-  transition: background-image 0.5s ease-in-out;
-}
-
-.absolute {
-  transition: opacity 0.5s ease-in-out;
-}
+/* For a responsive box that scales better on different screens */    
+@media (max-width: 768px) {    
+  .decorative-box {    
+    width: 90%; 
+    padding: 10px;   
+    height: 100vh;
+  }
+  
+  .decorative-box.all-events {
+    min-height: 200vh;
+  }
+  
+  .extended-section {
+    min-height: 180vh;
+  }
+  
+  .image-container {
+    height: 50vh;
+  }
+  
+  .event-two {
+    padding: 1.5rem 1rem;
+    margin-top: 1rem;
+  }
+  
+  .event-title {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+  
+  .event-date, .event-time, .event-venue {
+    font-size: 1.1rem;
+  }
+  
+  .event-location, .event-address {
+    font-size: 0.9rem;
+  }
+  
+  .map-button {
+    padding: 0.6rem 1.5rem;
+    font-size: 0.9rem;
+  }
+  
+  .event-divider {
+    margin: 2rem auto;
+  }
+}    
 </style>

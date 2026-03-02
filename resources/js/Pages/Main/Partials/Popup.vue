@@ -15,7 +15,7 @@ const loadingProgress = ref(0);
 const preloadImage = () => {
   return new Promise((resolve) => {
     const img = new Image();
-    img.src = "/assets/images/opening.webp";
+    img.src = "/assets/images/opening_img.jpg";
 
     // Simulasi progress loading
     const simulateProgress = () => {
@@ -200,7 +200,7 @@ onMounted(async () => {
       <!-- Background dengan optimasi -->
       <div class="absolute inset-0">
         <img
-          src="/assets/images/opening.webp"
+          src="/assets/images/opening_img.jpg"
           alt="Wedding Background"
           class="absolute inset-0 w-full h-full object-cover"
           loading="eager"
@@ -231,7 +231,7 @@ onMounted(async () => {
             class="names flex items-center justify-center flex-col gap-4"
           >
             <h2 class="font-eyesome text-2xl tracking-wider font-light">
-              Dharma & Astri
+              Hendra & Dinda
             </h2>
           </div>
         </div>

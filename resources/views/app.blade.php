@@ -4,28 +4,28 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title inertia>Dharma & Astri Wedding</title>
+    <title inertia>Hendra & Dinda Wedding</title>
 
     <!-- Primary Meta Tags -->
-    <meta name="title" content="Dharma & Astri Wedding">
+    <meta name="title" content="Hendra & Dinda Wedding">
     <meta name="description" content="Kami mengundang Anda untuk menghadiri pernikahan kami">
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ url()->current() }}">
-    <meta property="og:title" content="Dharma & Astri Wedding">
+    <meta property="og:title" content="Hendra & Dinda Wedding">
     <meta property="og:description" content="Kami mengundang Anda untuk menghadiri pernikahan kami">
     <meta property="og:image" content="{{ asset('assets/images/main.webp') }}">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="{{ url()->current() }}">
-    <meta property="twitter:title" content="Dharma & Astri Wedding">
+    <meta property="twitter:title" content="Hendra & Dinda Wedding">
     <meta property="twitter:description" content="Kami mengundang Anda untuk menghadiri pernikahan kami">
     <meta property="twitter:image" content="{{ asset('assets/images/main.webp') }}">
 
     <!-- WhatsApp -->
-    <meta property="og:site_name" content="Dharma & Astri Wedding">
+    <meta property="og:site_name" content="Hendra & Dinda Wedding">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
 

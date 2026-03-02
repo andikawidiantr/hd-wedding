@@ -13,7 +13,7 @@ const audio = ref(null);
 const canAutoPlay = ref(false);
 
 onMounted(() => {
-  audio.value = new Audio('/assets/music/music-new.mp3');
+  audio.value = new Audio('/assets/music/song.mp3');
   audio.value.preload = 'auto';
 });
 
@@ -72,7 +72,7 @@ onBeforeUnmount(() => {
               :key="play ? 'pause' : 'play'"
               :name="play ? 'pause' : 'play'" 
               size="24"
-              class="transform transition-transform duration-300 group-hover:scale-110"
+              class="transform transition-transform duration-300 group-hover:scale-110 text-black"
             />
           </Transition>
         </div>
@@ -153,8 +153,8 @@ button:active {
 /* Update gradient untuk lebih soft */
 button {
   background: linear-gradient(145deg, 
-    rgba(255, 107, 107, 0.9), 
-    rgba(255, 135, 135, 0.9)
+    rgba(255, 255, 255, 0.9), 
+    rgba(255, 255, 255, 0.9)
   );
   backdrop-filter: blur(5px);
 }

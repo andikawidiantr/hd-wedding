@@ -3,118 +3,16 @@ import { onMounted, onUnmounted, ref, watch } from "vue";
 import gsap from "gsap";
 import ScrollToPlugin from "gsap/ScrollToPlugin";
 import { show } from "../Utils/index";
+import { useI18n } from 'vue-i18n'; // Import useI18n
+
+// Initialize i18n
+const { t } = useI18n();
 
 gsap.registerPlugin(ScrollToPlugin);
 
 const sectionRef = ref(null);
-const currentImageIndex = ref(0);
-const imagesLoaded = ref(0);
-const isLoading = ref(true);
-const loadingError = ref(false);
 const animationTriggered = ref(false);
 let observer = null;
-let slideInterval = null;
-
-const imageUrls = [
-  "/assets/images/main.webp",
-  "/assets/images/main-2.webp",
-  "/assets/images/main-4.webp",
-];
-
-// Preload gambar dengan strategi progressive loading
-const preloadImages = async () => {
-  try {
-    const loadImage = (url) => {
-      return new Promise((resolve, reject) => {
-        const img = new Image();
-
-        img.onload = () => {
-          imagesLoaded.value++;
-          resolve(img);
-        };
-
-        img.onerror = () => {
-          console.error(`Failed to load image: ${url}`);
-          reject(new Error(`Failed to load image: ${url}`));
-        };
-
-        // Cache busting untuk development
-        const cacheBuster =
-          process.env.NODE_ENV === "development" ? `?t=${Date.now()}` : "";
-        img.src = url + cacheBuster;
-      });
-    };
-
-    // Load gambar pertama dengan prioritas
-    await loadImage(imageUrls[0]);
-    initializeBackgrounds(); // Mulai dengan gambar pertama
-
-    // Load gambar sisanya
-    const remainingImages = imageUrls.slice(1);
-    await Promise.all(remainingImages.map((url) => loadImage(url)));
-
-    isLoading.value = false;
-  } catch (error) {
-    console.error("Image loading failed:", error);
-    loadingError.value = true;
-    isLoading.value = false;
-  }
-};
-
-// Inisialisasi backgrounds dengan optimasi
-const initializeBackgrounds = () => {
-  if (!sectionRef.value) return;
-
-  const slideContainer = document.createElement("div");
-  slideContainer.className = "absolute inset-0 overflow-hidden";
-
-  imageUrls.forEach((url, index) => {
-    const slide = document.createElement("div");
-    slide.className = "slide absolute inset-0 bg-cover bg-center transform-gpu";
-    slide.style.backgroundImage = `url(${url})`;
-    slide.style.opacity = index === 0 ? "1" : "0";
-
-    // Optimasi untuk mobile
-    if (window.innerWidth <= 768) {
-      slide.style.transform = "translateZ(0)";
-      slide.style.willChange = "opacity";
-    }
-
-    slideContainer.appendChild(slide);
-  });
-
-  sectionRef.value.insertBefore(slideContainer, sectionRef.value.firstChild);
-  startSlideshow();
-};
-
-// Fungsi untuk slideshow dengan optimasi
-const startSlideshow = () => {
-  if (slideInterval) clearInterval(slideInterval);
-
-  slideInterval = setInterval(() => {
-    const nextIndex = (currentImageIndex.value + 1) % imageUrls.length;
-    transitionToNextImage(nextIndex);
-  }, 5000);
-};
-
-// Fungsi transisi dengan GSAP
-const transitionToNextImage = (nextIndex) => {
-  const slides = sectionRef.value.querySelectorAll(".slide");
-
-  gsap.to(slides[currentImageIndex.value], {
-    opacity: 0,
-    duration: 1.5,
-    ease: "power2.inOut",
-  });
-
-  gsap.to(slides[nextIndex], {
-    opacity: 1,
-    duration: 1.5,
-    ease: "power2.inOut",
-  });
-
-  currentImageIndex.value = nextIndex;
-};
 
 // Initial state setup
 const setInitialState = () => {
@@ -240,34 +138,20 @@ const setupIntersectionObserver = () => {
   }
 };
 
-// Lifecycle hooks
-onMounted(async () => {
-  setInitialState();
-  setupIntersectionObserver();
-  await preloadImages();
-
-  if (show.value) {
-    showBackgroundOnly();
-  }
-
-  // Handle page visibility
-  document.addEventListener("visibilitychange", () => {
-    if (document.visibilityState === "visible") {
-      startSlideshow();
-    } else {
-      if (slideInterval) clearInterval(slideInterval);
-    }
-  });
-});
+// Lifecycle hooks  
+onMounted(() => {  
+  setInitialState();  
+  setupIntersectionObserver();  
+  
+  if (show.value) {  
+    showBackgroundOnly();  
+  }  
+});  
 
 onUnmounted(() => {
   if (observer) {
     observer.disconnect();
   }
-  if (slideInterval) {
-    clearInterval(slideInterval);
-  }
-  document.removeEventListener("visibilitychange", () => {});
 });
 </script>
 
@@ -275,69 +159,31 @@ onUnmounted(() => {
   <section
     ref="sectionRef"
     id="main"
-    class="min-h-screen flex items-start justify-center relative bg-[#4D4D4D] overflow-hidden"
+    class="min-h-screen flex items-center justify-center relative overflow-hidden"  
     tabindex="0"
     @focus="!show && startAnimation()"
   >
-    <!-- Loading Screen -->
-    <div
-      v-if="isLoading"
-      class="fixed inset-0 bg-black flex items-center justify-center z-[101]"
-    >
-      <div class="relative flex flex-col justify-center items-center">
-        <img
-          src="/assets/images/spinner.gif"
-          alt="Loading"
-          class="w-24 h-24 object-contain"
-        />
-        <!-- Percentage Text -->
-        <div class="mt-2">
-          <span class="text-white text-center font-eyesome text-xl">
-            {{ Math.round((imagesLoaded / imageUrls.length) * 100) }}%
-          </span>
-          <p class="text-white font-eyesome animate-pulse text-xl">Loading...</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Error Screen -->
-    <div
-      v-if="loadingError"
-      class="fixed inset-0 flex items-center justify-center bg-[#4D4D4D] z-[100]"
-    >
-      <div class="text-center text-white">
-        <p class="mb-4 font-eyesome">Failed to load images</p>
-        <button
-          @click="preloadImages"
-          class="px-4 py-2 border border-white rounded hover:bg-white hover:text-black transition-colors"
-        >
-          Retry
-        </button>
-      </div>
-    </div>
-
-    <!-- Background Gradient -->
-    <div
-      class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/50 to-black/70"
-    ></div>
+    <!-- Background Gradient Overlay -->  
+    <!-- <div  
+      class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/50 to-black/70 z-1"  
+    ></div> -->
 
     <!-- Main Content -->
     <div
-      class="flex flex-col gap-4 justify-center items-center relative z-10 pt-20 px-4"
-      :style="{ visibility: isLoading ? 'hidden' : 'visible' }"
-    >
+      class="flex flex-col gap-4 justify-center items-center relative z-10 w-full"
+    >  
       <h1
         class="subtitle font-eyesome text-7xl text-white opacity-0 text-center transform-gpu"
         :class="{ 'blur-sm': show }"
       >
-        Wedding Day
+        {{ t('wedding_day', 'Wedding Day') }}
       </h1>
 
       <h6
         class="title font-eyesome text-white text-3xl tracking-wide opacity-0 text-center transform-gpu"
         :class="{ 'blur-sm': show }"
       >
-        Dharma & Astri
+        Hendra & Dinda
       </h6>
 
       <div class="divider opacity-0 transform-gpu" :class="{ 'blur-sm': show }">
@@ -348,7 +194,7 @@ onUnmounted(() => {
         class="date font-eyesome text-white text-center text-3xl opacity-0 transform-gpu"
         :class="{ 'blur-sm': show }"
       >
-        29.09.2025
+        {{ t('wedding_date', '25.03.2026') }}
       </p>
     </div>
 
@@ -379,60 +225,10 @@ onUnmounted(() => {
   transform-origin: top;
 }
 
-/* Loading Spinner */
-.loading-spinner {
-  width: 40px;
-  height: 40px;
-  border: 3px solid rgba(255, 255, 255, 0.3);
-  border-radius: 50%;
-  border-top-color: white;
-  animation: spin 1s ease-in-out infinite;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-/* Slide Transitions */
-.slide {
-  will-change: opacity;
-  transition: opacity 1.5s ease-in-out;
-  transform: translateZ(0);
-  backface-visibility: hidden;
-}
-
-/* Ken Burns Effect - Desktop Only */
-@media (min-width: 769px) {
-  @keyframes kenBurns {
-    0% {
-      transform: scale(1);
-    }
-    100% {
-      transform: scale(1.1);
-    }
-  }
-
-  .slide {
-    animation: kenBurns 20s infinite alternate;
-  }
-}
-
 /* Mobile Optimizations */
 @media (max-width: 768px) {
   .divider {
     height: 35px;
-  }
-
-  .slide {
-    animation: none !important;
-    transform: translateZ(0);
-    -webkit-transform: translateZ(0);
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-    perspective: 1000;
-    -webkit-perspective: 1000;
   }
 
   /* Disable hover effects on mobile */

@@ -63,6 +63,36 @@
     lodash.clonedeep "^4.5.0"
     lodash.isequal "^4.5.0"
 
+"@intlify/core-base@12.0.0-alpha.3":
+  version "12.0.0-alpha.3"
+  resolved "https://registry.npmjs.org/@intlify/core-base/-/core-base-12.0.0-alpha.3.tgz"
+  integrity sha512-LEvBHBUbiOOtIBkp4IIQENVC5Fg2YHsvdXN1+WRIxQ8hzHbHSBiqZ2l68B/yg8sE1a4S7dqhkaAedunShWPH+Q==
+  dependencies:
+    "@intlify/message-compiler" "12.0.0-alpha.3"
+    "@intlify/shared" "12.0.0-alpha.3"
+
+"@intlify/message-compiler@12.0.0-alpha.3":
+  version "12.0.0-alpha.3"
+  resolved "https://registry.npmjs.org/@intlify/message-compiler/-/message-compiler-12.0.0-alpha.3.tgz"
+  integrity sha512-mDDTN3gfYOHhBnpnlby19UHyvMaOnzdlpsIrxUfs44R/vCATfn8pMOkE8PXD2t410xkocEj3FpDcC9XC/0v4Dg==
+  dependencies:
+    "@intlify/shared" "12.0.0-alpha.3"
+    source-map-js "^1.0.2"
+
+"@intlify/shared@12.0.0-alpha.3":
+  version "12.0.0-alpha.3"
+  resolved "https://registry.npmjs.org/@intlify/shared/-/shared-12.0.0-alpha.3.tgz"
+  integrity sha512-ryaNYBvxQjyJUmVuBBg+HHUsmGnfxcEUPR0NCeG4/K9N2qtyFE35C80S15IN6iYFE2MGWLN7HfOSyg0MXZIc9w==
+
+"@intlify/vue-i18n-core@12.0.0-alpha.3":
+  version "12.0.0-alpha.3"
+  resolved "https://registry.npmjs.org/@intlify/vue-i18n-core/-/vue-i18n-core-12.0.0-alpha.3.tgz"
+  integrity sha512-YwAfTQILHN+VoK0P/Yv47GbKnEf1lhfbliyVyW3knAL1EmT8m0m3rwffXJnwyQhYw8Jpx85CpL49WkSgyi6d/g==
+  dependencies:
+    "@intlify/core-base" "12.0.0-alpha.3"
+    "@intlify/shared" "12.0.0-alpha.3"
+    "@vue/devtools-api" "^6.5.0"
+
 "@isaacs/cliui@^8.0.2":
   version "8.0.2"
   resolved "https://registry.npmjs.org/@isaacs/cliui/-/cliui-8.0.2.tgz"
@@ -212,6 +242,11 @@
   dependencies:
     "@vue/compiler-dom" "3.5.21"
     "@vue/shared" "3.5.21"
+
+"@vue/devtools-api@^6.5.0":
+  version "6.6.4"
+  resolved "https://registry.npmjs.org/@vue/devtools-api/-/devtools-api-6.6.4.tgz"
+  integrity sha512-sGhTPMuXqZ1rVOk32RylztWkfXTRhuS7vgAKv0zjqk8gbsHkJ7xfFf+jbySxt7tWObEJwyKaHMikV/WGDiQm8g==
 
 "@vue/reactivity@3.5.21":
   version "3.5.21"
@@ -1172,7 +1207,7 @@ signal-exit@^4.0.1:
   resolved "https://registry.npmjs.org/signal-exit/-/signal-exit-4.1.0.tgz"
   integrity sha512-bzyZ1e88w9O1iNJbKnOlvYTrWPDl46O1bG0D3XInv+9tkPrxrN8jUUTiFlDkkmKWgn1M6CfIA13SuGqOa9Korw==
 
-source-map-js@^1.2.1:
+source-map-js@^1.0.2, source-map-js@^1.2.1:
   version "1.2.1"
   resolved "https://registry.npmjs.org/source-map-js/-/source-map-js-1.2.1.tgz"
   integrity sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==
@@ -1356,6 +1391,16 @@ vue-easy-lightbox@^1.19.0:
   version "1.19.0"
   resolved "https://registry.npmjs.org/vue-easy-lightbox/-/vue-easy-lightbox-1.19.0.tgz"
   integrity sha512-YxLXgjEn91UF3DuK1y8u3Pyx2sJ7a/MnBpkyrBSQkvU1glzEJASyAZ7N+5yDpmxBQDVMwCsL2VmxWGIiFrWCgA==
+
+vue-i18n@^12.0.0-alpha.3:
+  version "12.0.0-alpha.3"
+  resolved "https://registry.npmjs.org/vue-i18n/-/vue-i18n-12.0.0-alpha.3.tgz"
+  integrity sha512-+KQgD9LJoHfGCdJh3gaLdVS/Sps1n860+6wsjyeNLWJeEofjdVH7KPjz4rAeBlTAUaIDlIjHoXQY0Lk+8B6S9w==
+  dependencies:
+    "@intlify/core-base" "12.0.0-alpha.3"
+    "@intlify/shared" "12.0.0-alpha.3"
+    "@intlify/vue-i18n-core" "12.0.0-alpha.3"
+    "@vue/devtools-api" "^6.5.0"
 
 vue@*, "vue@^2.7.0 || ^3.0.0", vue@^3.0.0, vue@^3.2.0, vue@^3.2.25, vue@^3.4.0, vue@^3.5.0, vue@3.5.21:
   version "3.5.21"
