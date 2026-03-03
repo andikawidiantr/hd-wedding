@@ -22,7 +22,7 @@ const props = defineProps({
 const allEvents = computed(() => [
   {
     code: "23",
-    title: t('events.tipat_bantal.title', 'Tipat Bantal'),
+    title: t('events.tipat_bantal.title', 'Memadik/Nyuwaka'),
     date: t('events.tipat_bantal.date', 'Rabu, 23 Maret 2026'),
     time: t('events.tipat_bantal.time', 'Pukul 10.00 - Selesai'),
     venue: t('events.tipat_bantal.venue', 'Desa Jagapati'),

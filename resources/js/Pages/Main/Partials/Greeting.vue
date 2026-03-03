@@ -10,7 +10,10 @@ const { t, locale } = useI18n();
 const imageLoaded = ref(false);
 const isVisible = ref(false);
 const sectionRef = ref(null);
-const wishesImageLoaded = ref(false);
+const videoLoaded = ref(false);
+const videoPlaying = ref(false);
+const videoElement = ref(null);
+const isMuted = ref(true);
 
 const props = defineProps({
   greeting: Object,
@@ -45,17 +48,34 @@ const preloadImage = (url) => {
   });
 };
 
-// Preload wishes image
-const preloadWishesImage = (url) => {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.src = url;
-    img.onload = () => {
-      wishesImageLoaded.value = true;
-      resolve();
-    };
-    img.onerror = reject;
-  });
+// Video controls
+const togglePlay = () => {
+  if (videoElement.value) {
+    if (videoElement.value.paused) {
+      videoElement.value.play();
+      videoPlaying.value = true;
+    } else {
+      videoElement.value.pause();
+      videoPlaying.value = false;
+    }
+  }
+};
+
+const toggleMute = () => {
+  if (videoElement.value) {
+    videoElement.value.muted = !videoElement.value.muted;
+    isMuted.value = videoElement.value.muted;
+  }
+};
+
+const toggleFullscreen = () => {
+  if (videoElement.value) {
+    if (document.fullscreenElement) {
+      document.exitFullscreen();
+    } else {
+      videoElement.value.requestFullscreen();
+    }
+  }
 };
 
 // Simple Intersection Observer
@@ -102,6 +122,25 @@ const handleSubmit = async () => {
   }
 };
 
+// Format time for video player
+const formatTime = (timeInSeconds) => {
+  const minutes = Math.floor(timeInSeconds / 60);
+  const seconds = Math.floor(timeInSeconds % 60);
+  return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+};
+
+// Current time and duration for video
+const currentTime = ref('0:00');
+const duration = ref('0:00');
+
+// Update time display
+const updateTimeDisplay = () => {
+  if (videoElement.value) {
+    currentTime.value = formatTime(videoElement.value.currentTime);
+    duration.value = formatTime(videoElement.value.duration);
+  }
+};
+
 // Responsive height
 const isSmallScreen = computed(() => {
   if (typeof window !== 'undefined') {
@@ -115,10 +154,7 @@ onMounted(async () => {
     // Set moment locale
     updateMomentLocale();
     
-    await Promise.all([
-      preloadImage("/assets/images/greeting.webp"),
-      preloadWishesImage("/assets/images/743.JPG") // Replace with your actual image path
-    ]);
+    await preloadImage("/assets/images/edit-26.jpg");
     
     const observer = setupIntersectionObserver();
     
@@ -128,12 +164,34 @@ onMounted(async () => {
     };
     window.addEventListener('resize', handleResize);
     
+    // Set up video event listeners when mounted
+    if (videoElement.value) {
+      videoElement.value.addEventListener('loadeddata', () => {
+        videoLoaded.value = true;
+        updateTimeDisplay();
+      });
+      
+      videoElement.value.addEventListener('timeupdate', updateTimeDisplay);
+      videoElement.value.addEventListener('play', () => { videoPlaying.value = true; });
+      videoElement.value.addEventListener('pause', () => { videoPlaying.value = false; });
+    }
+    
     return () => {
       observer.disconnect();
       window.removeEventListener('resize', handleResize);
+      
+      // Clean up video event listeners
+      if (videoElement.value) {
+        videoElement.value.removeEventListener('loadeddata', () => {
+          videoLoaded.value = true;
+        });
+        videoElement.value.removeEventListener('timeupdate', updateTimeDisplay);
+        videoElement.value.removeEventListener('play', () => { videoPlaying.value = true; });
+        videoElement.value.removeEventListener('pause', () => { videoPlaying.value = false; });
+      }
     };
   } catch (error) {
-    console.error("Error loading images:", error);
+    console.error("Error loading media:", error);
   }
 });
 </script>
@@ -152,20 +210,68 @@ onMounted(async () => {
         class="w-full flex flex-col justify-start gap-4 h-full p-4 transition-all duration-700"
         :class="{ 'translate-y-20 opacity-0': !isVisible }"
       >
-        <!-- Title with Image -->
+        <!-- Title with Video -->
         <div class="w-full flex flex-col gap-6">
-          <!-- Image above wishes -->
+          <!-- Video player replacing image -->
           <div class="w-full flex justify-center mb-2">
-            <div class="w-full max-w-md h-40 overflow-hidden shadow-lg">
-              <img 
-                src="/assets/images/743.JPG" 
-                alt="Wedding Wishes" 
-                class="w-full h-full object-cover transition-opacity duration-500"
-                :class="{ 'opacity-0': !wishesImageLoaded, 'opacity-100': wishesImageLoaded }"
-                @load="wishesImageLoaded = true"
-              />
+            <div class="w-full max-w-md shadow-lg relative">
+              <!-- Video Element -->
+              <video
+                ref="videoElement"
+                src="/assets/videos/video_gallery.mp4"
+                class="w-full h-auto object-cover rounded-lg"
+                preload="auto"
+                @click="togglePlay"
+                :muted="isMuted"
+              ></video>
+              
+              <!-- Video Controls Overlay -->
+              <div class="absolute bottom-0 left-0 right-0 bg-black/50 p-2 flex flex-col">
+                <!-- Progress Bar -->
+                <div class="w-full bg-gray-600 h-1 rounded-full mb-2">
+                  <div 
+                    class="bg-white h-full rounded-full" 
+                    :style="{ width: videoElement && videoElement.duration ? (videoElement.currentTime / videoElement.duration * 100) + '%' : '0%' }"
+                  ></div>
+                </div>
+                
+                <!-- Controls -->
+                <div class="flex justify-between items-center">
+                  <!-- Play/Pause Button -->
+                  <button @click.stop="togglePlay" class="text-white p-1">
+                    <mdicon v-if="!videoPlaying" name="play" width="24" />
+                    <mdicon v-else name="pause" width="24" />
+                  </button>
+                  
+                  <!-- Time Display -->
+                  <div class="text-white text-xs">
+                    {{ currentTime }} / {{ duration }}
+                  </div>
+                  
+                  <!-- Mute Button -->
+                  <button @click.stop="toggleMute" class="text-white p-1">
+                    <mdicon v-if="isMuted" name="volume-off" width="24" />
+                    <mdicon v-else name="volume-high" width="24" />
+                  </button>
+                  
+                  <!-- Fullscreen Button -->
+                  <button @click.stop="toggleFullscreen" class="text-white p-1">
+                    <mdicon name="fullscreen" width="24" />
+                  </button>
+                  
+                  <!-- Options Button -->
+                  <button class="text-white p-1">
+                    <mdicon name="dots-vertical" width="24" />
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
+          
+          <!-- Video Caption Text -->
+          <p class="text-center text-white text-sm italic">
+            {{ t('mute_music_when_watching', '*Matikan musik undangan saat memutar video') }}
+          </p>
           
           <div class="flex items-center justify-center w-full my-6">
             <div class="flex-grow border-t border-white mr-4"></div>
@@ -279,25 +385,6 @@ onMounted(async () => {
             </div>
           </div>
         </div>
-        
-        <!-- Language Switcher -->
-        <!-- <div class="language-switcher mt-4 flex justify-center">
-          <button 
-            @click="locale = 'id'" 
-            :class="{ 'active-lang': locale === 'id' }"
-            class="lang-button"
-          >
-            ID
-          </button>
-          <span class="divider">|</span>
-          <button 
-            @click="locale = 'en'" 
-            :class="{ 'active-lang': locale === 'en' }"
-            class="lang-button"
-          >
-            EN
-          </button>
-        </div> -->
       </div>
     </div>
   </section>
@@ -334,34 +421,22 @@ onMounted(async () => {
   background: transparent;
 }
 
-/* Language switcher styles */
-.language-switcher {
-  background-color: rgba(0, 0, 0, 0.4);
-  border-radius: 20px;
-  padding: 5px 10px;
-  display: inline-flex;
-  align-items: center;
+/* Video player styles */
+video {
+  max-height: 240px;
+  background-color: black;
 }
 
-.lang-button {
-  background: none;
-  border: none;
-  color: white;
-  padding: 5px 8px;
+video:hover + .controls, .controls:hover {
+  opacity: 1;
+}
+
+button {
   cursor: pointer;
-  font-family: 'Montserrat', sans-serif;
-  font-size: 14px;
-  transition: all 0.3s ease;
 }
 
-.active-lang {
-  font-weight: bold;
-  color: gold;
-}
-
-.divider {
-  color: rgba(255, 255, 255, 0.5);
-  margin: 0 2px;
+button:focus {
+  outline: none;
 }
 
 @media (prefers-reduced-motion: reduce) {

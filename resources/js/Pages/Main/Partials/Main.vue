@@ -173,14 +173,14 @@ onUnmounted(() => {
       class="flex flex-col gap-4 justify-center items-center relative z-10 w-full"
     >  
       <h1
-        class="subtitle font-eyesome text-7xl text-white opacity-0 text-center transform-gpu"
+        class="subtitle font-fanwood text-6xl font-light text-white opacity-0 text-center transform-gpu"
         :class="{ 'blur-sm': show }"
       >
         {{ t('wedding_day', 'Wedding Day') }}
       </h1>
 
       <h6
-        class="title font-eyesome text-white text-3xl tracking-wide opacity-0 text-center transform-gpu"
+        class="title font-playball text-white text-4xl tracking-wide opacity-0 text-center transform-gpu pt-16"
         :class="{ 'blur-sm': show }"
       >
         Hendra & Dinda
@@ -191,7 +191,7 @@ onUnmounted(() => {
       </div>
 
       <p
-        class="date font-eyesome text-white text-center text-3xl opacity-0 transform-gpu"
+        class="date font-playball text-white text-center text-3xl opacity-0 transform-gpu"
         :class="{ 'blur-sm': show }"
       >
         {{ t('wedding_date', '25.03.2026') }}

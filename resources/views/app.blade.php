@@ -15,14 +15,14 @@
     <meta property="og:url" content="{{ url()->current() }}">
     <meta property="og:title" content="Hendra & Dinda Wedding">
     <meta property="og:description" content="Kami mengundang Anda untuk menghadiri pernikahan kami">
-    <meta property="og:image" content="{{ asset('assets/images/main.webp') }}">
+    <meta property="og:image" content="{{ asset('assets/images/edit-26.jpg') }}">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="{{ url()->current() }}">
     <meta property="twitter:title" content="Hendra & Dinda Wedding">
     <meta property="twitter:description" content="Kami mengundang Anda untuk menghadiri pernikahan kami">
-    <meta property="twitter:image" content="{{ asset('assets/images/main.webp') }}">
+    <meta property="twitter:image" content="{{ asset('assets/images/edit-26.jpg') }}">
 
     <!-- WhatsApp -->
     <meta property="og:site_name" content="Hendra & Dinda Wedding">

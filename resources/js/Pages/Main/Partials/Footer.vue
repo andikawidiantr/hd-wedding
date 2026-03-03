@@ -19,62 +19,44 @@ const setupAnimations = () => {
   gsap.fromTo(thankYouRef.value,  
     {   
       opacity: 0,  
-      y: 30  
+      y: 50  // Mulai dari posisi lebih jauh
     },  
     {  
       opacity: 1,  
       y: 0,  
-      duration: 1.5,  
-      ease: "power4.out",  
+      duration: 2, // Durasi lebih lama (diubah dari 1.5 menjadi 2.5)
+      ease: "power2.out", // Ease yang lebih lembut
       scrollTrigger: {  
         trigger: footerRef.value,  
-        start: "top center+=100",  
-        toggleActions: "play none none reverse"  
+        start: "top 70%", // Trigger lebih awal (diubah dari "top center+=100")
+        toggleActions: "play none none reverse",
+        // markers: true, // Aktifkan ini untuk debugging
       }  
     }  
   );  
   
-  // Names animation with sparkle effect  
+  // Names animation - LEBIH LAMBAT DAN ELEGAN
   gsap.fromTo(namesRef.value,  
     {  
       opacity: 0,  
-      scale: 0.95,  
-      filter: 'blur(5px)'  
+      scale: 0.92,  
+      filter: 'blur(8px)'  
     },  
     {  
       opacity: 1,  
       scale: 1,  
       filter: 'blur(0px)',  
-      duration: 2,  
-      delay: 0.5,  
-      ease: "power4.out",  
+      duration: 3, // Durasi lebih lama (diubah dari 2 menjadi 3)
+      delay: 0.5, // Delay lebih lama setelah "Thank You" (diubah dari 0.5 menjadi 1.2)
+      ease: "power3.out", // Ease yang lebih lembut
       scrollTrigger: {  
         trigger: footerRef.value,  
-        start: "top center+=100",  
+        start: "top 70%", // Trigger lebih awal (sama dengan Thank You)
         toggleActions: "play none none reverse"  
       }  
     }  
   );  
   
-  // Credits fade up animation  
-  gsap.fromTo(creditsRef.value,  
-    {  
-      opacity: 0,  
-      y: 20  
-    },  
-    {  
-      opacity: 1,  
-      y: 0,  
-      duration: 1,  
-      delay: 1,  
-      ease: "power3.out",  
-      scrollTrigger: {  
-        trigger: footerRef.value,  
-        start: "top center+=100",  
-        toggleActions: "play none none reverse"  
-      }  
-    }  
-  );  
 };  
   
 onMounted(async () => {  
@@ -100,13 +82,13 @@ onMounted(async () => {
       <div class="flex flex-col gap-0 mb-4">  
         <h2   
           ref="thankYouRef"  
-          class="font-poly text-center text-white text-xl animate-fade-in"  
+          class="font-poly text-center font-light text-white text-4xl"  
         >  
           {{ t('footer.thank_you', 'Thank You') }}  
         </h2>  
         <h2   
           ref="namesRef"  
-          class="font-eyesome text-center text-white text-3xl animate-sparkle"  
+          class="font-playball text-center text-white text-3xl mt-2" 
         >  
           {{ t('footer.couple_names', 'Hendra & Dinda') }}  
         </h2>  
@@ -116,7 +98,7 @@ onMounted(async () => {
     <!-- Credits fixed at the bottom -->
     <div   
       ref="creditsRef"  
-      class="w-full pb-8 mt-auto animate-fade-up"  
+      class="w-full pb-8 mt-auto"  
     >  
       <p class="text-gray-200 text-center mb-5">  
         {{ t('footer.credits_prefix', 'Designed and Developed by') }} <br>
@@ -131,70 +113,7 @@ onMounted(async () => {
 </template>
   
 <style scoped>  
-/* Fade In Animation */  
-@keyframes fadeIn {  
-  from {  
-    opacity: 0;  
-    transform: translateY(30px);  
-  }  
-  to {  
-    opacity: 1;  
-    transform: translateY(0);  
-  }  
-}  
-  
-/* Sparkle Animation */  
-@keyframes sparkle {  
-  0% {  
-    opacity: 0;  
-    transform: scale(0.95);  
-    filter: blur(5px);  
-  }  
-  50% {  
-    opacity: 0.5;  
-    transform: scale(1.02);  
-    filter: blur(0);  
-  }  
-  100% {  
-    opacity: 1;  
-    transform: scale(1);  
-    filter: blur(0);  
-  }  
-}  
-  
-/* Fade Up Animation */  
-@keyframes fadeUp {  
-  from {  
-    opacity: 0;  
-    transform: translateY(20px);  
-  }  
-  to {  
-    opacity: 1;  
-    transform: translateY(0);  
-  }  
-}  
-  
-/* Apply animations as fallback */  
-.animate-fade-in {  
-  animation: fadeIn 1.5s ease-out forwards;  
-}  
-  
-.animate-sparkle {  
-  animation: sparkle 2s ease-out forwards;  
-}  
-  
-.animate-fade-up {  
-  animation: fadeUp 1s ease-out forwards;  
-  animation-delay: 1s;  
-}  
-  
-/* Optimize performance */  
-.font-poly,  
-.font-eyesome {  
-  transform: translateZ(0);  
-  backface-visibility: hidden;  
-  will-change: transform, opacity;  
-}  
+/* Removed CSS animations since we're using GSAP for animations */
   
 /* Hover effect for link */  
 a {  

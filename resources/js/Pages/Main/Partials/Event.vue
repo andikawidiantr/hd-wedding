@@ -18,7 +18,7 @@ const props = defineProps({
 const allEvents = [
   {
     code: "23",
-    title: "Tipat Bantal",
+    title: "Memadik/Nyuwaka",
     date: "Rabu, 23 Maret 2026",
     time: "Pukul 10.00 - Selesai",
     venue: "Desa Jagapati",

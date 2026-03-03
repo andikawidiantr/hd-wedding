@@ -86,7 +86,7 @@ const handleSubmit = async () => {
 
 onMounted(async () => {
   try {
-    await preloadImage("/assets/images/greeting.webp");
+    await preloadImage("/assets/images/edit-26.jpg");
     const observer = setupIntersectionObserver();
     return () => observer.disconnect();
   } catch (error) {

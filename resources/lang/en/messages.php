@@ -21,6 +21,7 @@ return [
     'wedding_day' => 'Wedding Day',
     'couple_names' => 'Hendra & Dinda',
     'wedding_date' => '25.03.2026',
+    'mute_music_when_watching' => '*Turn off the music while playing the video',
     'common' => [
         'located_at' => 'Located at',
         'google_maps' => 'Google Maps',
@@ -28,7 +29,7 @@ return [
     ],
     'events' => [
         'tipat_bantal' => [
-            'title' => 'Tipat Bantal',
+            'title' => 'Memadik/Nyuwaka',
             'date' => 'Wednesday, March 23, 2026',
             'time' => '10:00 AM - Finish',
             'venue' => 'Jagapati Village',
@@ -64,7 +65,7 @@ return [
         'name' => 'dr. Ni Luh Putu Dinda Rahayu Dermana, S.Ked',
         'description' => 'First Daughter of Mr. I Wayan Dermana Putra & Mrs. Ns. Ni Wayan Sudianingsih, S.Kep',
     ],
-        'countdown' => [
+    'countdown' => [
         'title_line1' => 'COUNTDOWN',
         'title_line2' => 'TIMER',
         'days' => 'Days',
@@ -72,11 +73,27 @@ return [
         'minutes' => 'Minutes',
         'seconds' => 'Seconds',
         'save_the_date' => 'Save The Date',
+        
+        // Calendar event titles
         'calendar_event_title' => 'Pawiwahan & Reception Hendra & Dinda',
-        'calendar_event_description' => 'Pawiwahan: 08:00 - 15:00 WITA
-Reception: 16:00 WITA - Finish
-Location: Asak Village, Karangasem',
-        'calendar_event_location' => 'Asak Village, Karangasem',
+        'calendar_event_title_tipat' => 'Memadik/Nyuwaka Ceremony Hendra & Dinda',
+        'calendar_event_title_pawiwahan' => 'Pawiwahan Ceremony Hendra & Dinda',
+        'calendar_event_title_resepsi' => 'Wedding Reception Hendra & Dinda',
+        'calendar_event_title_combined' => 'Memadik/Nyuwaka & Pawiwahan Ceremonies Hendra & Dinda',
+        
+        // Calendar event descriptions
+        'calendar_event_description' => 'Pawiwahan: 10:00 AM - Completion\nReception: 6:00 PM - Completion',
+        'calendar_event_description_tipat' => 'Memadik/Nyuwaka Ceremony: 10:00 AM - Completion\nLocation: Desa Jagapati, Pertima, Badung',
+        'calendar_event_description_pawiwahan' => 'Pawiwahan Ceremony: 10:00 AM - Completion\nLocation: Desa Asak, Pertima, Karangasem',
+        'calendar_event_description_resepsi' => 'Wedding Reception: 6:00 PM - Completion\nLocation: Villa D\'carik, Jalan Kaswari, Penatih, East Denpasar, Bali',
+        'calendar_event_description_combined' => 'Memadik/Nyuwaka: March 23, 2026, 10:00 AM - Completion\nPawiwahan: March 25, 2026, 10:00 AM - Completion',
+        
+        // Calendar event locations
+        'calendar_event_location' => 'Desa Asak, Karangasem & Villa D\'carik, Denpasar',
+        'calendar_event_location_tipat' => 'Desa Jagapati, Pertima, Badung',
+        'calendar_event_location_pawiwahan' => 'Desa Asak, Pertima, Karangasem',
+        'calendar_event_location_resepsi' => 'Villa D\'carik, Jalan Kaswari, Penatih, East Denpasar, Bali',
+        'calendar_event_location_combined' => 'Desa Jagapati & Desa Asak, Bali',
     ],
     'gallery' => [
         'title' => 'Our Gallery',

@@ -1,8 +1,8 @@
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, ref, onBeforeUnmount } from "vue";
 import gsap from 'gsap';
 import ScrollTrigger from 'gsap/ScrollTrigger';
-import { useI18n } from 'vue-i18n'; // Import useI18n
+import { useI18n } from 'vue-i18n';
 
 // Initialize i18n
 const { t } = useI18n();
@@ -16,7 +16,32 @@ const lineRef = ref(null);
 const nameRef = ref(null);
 const descRef = ref(null);
 const socialRef = ref(null);
-const animationTriggered = ref(false); 
+const animationTriggered = ref(false);
+const currentImageIndex = ref(0);
+
+// Array of image URLs
+const imageUrls = [
+  "/assets/images/bride_1.JPG",
+  "/assets/images/bride_2.JPG"
+];
+
+let slideInterval = null;
+
+// Preload images
+const preloadImages = async () => {
+  try {
+    // Load first image
+    await preloadImage(imageUrls[0]);
+    
+    // Initialize slideshow
+    initializeBackgrounds();
+    
+    // Load second image
+    await preloadImage(imageUrls[1]);
+  } catch (error) {
+    console.error("Error loading images:", error);
+  }
+};
 
 const preloadImage = (url) => {
   return new Promise((resolve, reject) => {
@@ -30,66 +55,127 @@ const preloadImage = (url) => {
   });
 };
 
+// Initialize backgrounds with optimization
+const initializeBackgrounds = () => {
+  if (!groomWomenRef.value) return;
+
+  const slideContainer = document.createElement("div");
+  slideContainer.className = "absolute inset-0 m-4 md:m-8 lg:m-12 overflow-hidden";
+
+  imageUrls.forEach((url, index) => {
+    const slide = document.createElement("div");
+    slide.className = "slide absolute inset-0 bg-cover bg-center transform-gpu";
+    slide.style.backgroundImage = `url(${url})`;
+    slide.style.backgroundPosition = '50% 50%';
+    slide.style.backgroundSize = 'cover';
+    slide.style.backgroundRepeat = 'no-repeat';
+    slide.style.opacity = index === 0 ? "1" : "0";
+
+    slideContainer.appendChild(slide);
+  });
+
+  // Insert the slide container before any other children
+  if (groomWomenRef.value.firstChild) {
+    groomWomenRef.value.insertBefore(slideContainer, groomWomenRef.value.firstChild);
+  } else {
+    groomWomenRef.value.appendChild(slideContainer);
+  }
+  
+  startSlideshow();
+};
+
+// Function for slideshow with optimization
+const startSlideshow = () => {
+  if (slideInterval) clearInterval(slideInterval);
+
+  slideInterval = setInterval(() => {
+    const nextIndex = (currentImageIndex.value + 1) % imageUrls.length;
+    transitionToNextImage(nextIndex);
+  }, 4000);
+};
+
+// Transition function with GSAP
+const transitionToNextImage = (nextIndex) => {
+  const slides = groomWomenRef.value.querySelectorAll(".slide");
+  if (!slides || slides.length < 2) return;
+
+  gsap.to(slides[currentImageIndex.value], {
+    opacity: 0,
+    duration: 1.2, // Durasi fade out
+    ease: "power2.inOut",
+  });
+
+  gsap.to(slides[nextIndex], {
+    opacity: 1,
+    duration: 1.2, // Durasi fade in
+    ease: "power2.inOut",
+  });
+
+  currentImageIndex.value = nextIndex;
+};
+
 onMounted(async () => {
-  try {
-    await preloadImage("/assets/images/045.JPG");
+  // Start preloading images
+  await preloadImages();
 
-    // Set initial states - do this immediately after image loads
-    gsap.set(
-      [titleRef.value, lineRef.value, nameRef.value, descRef.value, socialRef.value],
-      {
-        x: 50,
-        opacity: 0,
-      }
-    );
+  // Set initial states for content elements
+  gsap.set(
+    [titleRef.value, lineRef.value, nameRef.value, descRef.value, socialRef.value],
+    {
+      x: 50,
+      opacity: 0,
+    }
+  );
     
-    // Animasi setelah gambar dimuat
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: groomWomenRef.value,
-        start: "top center+=100",
-        end: "center center",
-        toggleActions: "play none none reverse",
-        onEnter: () => {
-          animationTriggered.value = true;
-        }
+  // Animasi setelah gambar dimuat
+  const tl = gsap.timeline({
+    scrollTrigger: {
+      trigger: groomWomenRef.value,
+      start: "top center+=100",
+      end: "center center",
+      toggleActions: "play none none reverse",
+      onEnter: () => {
+        animationTriggered.value = true;
       }
-    });
+    }
+  });
 
-    // Animasi sequence
-    tl.to(titleRef.value, {
-      x: 0,
-      opacity: 1,
-      duration: 0.8,
-      ease: "power3.out"
-    })
-    .to(lineRef.value, {
-      x: 0,
-      opacity: 1,
-      duration: 0.6,
-      ease: "power3.out"
-    }, "-=0.4")
-    .to(nameRef.value, {
-      x: 0,
-      opacity: 1,
-      duration: 0.8,
-      ease: "power3.out"
-    }, "-=0.4")
-    .to(descRef.value, {
-      x: 0,
-      opacity: 1,
-      duration: 0.8,
-      ease: "power3.out"
-    }, "-=0.4")
-    .to(socialRef.value, {
-      x: 0,
-      opacity: 1,
-      duration: 0.8,
-      ease: "power3.out"
-    }, "-=0.4");
+  // Animasi sequence
+  tl.to(titleRef.value, {
+    x: 0,
+    opacity: 1,
+    duration: 0.8,
+    ease: "power3.out"
+  })
+  .to(lineRef.value, {
+    x: 0,
+    opacity: 1,
+    duration: 0.6,
+    ease: "power3.out"
+  }, "-=0.4")
+  .to(nameRef.value, {
+    x: 0,
+    opacity: 1,
+    duration: 0.8,
+    ease: "power3.out"
+  }, "-=0.4")
+  .to(descRef.value, {
+    x: 0,
+    opacity: 1,
+    duration: 0.8,
+    ease: "power3.out"
+  }, "-=0.4")
+  .to(socialRef.value, {
+    x: 0,
+    opacity: 1,
+    duration: 0.8,
+    ease: "power3.out"
+  }, "-=0.4");
 
-    // Parallax effect pada background
-    gsap.to(".background-image", {  // Target the background div directly
+  // Parallax effect pada background
+  const slides = groomWomenRef.value.querySelectorAll(".slide");
+  slides.forEach(slide => {
+    gsap.to(slide, {
       backgroundPosition: "50% 30%",
       ease: "none",
       scrollTrigger: {
@@ -99,9 +185,13 @@ onMounted(async () => {
         scrub: true
       }
     });
+  });
+});
 
-  } catch (error) {
-    console.error("Error loading image:", error);
+// Clean up interval when component is unmounted
+onBeforeUnmount(() => {
+  if (slideInterval) {
+    clearInterval(slideInterval);
   }
 });
 </script>
@@ -115,16 +205,7 @@ onMounted(async () => {
       backgroundColor: 'transparent',
     }"
   >
-    <!-- Background div with padding effect -->
-    <div
-      class="absolute inset-0 m-4 md:m-8 lg:m-12 background-image"
-      :style="{
-        backgroundImage: imageLoaded ? 'url(/assets/images/045.jpg)' : 'none',
-        backgroundPosition: '50% 50%',
-        backgroundSize: 'cover',
-        backgroundRepeat: 'no-repeat',
-      }"
-    ></div>
+    <!-- Content -->
     <div class="w-full h-screen flex items-end justify-end z-[2] px-4 py-12 relative"> <!-- Ubah justify-start menjadi justify-end -->
       <div class="flex flex-col gap-4 p-4 items-end"> <!-- Tambah items-end untuk align kanan -->
         <h2
@@ -142,7 +223,7 @@ onMounted(async () => {
         </p>
         <a  
           ref="socialRef"  
-          href="https://www.instagram.com/"  
+          href="https://www.instagram.com/dindadermanaa_"  
           target="_blank"  
           class="social-button transition-all ease-in flex items-center gap-2 font-wittgenstein text-white px-4 py-1 rounded-xl w-fit text-xs relative group border border-white bg-black/30 backdrop-blur-sm"  
         >  
@@ -155,8 +236,7 @@ onMounted(async () => {
       </div>
     </div>
     <div 
-      class="absolute inset-0 m-4 md:m-8 lg:m-12 bg-black/10 transition-opacity duration-500"
-      :class="{ 'opacity-100': imageLoaded, 'opacity-0': !imageLoaded }"
+      class="absolute inset-0 m-4 md:m-8 lg:m-12 bg-black/10 transition-opacity duration-500 z-[1]"
     ></div>
   </section>
 </template>
@@ -164,6 +244,12 @@ onMounted(async () => {
 <style scoped>
 .transition-all {
   transition: all 0.3s ease-in-out;
+}
+
+.slide {
+  transition: opacity 1.2s ease;
+  will-change: opacity;
+  backface-visibility: hidden;
 }
  
 .social-button {

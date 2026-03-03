@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, ref, onBeforeUnmount } from "vue";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
 import { useI18n } from 'vue-i18n'; // Import useI18n
@@ -9,103 +9,204 @@ const { t } = useI18n();
 
 gsap.registerPlugin(ScrollTrigger);
 
-const imageLoaded = ref(false);
 const groomMenRef = ref(null);
 const titleRef = ref(null);
 const lineRef = ref(null);
 const nameRef = ref(null);
 const descRef = ref(null);
 const socialRef = ref(null);
-const animationTriggered = ref(false); 
+const animationTriggered = ref(false);
+const currentImageIndex = ref(0);
+const imagesLoaded = ref(0);
+const isLoading = ref(true);
 
-const preloadImage = (url) => {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.src = url;
-    img.onload = () => {
-      imageLoaded.value = true;
-      resolve();
+// Array of image URLs
+const imageUrls = [
+  "/assets/images/groom_1.JPG",
+  "/assets/images/groom_2.JPG"
+];
+
+let slideInterval = null;
+
+// Preload images with progressive loading strategy
+const preloadImages = async () => {
+  try {
+    const loadImage = (url) => {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+
+        img.onload = () => {
+          imagesLoaded.value++;
+          resolve(img);
+        };
+
+        img.onerror = () => {
+          console.error(`Failed to load image: ${url}`);
+          reject(new Error(`Failed to load image: ${url}`));
+        };
+
+        img.src = url;
+      });
     };
-    img.onerror = reject;
+
+    // Load first image with priority
+    await loadImage(imageUrls[0]);
+    initializeBackgrounds(); // Start with the first image
+
+    // Load remaining images
+    const remainingImages = imageUrls.slice(1);
+    await Promise.all(remainingImages.map((url) => loadImage(url)));
+
+    isLoading.value = false;
+  } catch (error) {
+    console.error("Image loading failed:", error);
+    isLoading.value = false;
+  }
+};
+
+// Initialize backgrounds with optimization
+const initializeBackgrounds = () => {
+  if (!groomMenRef.value) return;
+
+  const slideContainer = document.createElement("div");
+  slideContainer.className = "absolute inset-0 m-4 md:m-8 lg:m-12 overflow-hidden";
+
+  imageUrls.forEach((url, index) => {
+    const slide = document.createElement("div");
+    slide.className = "slide absolute inset-0 bg-cover bg-center transform-gpu";
+    slide.style.backgroundImage = `url(${url})`;
+    slide.style.backgroundPosition = '50% 50%';
+    slide.style.backgroundSize = 'cover';
+    slide.style.backgroundRepeat = 'no-repeat';
+    slide.style.opacity = index === 0 ? "1" : "0";
+
+    // Optimization for mobile
+    if (window.innerWidth <= 768) {
+      slide.style.transform = "translateZ(0)";
+      slide.style.willChange = "opacity";
+    }
+
+    slideContainer.appendChild(slide);
   });
+
+  // Insert the slide container before any other children
+  if (groomMenRef.value.firstChild) {
+    groomMenRef.value.insertBefore(slideContainer, groomMenRef.value.firstChild);
+  } else {
+    groomMenRef.value.appendChild(slideContainer);
+  }
+  
+  startSlideshow();
+};
+
+// Function for slideshow with optimization
+const startSlideshow = () => {
+  if (slideInterval) clearInterval(slideInterval);
+
+  slideInterval = setInterval(() => {
+    const nextIndex = (currentImageIndex.value + 1) % imageUrls.length;
+    transitionToNextImage(nextIndex);
+  }, 4000); // Change image every 4 seconds
+};
+
+// Transition function with GSAP
+const transitionToNextImage = (nextIndex) => {
+  const slides = groomMenRef.value.querySelectorAll(".slide");
+  if (!slides || slides.length < 2) return;
+
+  gsap.to(slides[currentImageIndex.value], {
+    opacity: 0,
+    duration: 1.5,
+    ease: "power2.inOut",
+  });
+
+  gsap.to(slides[nextIndex], {
+    opacity: 1,
+    duration: 1.5,
+    ease: "power2.inOut",
+  });
+
+  currentImageIndex.value = nextIndex;
 };
 
 onMounted(async () => {
-  try {
-    await preloadImage("/assets/images/170.jpg");
+  // Start preloading images
+  await preloadImages();
 
-    // Set initial states - do this immediately after image loads
-    gsap.set(
-      [titleRef.value, lineRef.value, nameRef.value, descRef.value, socialRef.value],
-      {
-        x: -50,
-        opacity: 0,
+  // Set initial states for content elements
+  gsap.set(
+    [titleRef.value, lineRef.value, nameRef.value, descRef.value, socialRef.value],
+    {
+      x: -50,
+      opacity: 0,
+    }
+  );
+
+  // Animasi setelah gambar dimuat
+  const tl = gsap.timeline({
+    scrollTrigger: {
+      trigger: groomMenRef.value,
+      start: "top center+=100",
+      end: "center center",
+      toggleActions: "play none none reverse",
+      onEnter: () => {
+        animationTriggered.value = true;
       }
+    },
+  });
+
+  // Animasi sequence
+  tl.to(titleRef.value, {
+    x: 0,
+    opacity: 1,
+    duration: 0.8,
+    ease: "power3.out",
+  })
+    .to(
+      lineRef.value,
+      {
+        x: 0,
+        opacity: 1,
+        duration: 0.6,
+        ease: "power3.out",
+      },
+      "-=0.4"
+    )
+    .to(
+      nameRef.value,
+      {
+        x: 0,
+        opacity: 1,
+        duration: 0.8,
+        ease: "power3.out",
+      },
+      "-=0.4"
+    )
+    .to(
+      descRef.value,
+      {
+        x: 0,
+        opacity: 1,
+        duration: 0.8,
+        ease: "power3.out",
+      },
+      "-=0.4"
+    )
+    .to(
+      socialRef.value,
+      {
+        x: 0,
+        opacity: 1,
+        duration: 0.8,
+        ease: "power3.out",
+      },
+      "-=0.4"
     );
 
-    // Animasi setelah gambar dimuat
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: groomMenRef.value,
-        start: "top center+=100",
-        end: "center center",
-        toggleActions: "play none none reverse",
-        onEnter: () => {
-          animationTriggered.value = true;
-        }
-      },
-    });
-
-    // Animasi sequence
-    tl.to(titleRef.value, {
-      x: 0,
-      opacity: 1,
-      duration: 0.8,
-      ease: "power3.out",
-    })
-      .to(
-        lineRef.value,
-        {
-          x: 0,
-          opacity: 1,
-          duration: 0.6,
-          ease: "power3.out",
-        },
-        "-=0.4"
-      )
-      .to(
-        nameRef.value,
-        {
-          x: 0,
-          opacity: 1,
-          duration: 0.8,
-          ease: "power3.out",
-        },
-        "-=0.4"
-      )
-      .to(
-        descRef.value,
-        {
-          x: 0,
-          opacity: 1,
-          duration: 0.8,
-          ease: "power3.out",
-        },
-        "-=0.4"
-      )
-      .to(
-        socialRef.value,
-        {
-          x: 0,
-          opacity: 1,
-          duration: 0.8,
-          ease: "power3.out",
-        },
-        "-=0.4"
-      );
-
-    // Parallax effect pada background
-    gsap.to(".background-image", {
+  // Parallax effect pada background
+  const slides = groomMenRef.value.querySelectorAll(".slide");
+  slides.forEach(slide => {
+    gsap.to(slide, {
       backgroundPosition: "50% 30%",
       ease: "none",
       scrollTrigger: {
@@ -115,8 +216,13 @@ onMounted(async () => {
         scrub: true,
       },
     });
-  } catch (error) {
-    console.error("Error loading image:", error);
+  });
+});
+
+// Clean up interval when component is unmounted
+onBeforeUnmount(() => {
+  if (slideInterval) {
+    clearInterval(slideInterval);
   }
 });
 </script>
@@ -130,16 +236,10 @@ onMounted(async () => {
       backgroundColor: 'transparent',
     }"
   >
-    <!-- Background div with padding effect -->
-    <div
-      class="absolute inset-0 m-4 md:m-8 lg:m-12 background-image"
-      :style="{
-        backgroundImage: imageLoaded ? 'url(/assets/images/170.jpg)' : 'none',
-        backgroundPosition: '50% 50%',
-        backgroundSize: 'cover',
-        backgroundRepeat: 'no-repeat',
-      }"
-    ></div>
+    <!-- Loading indicator -->
+    <div v-if="isLoading" class="absolute inset-0 z-50 flex items-center justify-center bg-black/80">
+      <div class="text-white text-xl">{{ t('common.loading', 'Loading...') }}</div>
+    </div>
     
     <!-- Content -->
     <div class="w-full h-screen flex items-end justify-start z-[2] px-4 py-12 relative">
@@ -174,8 +274,7 @@ onMounted(async () => {
     
     <!-- Overlay - adjusted to be transparent or with minimal opacity -->
     <div
-      class="absolute inset-0 m-4 md:m-8 lg:m-12 bg-black/10 transition-opacity duration-500"
-      :class="{ 'opacity-100': imageLoaded, 'opacity-0': !imageLoaded }"
+      class="absolute inset-0 m-4 md:m-8 lg:m-12 bg-black/10 transition-opacity duration-500 z-[1]"
     ></div>
   </section>
 </template>
@@ -183,6 +282,12 @@ onMounted(async () => {
 <style scoped>
 .transition-all {
   transition: all 0.3s ease-in-out;
+}
+
+.slide {
+  transition: opacity 1.5s ease;
+  will-change: opacity;
+  backface-visibility: hidden;
 }
  
 .social-button {

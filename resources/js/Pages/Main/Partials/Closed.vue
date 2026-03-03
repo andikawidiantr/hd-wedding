@@ -240,7 +240,7 @@ onBeforeUnmount(() => {
           ref="namesRef"
           class="text-white text-5xl md:text-7xl font-poly "
         >
-          {{ t('closed.bride_name', 'Dinda') }}<br>{{ t('closed.groom_name', 'Hendra') }}
+          {{  t('closed.groom_name', 'Hendra') }}<br>{{ t('closed.bride_name', 'Dinda') }}
         </h1>
       </div>
     </div>

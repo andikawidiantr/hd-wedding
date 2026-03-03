@@ -65,28 +65,6 @@ const namesRef = ref(null);
 const guestInfoRef = ref(null);
 const buttonRef = ref(null);
 
-// Preload gambar
-// const preloadImage = () => {
-//   return new Promise((resolve) => {
-//     const img = new Image();
-//     img.src = '/assets/images/opening.webp';
-
-//     if (img.complete) {
-//       // imageLoaded.value = true;
-//       resolve();
-//     } else {
-//       img.onload = () => {
-//         // imageLoaded.value = true;
-//         resolve();
-//       };
-//       img.onerror = () => {
-//         // imageLoaded.value = true;
-//         resolve();
-//       };
-//     }
-//   });
-// };
-
 // Animasi close
 const close = () => {
   const tl = gsap.timeline({
@@ -173,20 +151,20 @@ onMounted(async () => {
       v-if="!imageLoaded"
       class="fixed inset-0 bg-black flex items-center justify-center z-[101]"
     >
-      <div class="text-center flex flex-col items-center gap-6">
+      <div class="text-center flex flex-col items-center gap-4 sm:gap-6">
         <!-- GIF Loading Animation -->
         <div class="relative flex flex-col items-center">
           <img
             src="/assets/images/spinner.gif"
             alt="Loading"
-            class="w-24 h-24 object-contain"
+            class="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 object-contain"
           />
           <!-- Percentage Text -->
           <div class="mt-2">
-            <span class="text-white font-eyesome text-xl">
+            <span class="text-white font-eyesome text-base sm:text-lg md:text-xl">
               {{ Math.min(loadingProgress, 100) }}%
             </span>
-            <p class="text-white font-eyesome animate-pulse text-xl">Loading...</p>
+            <p class="text-white font-eyesome animate-pulse text-base sm:text-lg md:text-xl">Loading...</p>
           </div>
         </div>
       </div>
@@ -195,7 +173,7 @@ onMounted(async () => {
     <div
       v-show="imageLoaded"
       ref="containerRef"
-      class="container relative max-w-md w-full h-screen"
+      class="container relative w-full h-full max-w-md mx-auto"
     >
       <!-- Background dengan optimasi -->
       <div class="absolute inset-0">
@@ -214,13 +192,14 @@ onMounted(async () => {
 
       <!-- Content -->
       <div
-        class="relative h-full w-full flex flex-col justify-between items-center py-16"
+        class="relative h-full w-full flex flex-col justify-between items-center py-8 sm:py-12 md:py-16"
       >
-        <div class="p-6 text-white flex flex-col gap-12">
+        <!-- Top Content -->
+        <div class="p-4 sm:p-5 md:p-6 text-white flex flex-col gap-6 sm:gap-8 md:gap-12 mt-4 sm:mt-6 md:mt-8">
           <!-- Title -->
           <h1
             ref="titleRef"
-            class="title font-eyesome text-7xl tracking-wide text-center"
+            class="title font-fanwood text-4xl sm:text-4xl md:text-5xl tracking-wide text-center"
           >
             WEDDING <br />DAY
           </h1>
@@ -228,23 +207,24 @@ onMounted(async () => {
           <!-- Names -->
           <div
             ref="namesRef"
-            class="names flex items-center justify-center flex-col gap-4"
+            class="names flex items-center justify-center flex-col gap-2 sm:gap-3 md:gap-4"
           >
-            <h2 class="font-eyesome text-2xl tracking-wider font-light">
+            <h2 class="font-playball text-3xl sm:text-3xl md:text-4xl tracking-wider font-light pt-56 sm:pt-2">
               Hendra & Dinda
             </h2>
           </div>
         </div>
 
-        <div class="p-6 flex flex-col gap-8 items-center">
+        <!-- Bottom Content - Guest Info and Button -->
+        <div class="p-4 sm:p-5 md:p-6 flex flex-col gap-6 sm:gap-7 md:gap-8 items-center mb-4 sm:mb-6 md:mb-8">
           <!-- Guest Info -->
-          <div ref="guestInfoRef" class="guest-info flex flex-col gap-4">
-            <h3 class="font-eyesome text-white text-center text-2xl">Untuk</h3>
+          <div ref="guestInfoRef" class="guest-info flex flex-col gap-3 sm:gap-4">
+            <h3 class="font-playball text-white text-center text-xl sm:text-xl md:text-2xl">Untuk</h3>
             <div class="flex flex-col">
-              <p class="text-white text-center font-eyesome font-semibold">
+              <p class="text-white text-center font-playball text-lg sm:text-lg md:text-xl">
                 Bapak/Ibu/Saudara/i
               </p>
-              <p class="text-white text-center text-xl font-eyesome font-bold">
+              <p class="text-white text-center text-2xl sm:text-3xl md:text-4xl font-playball font-bold pt-4 sm:pt-6 md:pt-8">
                 {{ guest }}
               </p>
             </div>
@@ -254,11 +234,13 @@ onMounted(async () => {
           <button
             ref="buttonRef"
             type="button"
-            class="button-open flex items-center border rounded-xl px-12 py-2 text-white border-white gap-2 hover:bg-white hover:text-black transition-colors duration-300 font-eyesome font-bold"
+            class="button-open flex items-center border rounded-xl px-8 sm:px-10 md:px-12 py-2 text-white border-white gap-1 sm:gap-2 hover:bg-white hover:text-black transition-colors duration-300 mt-2 sm:mt-3 md:mt-4"
             @click="close"
           >
-            <mdicon name="email-heart-outline" />
-            Buka Undangan
+            <mdicon name="email-heart-outline" class="text-base sm:text-lg md:text-xl" />
+            <h1 class="font-fanwood tracking-wider font-light text-sm sm:text-base md:text-lg">
+              Buka Undangan
+            </h1>
           </button>
         </div>
       </div>
@@ -269,6 +251,21 @@ onMounted(async () => {
 <style scoped>
 .container {
   transform: translateY(100%);
+  height: 100vh; /* Memastikan container mengisi tinggi layar */
+  width: 100%; /* Memastikan container mengisi lebar layar */
+  max-width: 100%; /* Pada perangkat kecil, mengisi seluruh lebar */
+}
+
+@media (min-width: 640px) {
+  .container {
+    max-width: 640px; /* Untuk layar yang lebih besar dari sm */
+  }
+}
+
+@media (min-width: 768px) {
+  .container {
+    max-width: 768px; /* Untuk layar yang lebih besar dari md */
+  }
 }
 
 :deep(.fixed) {
@@ -307,5 +304,42 @@ img {
 .button-open:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 6px rgba(255, 255, 255, 0.1);
+}
+
+/* Safe area inset untuk perangkat dengan notch */
+@supports (padding: max(0px)) {
+  .container {
+    padding-top: max(0px, env(safe-area-inset-top));
+    padding-bottom: max(0px, env(safe-area-inset-bottom));
+    padding-left: max(0px, env(safe-area-inset-left));
+    padding-right: max(0px, env(safe-area-inset-right));
+  }
+}
+
+/* Penyesuaian untuk perangkat dengan layar sangat kecil */
+@media screen and (max-height: 568px) {
+  .title {
+    font-size: 1.75rem; /* Lebih kecil untuk iPhone SE atau serupa */
+  }
+  
+  .names h2 {
+    font-size: 1.5rem;
+  }
+  
+  .guest-info p:last-child {
+    font-size: 1.5rem;
+    padding-top: 0.5rem;
+  }
+  
+  .button-open {
+    padding: 0.375rem 1.5rem;
+  }
+}
+
+/* Penyesuaian untuk perangkat dengan layar tinggi */
+@media screen and (min-height: 800px) {
+  .container {
+    justify-content: space-between;
+  }
 }
 </style>

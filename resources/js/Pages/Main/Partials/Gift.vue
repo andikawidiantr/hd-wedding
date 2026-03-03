@@ -142,17 +142,17 @@ onMounted(async () => {
 
 <template>
   <!-- Image at the top -->
-  <div ref="imageRef" class="px-4 pt-20">
+  <div ref="imageRef" class="px-4 mt-20">
     <img 
       src="/assets/images/raw-1582.jpg" 
       :alt="t('gift.image_alt', 'Couple on the beach')" 
-      class="object-cover rounded-sm"
+      class="object-cover rounded-md pt-16"
     />
   </div>
   <section
     ref="sectionRef"
     id="gift"
-    class="min-h-screen flex items-start justify-center relative z-[2] overflow-hidden px-4">
+    class="min-h-screen flex items-start justify-center relative z-[2] overflow-hidden px-4 my-8">
     <div class="w-full max-w-md flex flex-col items-center z-[2] relative pb-8">
       <!-- Title -->
       <h2 ref="titleRef" class="font-serif text-center text-white text-5xl tracking-wider my-8">

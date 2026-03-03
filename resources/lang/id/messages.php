@@ -21,6 +21,7 @@ return [
     'wedding_day' => 'Hari Pernikahan',
     'couple_names' => 'Hendra & Dinda',
     'wedding_date' => '25.03.2026',
+    'mute_music_when_watching' => '*Matikan musik undangan saat memutar video',
     'common' => [
         'located_at' => 'Bertempat di',
         'google_maps' => 'Google Maps',
@@ -28,7 +29,7 @@ return [
     ],
     'events' => [
         'tipat_bantal' => [
-            'title' => 'Tipat Bantal',
+            'title' => 'Memadik/Nyuwaka',
             'date' => 'Rabu, 23 Maret 2026',
             'time' => 'Pukul 10.00 - Selesai',
             'venue' => 'Desa Jagapati',
@@ -72,11 +73,27 @@ return [
         'minutes' => 'Menit',
         'seconds' => 'Detik',
         'save_the_date' => 'Simpan Tanggal',
+        
+        // Calendar event titles
         'calendar_event_title' => 'Pawiwahan & Resepsi Hendra & Dinda',
-        'calendar_event_description' => 'Pawiwahan: 08:00 - 15:00 Wita
-Resepsi: 16:00 Wita - Selesai
-Lokasi: Desa Asak, Karangasem',
-        'calendar_event_location' => 'Desa Asak, Karangasem',
+        'calendar_event_title_tipat' => 'Upacara Memadik/Nyuwaka Hendra & Dinda',
+        'calendar_event_title_pawiwahan' => 'Upacara Pawiwahan Hendra & Dinda',
+        'calendar_event_title_resepsi' => 'Resepsi Pernikahan Hendra & Dinda',
+        'calendar_event_title_combined' => 'Upacara Memadik/Nyuwaka & Pawiwahan Hendra & Dinda',
+        
+        // Calendar event descriptions
+        'calendar_event_description' => 'Pawiwahan: 10:00 - Selesai\nResepsi: 18:00 - Selesai',
+        'calendar_event_description_tipat' => 'Upacara Memadik/Nyuwaka: 10:00 - Selesai\nLokasi: Desa Jagapati, Pertima, Badung',
+        'calendar_event_description_pawiwahan' => 'Upacara Pawiwahan: 10:00 - Selesai\nLokasi: Desa Asak, Pertima, Karangasem',
+        'calendar_event_description_resepsi' => 'Resepsi Pernikahan: 18:00 - Selesai\nLokasi: Villa D\'carik, Jalan Kaswari, Penatih, Denpasar Timur, Bali',
+        'calendar_event_description_combined' => 'Memadik/Nyuwaka: 23 Maret 2026, 10:00 - Selesai\nPawiwahan: 25 Maret 2026, 10:00 - Selesai',
+        
+        // Calendar event locations
+        'calendar_event_location' => 'Desa Asak, Karangasem & Villa D\'carik, Denpasar',
+        'calendar_event_location_tipat' => 'Desa Jagapati, Pertima, Badung',
+        'calendar_event_location_pawiwahan' => 'Desa Asak, Pertima, Karangasem',
+        'calendar_event_location_resepsi' => 'Villa D\'carik, Jalan Kaswari, Penatih, Denpasar Timur, Bali',
+        'calendar_event_location_combined' => 'Desa Jagapati & Desa Asak, Bali',
     ],
     'gallery' => [
         'title' => 'Galeri Kami',

@@ -78,8 +78,8 @@ const updateCountdown = () => {
 // Define different calendar events based on code
 const calendarEvents = computed(() => ({
   "23": {
-    title: t('countdown.calendar_event_title_tipat', 'Tipat Bantal Hendra & Dinda'),
-    description: t('countdown.calendar_event_description_tipat', 'Tipat Bantal: 10:00 - Selesai\nLokasi: Desa Jagapati, Pertima, Badung'),
+    title: t('countdown.calendar_event_title_tipat', 'Memadik/Nyuwaka Hendra & Dinda'),
+    description: t('countdown.calendar_event_description_tipat', 'Memadik/Nyuwaka : 10:00 - Selesai\nLokasi: Desa Jagapati, Pertima, Badung'),
     location: t('countdown.calendar_event_location_tipat', 'Desa Jagapati, Pertima, Badung'),
     start: "20260323T020000Z", // 10:00 WITA in UTC
     end: "20260323T100000Z"    // 18:00 WITA in UTC
@@ -99,8 +99,8 @@ const calendarEvents = computed(() => ({
     end: "20260328T140000Z"    // 22:00 WITA in UTC
   },
   "2325": {
-    title: t('countdown.calendar_event_title_combined', 'Tipat Bantal & Pawiwahan Hendra & Dinda'),
-    description: t('countdown.calendar_event_description_combined', 'Tipat Bantal: 23 Maret 2026, 10:00 - Selesai\nPawiwahan: 25 Maret 2026, 10:00 - Selesai'),
+    title: t('countdown.calendar_event_title_combined', 'Memadik/Nyuwaka & Pawiwahan Hendra & Dinda'),
+    description: t('countdown.calendar_event_description_combined', 'Memadik/Nyuwaka : 23 Maret 2026, 10:00 - Selesai\nPawiwahan: 25 Maret 2026, 10:00 - Selesai'),
     location: t('countdown.calendar_event_location_combined', 'Desa Jagapati & Desa Asak, Bali'),
     start: "20260323T020000Z", // First event start
     end: "20260325T100000Z"    // Last event end
