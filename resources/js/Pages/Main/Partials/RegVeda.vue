@@ -1,14 +1,21 @@
 <script setup>
-import { computed, onMounted, ref, onUnmounted } from "vue";
+import { computed, onMounted, ref, onUnmounted, watch } from "vue";
 import { useI18n } from 'vue-i18n'; // Import useI18n
 
 // Initialize i18n
-const { t, locale } = useI18n();
+const { t, locale } = useI18n({ useScope: 'global' });
+
+// Force vnode refresh when locale changes to prevent stale text in this section.
+const localeRenderKey = ref(0);
+
+watch(locale, () => {
+  localeRenderKey.value += 1;
+});
 
 const regVedaCopy = computed(() => ({
-  title: t('regveda.title', 'Ṛg Veda X.85.47'),
-  sanskritText: t('regveda.sanskrit_text', '"Tvāṁ patīṁ gr̥hṇāmi, tvamasi me sahadharmacārīni."'),
-  translation: t('regveda.translation', 'Aku menerima engkau sebagai suamiku/istriku; engkau adalah sahabatku dalam Dharma. Bersama kita akan hidup, mencintai, dan membangun kebahagiaan.')
+  title: t('regveda.title') || 'Ṛg Veda X.85.47',
+  sanskritText: t('regveda.sanskrit_text') || '"Tvāṁ patīṁ gr̥hṇāmi, tvamasi me sahadharmacārīni."',
+  translation: t('regveda.translation') || 'Aku menerima engkau sebagai suamiku/istriku; engkau adalah sahabatku dalam Dharma. Bersama kita akan hidup, mencintai, dan membangun kebahagiaan.'
 }));
 
 const regVedaRef = ref(null);
@@ -62,14 +69,14 @@ onUnmounted(() => {
       class="container mx-auto px-12"
       style="translate: none; rotate: none; scale: none; transform: none;"
     >
-      <div :key="locale" class="flex flex-col items-center justify-center">
+      <div :key="localeRenderKey" class="flex flex-col items-center justify-center">
         <!-- Title -->
         <div class="overflow-hidden mb-4">
           <h1
             class="font-wittgenstein text-2xl md:text-3xl text-white text-center select-none animate-item"
             :class="{ 'show': isVisible }"
           >
-           {{ t('regveda.title', 'Ṛg Veda X.85.47') }}
+            {{ regVedaCopy.title }}
           </h1>
         </div>
 
@@ -79,7 +86,7 @@ onUnmounted(() => {
             class="font-wittgenstein text-center text-white max-w-2xl text-lg md:text-xl select-none animate-item delay-200"
             :class="{ 'show': isVisible }"
           >
-            {{ t('regveda.sanskrit_text', '"Tvāṁ patīṁ gr̥hṇāmi, tvamasi me sahadharmacārīni."') }}
+            {{ regVedaCopy.sanskritText }}
           </p>
         </div>
 
@@ -89,7 +96,7 @@ onUnmounted(() => {
             class="font-wittgenstein text-center text-white max-w-2xl text-base md:text-lg leading-relaxed select-none animate-item delay-400"
             :class="{ 'show': isVisible }"
           >
-            {{ t('regveda.translation', 'Aku menerima engkau sebagai suamiku/istriku; engkau adalah sahabatku dalam Dharma. Bersama kita akan hidup, mencintai, dan membangun kebahagiaan.') }}
+            {{ regVedaCopy.translation }}
           </p>
         </div>
       </div>
@@ -166,8 +173,4 @@ onUnmounted(() => {
   }
 }
 
-/* Prevent FOIT */
-@font-face {
-  font-display: swap;
-}
 </style>
