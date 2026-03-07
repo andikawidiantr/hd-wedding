@@ -193,10 +193,10 @@ onBeforeUnmount(() => {
   <section        
     ref="eventRef"        
     id="countdown"        
-    class="h-[50vh] flex flex-col items-center justify-center relative z-[2] overflow-hidden px-4 py-6"        
+    class="h-[60vh] flex flex-col items-center justify-center relative z-[2] overflow-hidden px-4 py-6"        
   >        
     <!-- Title section at the top -->  
-    <div class="mb-8 w-full">  
+    <div class="mb-8 mt-16 w-full">  
       <!-- Line with small margins -->  
       <div class="w-[100%] mx-auto border-t border-white mb-6"></div>  
         

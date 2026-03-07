@@ -115,7 +115,7 @@ const showGallery = (index = 0) => {
 
 onMounted(async () => {
   try {
-    await preloadImage("/assets/images/gallery.webp");
+    await preloadImage("/assets/images/gallery/1.webp");
   } catch (error) {
     console.error("Error loading gallery:", error);
   }

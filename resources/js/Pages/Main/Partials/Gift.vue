@@ -152,8 +152,8 @@ onMounted(async () => {
   <section
     ref="sectionRef"
     id="gift"
-    class="min-h-screen flex items-start justify-center relative z-[2] overflow-hidden px-4 my-8">
-    <div class="w-full max-w-md flex flex-col items-center z-[2] relative pb-8">
+    class="min-h-screen flex items-start justify-center relative z-[2] overflow-hidden px-4 my-12">
+    <div class="w-full max-w-md flex flex-col items-center z-[2] relative pb-8 mb-16">
       <!-- Title -->
       <h2 ref="titleRef" class="font-serif text-center text-white text-5xl tracking-wider my-8">
         {{ t('gift.title', 'WEDDING') }}<br>{{ t('gift.subtitle', 'GIFT') }}
