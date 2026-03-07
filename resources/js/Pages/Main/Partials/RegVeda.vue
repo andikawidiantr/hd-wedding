@@ -69,7 +69,7 @@ onUnmounted(() => {
             class="font-wittgenstein text-2xl md:text-3xl text-white text-center select-none animate-item"
             :class="{ 'show': isVisible }"
           >
-            {{ regVedaCopy.title }}
+           {{ t('regveda.title', 'Ṛg Veda X.85.47') }}
           </h1>
         </div>
 
@@ -79,7 +79,7 @@ onUnmounted(() => {
             class="font-wittgenstein text-center text-white max-w-2xl text-lg md:text-xl select-none animate-item delay-200"
             :class="{ 'show': isVisible }"
           >
-            {{ regVedaCopy.sanskritText }}
+            {{ t('regveda.sanskrit_text', '"Tvāṁ patīṁ gr̥hṇāmi, tvamasi me sahadharmacārīni."') }}
           </p>
         </div>
 
@@ -89,7 +89,7 @@ onUnmounted(() => {
             class="font-wittgenstein text-center text-white max-w-2xl text-base md:text-lg leading-relaxed select-none animate-item delay-400"
             :class="{ 'show': isVisible }"
           >
-            {{ regVedaCopy.translation }}
+            {{ t('regveda.translation', 'Aku menerima engkau sebagai suamiku/istriku; engkau adalah sahabatku dalam Dharma. Bersama kita akan hidup, mencintai, dan membangun kebahagiaan.') }}
           </p>
         </div>
       </div>
