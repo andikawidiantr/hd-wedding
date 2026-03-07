@@ -8,17 +8,30 @@ import 'moment/locale/id';
 import 'moment/locale/en-gb';
 
 // Initialize i18n
-const { t, locale } = useI18n();
+const { locale } = useI18n();
 
-const countdownCopy = computed(() => ({
-  titleLine1: t('countdown.title_line1', 'COUNTDOWN'),
-  titleLine2: t('countdown.title_line2', 'TIMER'),
-  days: t('countdown.days', 'Hari'),
-  hours: t('countdown.hours', 'Jam'),
-  minutes: t('countdown.minutes', 'Menit'),
-  seconds: t('countdown.seconds', 'Detik'),
-  saveTheDate: t('countdown.save_the_date', 'Save The Date')
-}));
+const countdownContent = {
+  id: {
+    titleLine1: 'HITUNG',
+    titleLine2: 'MUNDUR',
+    days: 'Hari',
+    hours: 'Jam',
+    minutes: 'Menit',
+    seconds: 'Detik',
+    saveTheDate: 'Simpan Tanggal'
+  },
+  en: {
+    titleLine1: 'COUNTDOWN',
+    titleLine2: 'TIMER',
+    days: 'Days',
+    hours: 'Hours',
+    minutes: 'Minutes',
+    seconds: 'Seconds',
+    saveTheDate: 'Save The Date'
+  }
+};
+
+const countdownCopy = computed(() => countdownContent[locale.value] || countdownContent.id);
 
 // Accept props including the code
 const props = defineProps({
@@ -42,8 +55,8 @@ const countdown = ref({
 const eventDates = computed(() => ({
   "23": moment("2026-03-23T10:00:00+08:00"), // Tipat Bantal date
   "25": moment("2026-03-25T10:00:00+08:00"), // Pawiwahan date
-  "28": moment("2026-03-28T18:00:00+08:00"), // Resepsi date
-  "default": moment("2026-03-25T10:00:00+08:00") // Default date (Pawiwahan)
+  "29": moment("2026-03-29T18:00:00+08:00"), // Resepsi date
+  "default": moment("2026-03-29T18:00:00+08:00") // Default date (Pawiwahan)
 }));
 
 // Determine which target date to use based on code
@@ -86,43 +99,84 @@ const updateCountdown = () => {
 };
 
 // Define different calendar events based on code
-const calendarEvents = computed(() => ({
-  "23": {
-    title: t('countdown.calendar_event_title_tipat', 'Memadik/Nyuwaka Hendra & Dinda'),
-    description: t('countdown.calendar_event_description_tipat', 'Memadik/Nyuwaka : 10:00 - Selesai\nLokasi: Desa Jagapati, Abiansemal, Badung'),
-    location: t('countdown.calendar_event_location_tipat', 'Desa Jagapati, Abiansemal, Badung'),
-    start: "20260323T020000Z", // 10:00 WITA in UTC
-    end: "20260323T100000Z"    // 18:00 WITA in UTC
+const calendarEventContent = {
+  id: {
+    "23": {
+      title: 'Upacara Memadik/Nyuwaka Hendra & Dinda',
+      description: 'Upacara Memadik/Nyuwaka: 10:00 - Selesai\nLokasi: Desa Jagapati, Abiansemal, Badung',
+      location: 'Desa Jagapati, Abiansemal, Badung',
+      start: "20260323T020000Z",
+      end: "20260323T100000Z"
+    },
+    "25": {
+      title: 'Upacara Pawiwahan Hendra & Dinda',
+      description: 'Upacara Pawiwahan: 10:00 - Selesai\nLokasi: Desa Asak, Pertima, Karangasem',
+      location: 'Desa Asak, Pertima, Karangasem',
+      start: "20260325T020000Z",
+      end: "20260325T100000Z"
+    },
+    "29": {
+      title: 'Resepsi Pernikahan Hendra & Dinda',
+      description: 'Resepsi Pernikahan: 18:00 - Selesai\nLokasi: Villa D\'carik, Jalan Kaswari, Penatih, Denpasar Timur, Bali',
+      location: 'Villa D\'carik, Jalan Kaswari, Penatih, Denpasar Timur, Bali',
+      start: "20260329T100000Z",
+      end: "20260329T140000Z"
+    },
+    "2325": {
+      title: 'Upacara Memadik/Nyuwaka & Pawiwahan Hendra & Dinda',
+      description: 'Memadik/Nyuwaka: 23 Maret 2026, 10:00 - Selesai\nPawiwahan: 25 Maret 2026, 10:00 - Selesai',
+      location: 'Desa Jagapati & Desa Asak, Bali',
+      start: "20260323T020000Z",
+      end: "20260325T100000Z"
+    },
+    "default": {
+      title: 'Pawiwahan & Resepsi Hendra & Dinda',
+      description: 'Pawiwahan: 10:00 - Selesai\nResepsi: 18:00 - Selesai',
+      location: 'Desa Asak, Karangasem & Villa D\'carik, Denpasar',
+      start: "20260325T020000Z",
+      end: "20260329T140000Z"
+    }
   },
-  "25": {
-    title: t('countdown.calendar_event_title_pawiwahan', 'Pawiwahan Hendra & Dinda'),
-    description: t('countdown.calendar_event_description_pawiwahan', 'Pawiwahan: 10:00 - Selesai\nLokasi: Desa Asak, Pertima, Karangasem'),
-    location: t('countdown.calendar_event_location_pawiwahan', 'Desa Asak, Pertima, Karangasem'),
-    start: "20260325T020000Z", // 10:00 WITA in UTC
-    end: "20260325T100000Z"    // 18:00 WITA in UTC
-  },
-  "28": {
-    title: t('countdown.calendar_event_title_resepsi', 'Resepsi Hendra & Dinda'),
-    description: t('countdown.calendar_event_description_resepsi', 'Resepsi: 18:00 - Selesai\nLokasi: Villa D\'carik, Jalan Kaswari, Penatih, Denpasar Timur, Bali'),
-    location: t('countdown.calendar_event_location_resepsi', 'Villa D\'carik, Jalan Kaswari, Penatih, Denpasar Timur, Bali'),
-    start: "20260328T100000Z", // 18:00 WITA in UTC
-    end: "20260328T140000Z"    // 22:00 WITA in UTC
-  },
-  "2325": {
-    title: t('countdown.calendar_event_title_combined', 'Memadik/Nyuwaka & Pawiwahan Hendra & Dinda'),
-    description: t('countdown.calendar_event_description_combined', 'Memadik/Nyuwaka : 23 Maret 2026, 10:00 - Selesai\nPawiwahan: 25 Maret 2026, 10:00 - Selesai'),
-    location: t('countdown.calendar_event_location_combined', 'Desa Jagapati & Desa Asak, Bali'),
-    start: "20260323T020000Z", // First event start
-    end: "20260325T100000Z"    // Last event end
-  },
-  "default": {
-    title: t('countdown.calendar_event_title', 'Pawiwahan & Resepsi Hendra & Dinda'),
-    description: t('countdown.calendar_event_description', 'Pawiwahan: 10:00 - Selesai\nResepsi: 18:00 - Selesai'),
-    location: t('countdown.calendar_event_location', 'Desa Asak, Karangasem & Villa D\'carik, Denpasar'),
-    start: "20260325T020000Z",
-    end: "20260328T140000Z"
+  en: {
+    "23": {
+      title: 'Memadik/Nyuwaka Ceremony Hendra & Dinda',
+      description: 'Memadik/Nyuwaka Ceremony: 10:00 AM - Completion\nLocation: Jagapati Village, Abiansemal, Badung',
+      location: 'Jagapati Village, Abiansemal, Badung',
+      start: "20260323T020000Z",
+      end: "20260323T100000Z"
+    },
+    "25": {
+      title: 'Pawiwahan Ceremony Hendra & Dinda',
+      description: 'Pawiwahan Ceremony: 10:00 AM - Completion\nLocation: Asak Village, Pertima, Karangasem',
+      location: 'Asak Village, Pertima, Karangasem',
+      start: "20260325T020000Z",
+      end: "20260325T100000Z"
+    },
+    "29": {
+      title: 'Wedding Reception Hendra & Dinda',
+      description: 'Wedding Reception: 6:00 PM - Completion\nLocation: Villa D\'carik, Jalan Kaswari, Penatih, East Denpasar, Bali',
+      location: 'Villa D\'carik, Jalan Kaswari, Penatih, East Denpasar, Bali',
+      start: "20260329T100000Z",
+      end: "20260329T140000Z"
+    },
+    "2325": {
+      title: 'Memadik/Nyuwaka & Pawiwahan Ceremonies Hendra & Dinda',
+      description: 'Memadik/Nyuwaka: March 23, 2026, 10:00 AM - Completion\nPawiwahan: March 25, 2026, 10:00 AM - Completion',
+      location: 'Jagapati Village & Asak Village, Bali',
+      start: "20260323T020000Z",
+      end: "20260325T100000Z"
+    },
+    "default": {
+      title: 'Pawiwahan & Reception Hendra & Dinda',
+      description: 'Pawiwahan: 10:00 AM - Completion\nReception: 6:00 PM - Completion',
+      location: 'Asak Village, Karangasem & Villa D\'carik, Denpasar',
+      start: "20260325T020000Z",
+      end: "20260329T140000Z"
+    }
   }
-}));
+};
+
+const calendarEvents = computed(() => calendarEventContent[locale.value] || calendarEventContent.id);
 
 // Get the appropriate calendar event based on code
 const selectedCalendarEvent = computed(() => {

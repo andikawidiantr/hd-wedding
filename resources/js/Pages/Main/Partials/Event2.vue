@@ -12,47 +12,87 @@ const imageRef = ref(null);
 const eventDetailsRef = ref(null);
 
 // Initialize i18n
-const { t, locale } = useI18n();
+const { locale } = useI18n();
 
-const event2Copy = computed(() => ({
-  locatedAt: t('common.located_at', 'Bertempat di'),
-  googleMaps: t('common.google_maps', 'Google Maps')
-}));
+const event2Content = {
+  id: {
+    locatedAt: 'Bertempat di',
+    googleMaps: 'Google Maps'
+  },
+  en: {
+    locatedAt: 'Located at',
+    googleMaps: 'Google Maps'
+  }
+};
+
+const event2Copy = computed(() => event2Content[locale.value] || event2Content.id);
 
 const props = defineProps({
   code: String,
 });
 
-// Define all three events with translations
-const allEvents = computed(() => [
-  {
-    code: "23",
-    title: t('events.tipat_bantal.title', 'Memadik/Nyuwaka'),
-    date: t('events.tipat_bantal.date', 'Senin, 23 Maret 2026'),
-    time: t('events.tipat_bantal.time', 'Pukul 10.00 - Selesai'),
-    venue: t('events.tipat_bantal.venue', 'Desa Jagapati'),
-    address: t('events.tipat_bantal.address', 'Jl Jabajero I No.15 Br Jabajero Ds Jagapati Abiansemal Badung'),
-    mapsUrl: "https://maps.app.goo.gl/9xDBhyXeR6tYD6DPA"
-  },
-  {
-    code: "25",
-    title: t('events.pawiwahan.title', 'PAWIWAHAN'),
-    date: t('events.pawiwahan.date', 'Rabu, 25 Maret 2026'),
-    time: t('events.pawiwahan.time', 'Pukul 10.00 - Selesai'),
-    venue: t('events.pawiwahan.venue', 'Desa Asak'),
-    address: t('events.pawiwahan.address', 'Jl. Asak, Pertima, Karangasem'),
-    mapsUrl: "https://maps.app.goo.gl/PAWztaF2QjtRPNdc6"
-  },
-  {
-    code: "28",
-    title: t('events.resepsi.title', 'Resepsi'),
-    date: t('events.resepsi.date', 'Rabu, 28 Maret 2026'),
-    time: t('events.resepsi.time', 'Pukul 18.00 - Selesai'),
-    venue: t('events.resepsi.venue', 'Villa D\'carik'),
-    address: t('events.resepsi.address', 'Jalan Kaswari, Penatih, Denpasar Timur, Bali'),
-    mapsUrl: "https://maps.app.goo.gl/85hCXpMEsPaby18m7?g_st=iw"
-  }
-]);
+const allEventContent = {
+  id: [
+    {
+      code: "23",
+      title: 'Memadik/Nyuwaka',
+      date: 'Senin, 23 Maret 2026',
+      time: 'Pukul 10.00 - Selesai',
+      venue: 'Desa Jagapati',
+      address: 'Jl Jabajero I No.15 Br Jabajero Ds Jagapati Abiansemal Badung',
+      mapsUrl: "https://maps.app.goo.gl/9xDBhyXeR6tYD6DPA"
+    },
+    {
+      code: "25",
+      title: 'PAWIWAHAN',
+      date: 'Rabu, 25 Maret 2026',
+      time: 'Pukul 10.00 - Selesai',
+      venue: 'Desa Asak',
+      address: 'Jl. Asak, Pertima, Karangasem',
+      mapsUrl: "https://maps.app.goo.gl/PAWztaF2QjtRPNdc6"
+    },
+    {
+      code: "29",
+      title: 'Resepsi',
+      date: 'Minggu, 29 Maret 2026',
+      time: 'Pukul 18.00 - Selesai',
+      venue: "Villa D'carik",
+      address: 'Jalan Kaswari, Penatih, Denpasar Timur, Bali',
+      mapsUrl: "https://maps.app.goo.gl/85hCXpMEsPaby18m7?g_st=iw"
+    }
+  ],
+  en: [
+    {
+      code: "23",
+      title: 'Memadik/Nyuwaka',
+      date: 'Monday, March 23, 2026',
+      time: '10:00 AM - Finish',
+      venue: 'Jagapati Village',
+      address: 'Jl Jabajero I No.15 Br Jabajero Ds Jagapati Abiansemal Badung',
+      mapsUrl: "https://maps.app.goo.gl/9xDBhyXeR6tYD6DPA"
+    },
+    {
+      code: "25",
+      title: 'PAWIWAHAN',
+      date: 'Wednesday, March 25, 2026',
+      time: '10:00 AM - Finish',
+      venue: 'Asak Village',
+      address: 'Jl. Asak, Pertima, Karangasem',
+      mapsUrl: "https://maps.app.goo.gl/PAWztaF2QjtRPNdc6"
+    },
+    {
+      code: "29",
+      title: 'Reception',
+      date: 'Sunday, March 29, 2026',
+      time: '6:00 PM - Finish',
+      venue: "Villa D'carik",
+      address: 'Jalan Kaswari, Penatih, East Denpasar, Bali',
+      mapsUrl: "https://maps.app.goo.gl/85hCXpMEsPaby18m7?g_st=iw"
+    }
+  ]
+};
+
+const allEvents = computed(() => allEventContent[locale.value] || allEventContent.id);
 
 // Determine which events to show based on code
 const eventsToShow = computed(() => {
@@ -91,12 +131,6 @@ const boxClass = computed(() => {
     return baseClass;
   }
 });
-
-// Function to change language
-const changeLanguage = (newLocale) => {
-  locale.value = newLocale;
-  localStorage.setItem('locale', newLocale);
-};
 
 onMounted(() => {  
   // Create animation that shows/hides the image based on scroll direction

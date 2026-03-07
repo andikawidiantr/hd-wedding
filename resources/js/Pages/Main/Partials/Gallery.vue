@@ -11,13 +11,22 @@ import 'lightgallery/css/lg-zoom.css';
 import { useI18n } from 'vue-i18n'; // Import useI18n
 
 // Initialize i18n
-const { t, locale } = useI18n();
+const { locale } = useI18n();
 
-const galleryCopy = computed(() => ({
-  title: t('gallery.title', 'Our Gallery'),
-  imageAlt: t('gallery.image_alt', 'Gallery Image'),
-  tapToView: t('gallery.tap_to_view', 'Tap image to view all photos')
-}));
+const galleryContent = {
+  id: {
+    title: 'Galeri Kami',
+    imageAlt: 'Gambar Galeri',
+    tapToView: 'Ketuk gambar untuk melihat semua foto'
+  },
+  en: {
+    title: 'Our Gallery',
+    imageAlt: 'Gallery Image',
+    tapToView: 'Tap image to view all photos'
+  }
+};
+
+const galleryCopy = computed(() => galleryContent[locale.value] || galleryContent.id);
 
 const imageLoaded = ref(false);
 const swiperRef = ref(null);

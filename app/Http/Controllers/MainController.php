@@ -22,7 +22,7 @@ class MainController extends Controller
             $data['guest'] = $request->guest;
         }
         
-        $data['code'] = '28';
+        $data['code'] = '29';
         if ($request->has('code')) {
             $data['code'] = $request->code;
         }

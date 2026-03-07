@@ -5,17 +5,34 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useI18n } from "vue-i18n"; // Import useI18n
 
 // Initialize i18n
-const { t, locale } = useI18n();
+const { locale } = useI18n();
 
-const giftCopy = computed(() => ({
-  imageAlt: t('gift.image_alt', 'Couple on the beach'),
-  title: t('gift.title', 'WEDDING'),
-  subtitle: t('gift.subtitle', 'GIFT'),
-  message: t('gift.message', 'Your presence and prayers are the greatest wedding gifts we could ever ask for. No other gifts are needed nor expected. However, if giving is a sign of love, we are happy to receive it, and, of course, it will enhance our happiness even more.'),
-  copied: t('gift.copied', 'Copied'),
-  copy: t('gift.copy', 'Copy'),
-  address: t('gift.address', 'Home Address: Jalan Gunung Lebah I Gang VII No. 10, Denpasar, Bali')
-}));
+const giftContent = {
+  id: {
+    imageAlt: 'Pasangan di pantai',
+    title: 'HADIAH',
+    subtitle: 'PERNIKAHAN',
+    message: 'Kehadiran dan doa Anda adalah hadiah pernikahan terbesar yang pernah kami minta. Tidak ada hadiah lain yang diperlukan atau diharapkan. Namun, jika memberi adalah tanda cinta, kami senang menerimanya, dan, tentu saja, itu akan meningkatkan kebahagiaan kami lebih banyak lagi.',
+    copied: 'Tersalin',
+    copy: 'Salin',
+    address: 'Alamat Rumah: Jalan Gunung Lebah I Gang VII No. 10, Denpasar, Bali',
+    bankBca: 'BANK BCA',
+    bankOwner: 'a.n. I Gede Agus Hendrawan'
+  },
+  en: {
+    imageAlt: 'Couple on the beach',
+    title: 'WEDDING',
+    subtitle: 'GIFT',
+    message: 'Your presence and prayers are the greatest wedding gifts we could ever ask for. No other gifts are needed nor expected. However, if giving is a sign of love, we are happy to receive it, and, of course, it will enhance our happiness even more.',
+    copied: 'Copied',
+    copy: 'Copy',
+    address: 'Home Address: Jalan Gunung Lebah I Gang VII No. 10, Denpasar, Bali',
+    bankBca: 'BANK BCA',
+    bankOwner: 'a.n. I Gede Agus Hendrawan'
+  }
+};
+
+const giftCopy = computed(() => giftContent[locale.value] || giftContent.id);
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -30,9 +47,9 @@ const copyTimeouts = ref({});
 
 const banks = computed(() => [
   {
-    name: t('gift.bank_bca', 'BANK BCA'),
+    name: giftCopy.value.bankBca,
     number: "6485670681",
-    owner: t('gift.bank_owner', 'a.n. I Gede Agus Hendrawan')
+    owner: giftCopy.value.bankOwner
   },
   // {
   //   name: "BANK CA",

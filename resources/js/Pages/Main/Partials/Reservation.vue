@@ -5,21 +5,38 @@ import { computed, onMounted, ref, watch } from "vue";
 import { useI18n } from 'vue-i18n'; // Import useI18n
 
 // Initialize i18n
-const { t, locale } = useI18n();
+const { locale } = useI18n();
 
-const reservationCopy = computed(() => ({
-  title: t('reservation.title', 'RSVP'),
-  subtitle: t('reservation.subtitle', 'Please, fill confirmation of attendance below.'),
-  name: t('reservation.name', 'Name'),
-  namePlaceholder: t('reservation.name_placeholder', 'Name...'),
-  attendance: t('reservation.attendance', 'Confirmation of Attendance'),
-  select: t('reservation.select', 'Select...'),
-  attending: t('reservation.attending', 'Yes, I will attend'),
-  notAttending: t('reservation.not_attending', 'No, I am unable to attend'),
-  guests: t('reservation.guests', 'Number of Person(s)'),
-  loading: t('reservation.loading', 'Loading...'),
-  submit: t('reservation.submit', 'Submit')
-}));
+const reservationContent = {
+  id: {
+    title: 'RSVP',
+    subtitle: 'Silakan isi konfirmasi kehadiran di bawah ini.',
+    name: 'Nama',
+    namePlaceholder: 'Nama...',
+    attendance: 'Konfirmasi Kehadiran',
+    select: 'Pilih...',
+    attending: 'Ya, saya akan hadir',
+    notAttending: 'Tidak, saya tidak dapat hadir',
+    guests: 'Jumlah Orang',
+    loading: 'Memuat...',
+    submit: 'Kirim'
+  },
+  en: {
+    title: 'RSVP',
+    subtitle: 'Please, fill confirmation of attendance below.',
+    name: 'Name',
+    namePlaceholder: 'Name...',
+    attendance: 'Confirmation of Attendance',
+    select: 'Select...',
+    attending: 'Yes, I will attend',
+    notAttending: 'No, I am unable to attend',
+    guests: 'Number of Person(s)',
+    loading: 'Loading...',
+    submit: 'Submit'
+  }
+};
+
+const reservationCopy = computed(() => reservationContent[locale.value] || reservationContent.id);
 
 const imageLoaded = ref(false);
 const isVisible = ref(false);

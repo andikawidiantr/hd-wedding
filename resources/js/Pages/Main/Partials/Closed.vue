@@ -5,16 +5,28 @@ import ScrollTrigger from "gsap/ScrollTrigger";
 import { useI18n } from "vue-i18n"; // Import useI18n
 
 // Initialize i18n
-const { t, locale } = useI18n();
+const { locale } = useI18n();
 
-const closedCopy = computed(() => ({
-  loading: t('closed.loading', 'Loading...'),
-  loadingError: t('closed.loading_error', 'Failed to load images. Please refresh the page.'),
-  heading: t('closed.heading', 'SEE YOU ON OUR BIG DAY'),
-  withLove: t('closed.with_love', 'With love,'),
-  groomName: t('closed.groom_name', 'Hendra'),
-  brideName: t('closed.bride_name', 'Dinda')
-}));
+const closedContent = {
+  id: {
+    loading: 'Memuat...',
+    loadingError: 'Gagal memuat gambar. Silakan segarkan halaman.',
+    heading: 'SAMPAI JUMPA DI HARI BAHAGIA KAMI',
+    withLove: 'Dengan cinta,',
+    groomName: 'Hendra',
+    brideName: 'Dinda'
+  },
+  en: {
+    loading: 'Loading...',
+    loadingError: 'Failed to load images. Please refresh the page.',
+    heading: 'SEE YOU ON OUR BIG DAY',
+    withLove: 'With love,',
+    groomName: 'Hendra',
+    brideName: 'Dinda'
+  }
+};
+
+const closedCopy = computed(() => closedContent[locale.value] || closedContent.id);
 
 // Register ScrollTrigger plugin
 gsap.registerPlugin(ScrollTrigger);

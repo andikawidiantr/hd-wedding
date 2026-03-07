@@ -5,14 +5,24 @@ import ScrollTrigger from 'gsap/ScrollTrigger';
 import { useI18n } from "vue-i18n"; // Import useI18n
 
 // Initialize i18n
-const { t, locale } = useI18n();
+const { locale } = useI18n();
 
-const footerCopy = computed(() => ({
-  thankYou: t('footer.thank_you', 'Thank You'),
-  coupleNames: t('footer.couple_names', 'Hendra & Dinda'),
-  creditsPrefix: t('footer.credits_prefix', 'Designed and Developed by'),
-  developerName: t('footer.developer_name', 'andikawidiantr')
-}));
+const footerContent = {
+  id: {
+    thankYou: 'Terima Kasih',
+    coupleNames: 'Hendra & Dinda',
+    creditsPrefix: 'Didesain dan Dikembangkan oleh',
+    developerName: 'andikawidiantr'
+  },
+  en: {
+    thankYou: 'Thank You',
+    coupleNames: 'Hendra & Dinda',
+    creditsPrefix: 'Designed and Developed by',
+    developerName: 'andikawidiantr'
+  }
+};
+
+const footerCopy = computed(() => footerContent[locale.value] || footerContent.id);
   
 gsap.registerPlugin(ScrollTrigger);  
   

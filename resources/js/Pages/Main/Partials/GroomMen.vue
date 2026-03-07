@@ -5,14 +5,24 @@ import ScrollTrigger from "gsap/ScrollTrigger";
 import { useI18n } from 'vue-i18n'; // Import useI18n
 
 // Initialize i18n
-const { t, locale } = useI18n();
+const { locale } = useI18n();
 
-const groomCopy = computed(() => ({
-  loading: t('common.loading', 'Loading...'),
-  title: t('groom.title', 'The Groom'),
-  name: t('groom.name', 'Ir. I Gede Agus Hendrawan, ST'),
-  description: t('groom.description', 'Putra Pertama dari Bapak I Made Rama & Ibu Ni Ketut Rumaheni')
-}));
+const groomContent = {
+  id: {
+    loading: 'Memuat...',
+    title: 'Mempelai Pria',
+    name: 'Ir. I Gede Agus Hendrawan, ST',
+    description: 'Putra Pertama dari Bapak I Made Rama & Ibu Ni Ketut Rumaheni'
+  },
+  en: {
+    loading: 'Loading...',
+    title: 'The Groom',
+    name: 'Ir. I Gede Agus Hendrawan, ST',
+    description: 'First Son of Mr. I Made Rama & Mrs. Ni Ketut Rumaheni'
+  }
+};
+
+const groomCopy = computed(() => groomContent[locale.value] || groomContent.id);
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -102,18 +112,23 @@ const initializeBackgrounds = () => {
   } else {
     groomMenRef.value.appendChild(slideContainer);
   }
-  
-  startSlideshow();
 };
 
 // Function for slideshow with optimization
 const startSlideshow = () => {
-  if (slideInterval) clearInterval(slideInterval);
+  if (slideInterval) return;
 
   slideInterval = setInterval(() => {
     const nextIndex = (currentImageIndex.value + 1) % imageUrls.length;
     transitionToNextImage(nextIndex);
   }, 4000); // Change image every 4 seconds
+};
+
+const stopSlideshow = () => {
+  if (slideInterval) {
+    clearInterval(slideInterval);
+    slideInterval = null;
+  }
 };
 
 // Transition function with GSAP
@@ -153,11 +168,16 @@ onMounted(async () => {
   const tl = gsap.timeline({
     scrollTrigger: {
       trigger: groomMenRef.value,
-      start: "top center+=100",
-      end: "center center",
+      start: "top 80%",
+      end: "bottom 20%",
       toggleActions: "play none none reverse",
-      onEnter: () => {
-        animationTriggered.value = true;
+      onToggle: (self) => {
+        animationTriggered.value = self.isActive;
+        if (self.isActive) {
+          startSlideshow();
+        } else {
+          stopSlideshow();
+        }
       }
     },
   });
@@ -228,9 +248,7 @@ onMounted(async () => {
 
 // Clean up interval when component is unmounted
 onBeforeUnmount(() => {
-  if (slideInterval) {
-    clearInterval(slideInterval);
-  }
+  stopSlideshow();
 });
 </script>
 

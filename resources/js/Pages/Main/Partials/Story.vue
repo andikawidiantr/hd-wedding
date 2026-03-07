@@ -5,16 +5,28 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useI18n } from 'vue-i18n'; // Import useI18n
 
 // Initialize i18n
-const { t, locale } = useI18n();
+const { locale } = useI18n();
 
-const storyCopy = computed(() => ({
-  titleLine1: t('story.title_line1', 'OUR'),
-  titleLine2: t('story.title_line2', 'STORY'),
-  paragraph1: t('story.paragraph1', 'Awalnya ini perkenalan biasa, tapi disinilah awal cerita dimulai, kami dipertemukan pada waktu yang tidak semua orang tahu ini tepat atau tidak, lewat obrolan ringan sampai percakapan yang penuh makna membuat kami saling mengenal pribadi kami masing masing'),
-  paragraph2: t('story.paragraph2', 'Perjalanan yang tidak selalu mudah, namun yang kami percaya tidak ada yang benar benar sempurna. Hari demi hari kami berjalan, proses demi proses terbentuk kami belajar untuk menerima dan memahami. Bentuk cinta dan kasih yang kami percaya adalah tentang bertahan dengan segala bentuk perbedaan yang sudah ada ataupun akan kami temui nanti.'),
-  paragraph3: t('story.paragraph3', 'Atas restu Ida Sang Hyang Widhi, leluhur, dan orang tua. Dengan segala keyakinan kami berdua, sebuah janji Dharma untuk saling menjaga, saling menghormati dan setia dalam segala kondisi. Kami berdua memantapkan untuk menjalani kehidupan Grahasta Asrama.'),
-  paragraph4: t('story.paragraph4', 'Semoga langkah kami hari ini menjadi awal dari perjalanan panjang yang penuh dengan berkah. menjalani kehidupan yang diwarnai dengan keharmonisan, kedamaian dan kebahagian. Kami mohon doa restunya')
-}));
+const storyContent = {
+  id: {
+    titleLine1: 'KISAH',
+    titleLine2: 'KAMI',
+    paragraph1: 'Awalnya ini perkenalan biasa, tapi disinilah awal cerita dimulai, kami dipertemukan pada waktu yang tidak semua orang tahu ini tepat atau tidak, lewat obrolan ringan sampai percakapan yang penuh makna membuat kami saling mengenal pribadi kami masing masing',
+    paragraph2: 'Perjalanan yang tidak selalu mudah, namun yang kami percaya tidak ada yang benar benar sempurna. Hari demi hari kami berjalan, proses demi proses terbentuk kami belajar untuk menerima dan memahami. Bentuk cinta dan kasih yang kami percaya adalah tentang bertahan dengan segala bentuk perbedaan yang sudah ada ataupun akan kami temui nanti.',
+    paragraph3: 'Atas restu Ida Sang Hyang Widhi, leluhur, dan orang tua. Dengan segala keyakinan kami berdua, sebuah janji Dharma untuk saling menjaga, saling menghormati dan setia dalam segala kondisi. Kami berdua memantapkan untuk menjalani kehidupan Grahasta Asrama.',
+    paragraph4: 'Semoga langkah kami hari ini menjadi awal dari perjalanan panjang yang penuh dengan berkah. menjalani kehidupan yang diwarnai dengan keharmonisan, kedamaian dan kebahagian. Kami mohon doa restunya'
+  },
+  en: {
+    titleLine1: 'OUR',
+    titleLine2: 'STORY',
+    paragraph1: 'It started as a casual introduction, but this is where our story began. We met at a time that not everyone would know was right or not. Through light conversations to meaningful talks, we got to know each other personally.',
+    paragraph2: 'The journey has not always been easy, but we believe nothing is truly perfect. Day by day we walked, process by process we formed, learning to accept and understand. The form of love and affection that we believe in is about enduring with all forms of differences that already exist or that we will encounter later.',
+    paragraph3: 'With the blessing of Ida Sang Hyang Widhi, ancestors, and parents. With all our beliefs, a Dharma promise to protect each other, respect each other and be faithful in all conditions. We both are determined to live the Grahasta Asrama life.',
+    paragraph4: 'May our steps today be the beginning of a long journey full of blessings. Living a life colored with harmony, peace and happiness. We ask for your prayers and blessings.'
+  }
+};
+
+const storyCopy = computed(() => storyContent[locale.value] || storyContent.id);
 
 gsap.registerPlugin(ScrollTrigger);
 

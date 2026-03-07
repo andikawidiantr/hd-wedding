@@ -134,7 +134,7 @@ onMounted(() => {
     <!-- Popup opening -->
     <Popup v-if="show" :show="show" @close="() => setShow(false)" :guest="guest" @music="setPlay" />
     <div  
-      class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/50 to-black/70 z-1"  
+      class="absolute inset-0 bg-gradient-to-t from-black/50 via-black/50 to-black/50 z-1"  
     ></div> 
     <!-- Video Background Container -->
     <div class="video-wrapper">
