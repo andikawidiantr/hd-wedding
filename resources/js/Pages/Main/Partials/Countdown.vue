@@ -79,8 +79,8 @@ const updateCountdown = () => {
 const calendarEvents = computed(() => ({
   "23": {
     title: t('countdown.calendar_event_title_tipat', 'Memadik/Nyuwaka Hendra & Dinda'),
-    description: t('countdown.calendar_event_description_tipat', 'Memadik/Nyuwaka : 10:00 - Selesai\nLokasi: Desa Jagapati, Pertima, Badung'),
-    location: t('countdown.calendar_event_location_tipat', 'Desa Jagapati, Pertima, Badung'),
+    description: t('countdown.calendar_event_description_tipat', 'Memadik/Nyuwaka : 10:00 - Selesai\nLokasi: Desa Jagapati, Abiansemal, Badung'),
+    location: t('countdown.calendar_event_location_tipat', 'Desa Jagapati, Abiansemal, Badung'),
     start: "20260323T020000Z", // 10:00 WITA in UTC
     end: "20260323T100000Z"    // 18:00 WITA in UTC
   },
@@ -257,7 +257,7 @@ onBeforeUnmount(() => {
       </div>        
     </div>      
           
-    <div ref="saveTheDateRef" class="flex items-center justify-center pt-8">    
+    <div ref="saveTheDateRef" class="flex items-center justify-center pt-8 pb-10 md:pb-14">    
       <a    
         :href="createGoogleCalendarLink()"  
         target="_blank"    

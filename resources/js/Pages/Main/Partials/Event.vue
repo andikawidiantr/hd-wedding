@@ -19,10 +19,10 @@ const allEvents = [
   {
     code: "23",
     title: "Memadik/Nyuwaka",
-    date: "Rabu, 23 Maret 2026",
+    date: "Senin, 23 Maret 2026",
     time: "Pukul 10.00 - Selesai",
     venue: "Desa Jagapati",
-    address: "Jl. jagapati, Pertima, Badung",
+    address: "Jl Jabajero I No.15 Br Jabajero Ds Jagapati Abiansemal Badung",
     mapsUrl: "https://maps.app.goo.gl/mhtjeGGvWJd1arz76"
   },
   {

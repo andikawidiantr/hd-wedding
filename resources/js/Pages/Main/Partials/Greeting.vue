@@ -218,7 +218,7 @@ onMounted(async () => {
               <!-- Video Element -->
               <video
                 ref="videoElement"
-                src="/assets/videos/video_gallery.mp4"
+                src="/assets/videos/video_gallery.web.mp4"
                 class="w-full h-auto object-cover rounded-lg"
                 preload="auto"
                 @click="togglePlay"

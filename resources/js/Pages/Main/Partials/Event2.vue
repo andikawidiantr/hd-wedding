@@ -23,10 +23,10 @@ const allEvents = computed(() => [
   {
     code: "23",
     title: t('events.tipat_bantal.title', 'Memadik/Nyuwaka'),
-    date: t('events.tipat_bantal.date', 'Rabu, 23 Maret 2026'),
+    date: t('events.tipat_bantal.date', 'Senin, 23 Maret 2026'),
     time: t('events.tipat_bantal.time', 'Pukul 10.00 - Selesai'),
     venue: t('events.tipat_bantal.venue', 'Desa Jagapati'),
-    address: t('events.tipat_bantal.address', 'Jl. jagapati, Pertima, Badung'),
+    address: t('events.tipat_bantal.address', 'Jl Jabajero I No.15 Br Jabajero Ds Jagapati Abiansemal Badung'),
     mapsUrl: "https://maps.app.goo.gl/9xDBhyXeR6tYD6DPA"
   },
   {
@@ -325,6 +325,12 @@ onMounted(() => {
   letter-spacing: 2px;
   margin-bottom: 1.5rem;
   text-transform: uppercase;
+  line-height: 1.25;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  max-width: 100%;
+  padding: 0 0.25rem;
 }
 
 .event-date, .event-time {
@@ -427,7 +433,8 @@ onMounted(() => {
   }
   
   .event-title {
-    font-size: 2rem;
+    font-size: clamp(1.5rem, 7vw, 2rem);
+    letter-spacing: 1px;
     margin-bottom: 1rem;
   }
   

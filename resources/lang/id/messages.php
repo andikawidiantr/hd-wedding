@@ -26,14 +26,15 @@ return [
         'located_at' => 'Bertempat di',
         'google_maps' => 'Google Maps',
         'loading' => 'Memuat...',
+        'instagram' => 'Instagram',
     ],
     'events' => [
         'tipat_bantal' => [
             'title' => 'Memadik/Nyuwaka',
-            'date' => 'Rabu, 23 Maret 2026',
+            'date' => 'Senin, 23 Maret 2026',
             'time' => 'Pukul 10.00 - Selesai',
             'venue' => 'Desa Jagapati',
-            'address' => 'Jl. jagapati, Pertima, Badung',
+            'address' => 'Jl. jagapati, Abiansemal, Badung',
         ],
         'pawiwahan' => [
             'title' => 'PAWIWAHAN',
@@ -83,14 +84,14 @@ return [
         
         // Calendar event descriptions
         'calendar_event_description' => 'Pawiwahan: 10:00 - Selesai\nResepsi: 18:00 - Selesai',
-        'calendar_event_description_tipat' => 'Upacara Memadik/Nyuwaka: 10:00 - Selesai\nLokasi: Desa Jagapati, Pertima, Badung',
+        'calendar_event_description_tipat' => 'Upacara Memadik/Nyuwaka: 10:00 - Selesai\nLokasi: Desa Jagapati, Abiansemal, Badung',
         'calendar_event_description_pawiwahan' => 'Upacara Pawiwahan: 10:00 - Selesai\nLokasi: Desa Asak, Pertima, Karangasem',
         'calendar_event_description_resepsi' => 'Resepsi Pernikahan: 18:00 - Selesai\nLokasi: Villa D\'carik, Jalan Kaswari, Penatih, Denpasar Timur, Bali',
         'calendar_event_description_combined' => 'Memadik/Nyuwaka: 23 Maret 2026, 10:00 - Selesai\nPawiwahan: 25 Maret 2026, 10:00 - Selesai',
         
         // Calendar event locations
         'calendar_event_location' => 'Desa Asak, Karangasem & Villa D\'carik, Denpasar',
-        'calendar_event_location_tipat' => 'Desa Jagapati, Pertima, Badung',
+        'calendar_event_location_tipat' => 'Desa Jagapati, Abiansemal, Badung',
         'calendar_event_location_pawiwahan' => 'Desa Asak, Pertima, Karangasem',
         'calendar_event_location_resepsi' => 'Villa D\'carik, Jalan Kaswari, Penatih, Denpasar Timur, Bali',
         'calendar_event_location_combined' => 'Desa Jagapati & Desa Asak, Bali',
@@ -128,7 +129,7 @@ return [
         'image_alt' => 'Pasangan di pantai',
         'bank_bca' => 'BANK BCA',
         'bank_owner' => 'a.n. I Gede Agus Hendrawan',
-        'address' => 'Alamat Rumah: Jalan Kaliurang, Kelurahan Lorem Ipsum, Lorem Ipsum, Lorem Ipsum.',
+        'address' => 'Alamat Rumah: Jalan Gunung Lebah I Gang VII No. 10, Denpasar, Bali',
         'copy' => 'Salin',
         'copied' => 'Tersalin',
     ],

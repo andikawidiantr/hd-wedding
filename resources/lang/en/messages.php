@@ -26,14 +26,15 @@ return [
         'located_at' => 'Located at',
         'google_maps' => 'Google Maps',
         'loading' => 'Loading...',
+        'instagram' => 'Instagram',
     ],
     'events' => [
         'tipat_bantal' => [
             'title' => 'Memadik/Nyuwaka',
-            'date' => 'Wednesday, March 23, 2026',
+            'date' => 'Monday, March 23, 2026',
             'time' => '10:00 AM - Finish',
             'venue' => 'Jagapati Village',
-            'address' => 'Jl. jagapati, Pertima, Badung',
+            'address' => 'Jl. Jabajero I No.15 Br. Jabajero Ds. Jagapati Abiansemal Badung',
         ],
         'pawiwahan' => [
             'title' => 'PAWIWAHAN',
@@ -83,14 +84,14 @@ return [
         
         // Calendar event descriptions
         'calendar_event_description' => 'Pawiwahan: 10:00 AM - Completion\nReception: 6:00 PM - Completion',
-        'calendar_event_description_tipat' => 'Memadik/Nyuwaka Ceremony: 10:00 AM - Completion\nLocation: Desa Jagapati, Pertima, Badung',
+        'calendar_event_description_tipat' => 'Memadik/Nyuwaka Ceremony: 10:00 AM - Completion\nLocation: Desa Jagapati, Abiansemal, Badung',
         'calendar_event_description_pawiwahan' => 'Pawiwahan Ceremony: 10:00 AM - Completion\nLocation: Desa Asak, Pertima, Karangasem',
         'calendar_event_description_resepsi' => 'Wedding Reception: 6:00 PM - Completion\nLocation: Villa D\'carik, Jalan Kaswari, Penatih, East Denpasar, Bali',
         'calendar_event_description_combined' => 'Memadik/Nyuwaka: March 23, 2026, 10:00 AM - Completion\nPawiwahan: March 25, 2026, 10:00 AM - Completion',
         
         // Calendar event locations
         'calendar_event_location' => 'Desa Asak, Karangasem & Villa D\'carik, Denpasar',
-        'calendar_event_location_tipat' => 'Desa Jagapati, Pertima, Badung',
+        'calendar_event_location_tipat' => 'Desa Jagapati, Abiansemal, Badung',
         'calendar_event_location_pawiwahan' => 'Desa Asak, Pertima, Karangasem',
         'calendar_event_location_resepsi' => 'Villa D\'carik, Jalan Kaswari, Penatih, East Denpasar, Bali',
         'calendar_event_location_combined' => 'Desa Jagapati & Desa Asak, Bali',
@@ -128,7 +129,7 @@ return [
         'image_alt' => 'Couple on the beach',
         'bank_bca' => 'BANK BCA',
         'bank_owner' => 'a.n. I Gede Agus Hendrawan',
-        'address' => 'Home Address: Jalan Kaliurang, Kelurahan Lorem Ipsum, Lorem Ipsum, Lorem Ipsum.',
+        'address' => 'Home Address: Jalan Gunung Lebah I Gang VII No. 10, Denpasar, Bali',
         'copy' => 'Copy',
         'copied' => 'Copied',
     ],

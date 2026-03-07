@@ -189,7 +189,9 @@ onMounted(() => {
       <Story />
       <Reservation />
       <Greeting :greeting="greeting" />
-      <Gift />
+      <div class="mt-12 sm:mt-16">
+        <Gift />
+      </div>
       <Closed />
       <Footer />
       <Music :play="play" @play="setPlay" />
