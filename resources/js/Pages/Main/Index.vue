@@ -53,7 +53,7 @@ const videoLoaded = ref(false);
 const videoError = ref(false);
 
 // Video source - update with your actual path
-const videoSrc = "/assets/videos/background.mp4"; 
+const videoSrc = "/assets/videos/background.web.mp4"; 
 const fallbackImage = "/assets/images/raw-1208.jpg"; //ganti
 
 // Function to handle video loading

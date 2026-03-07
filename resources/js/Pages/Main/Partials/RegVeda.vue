@@ -1,22 +1,24 @@
 <script setup>
-import { computed, onMounted, ref, onUnmounted, watch } from "vue";
+import { computed, onMounted, ref, onUnmounted } from "vue";
 import { useI18n } from 'vue-i18n'; // Import useI18n
 
 // Initialize i18n
-const { t, locale } = useI18n({ useScope: 'global' });
+const { locale } = useI18n();
 
-// Force vnode refresh when locale changes to prevent stale text in this section.
-const localeRenderKey = ref(0);
+const regVedaContent = {
+  id: {
+    title: 'Ṛg Veda X.85.47',
+    sanskritText: '"Tvāṁ patīṁ gr̥hṇāmi, tvamasi me sahadharmacārīni."',
+    translation: 'Aku menerima engkau sebagai suamiku/istriku; engkau adalah sahabatku dalam Dharma. Bersama kita akan hidup, mencintai, dan membangun kebahagiaan.'
+  },
+  en: {
+    title: 'Ṛg Veda X.85.47',
+    sanskritText: '"Tvāṁ patīṁ gr̥hṇāmi, tvamasi me sahadharmacārīni."',
+    translation: 'I accept you as my husband/wife; you are my companion in Dharma. Together we will live, love, and build happiness.'
+  }
+};
 
-watch(locale, () => {
-  localeRenderKey.value += 1;
-});
-
-const regVedaCopy = computed(() => ({
-  title: t('regveda.title') || 'Ṛg Veda X.85.47',
-  sanskritText: t('regveda.sanskrit_text') || '"Tvāṁ patīṁ gr̥hṇāmi, tvamasi me sahadharmacārīni."',
-  translation: t('regveda.translation') || 'Aku menerima engkau sebagai suamiku/istriku; engkau adalah sahabatku dalam Dharma. Bersama kita akan hidup, mencintai, dan membangun kebahagiaan.'
-}));
+const regVedaCopy = computed(() => regVedaContent[locale.value] || regVedaContent.id);
 
 const regVedaRef = ref(null);
 const isVisible = ref(false);
@@ -69,14 +71,14 @@ onUnmounted(() => {
       class="container mx-auto px-12"
       style="translate: none; rotate: none; scale: none; transform: none;"
     >
-      <div :key="localeRenderKey" class="flex flex-col items-center justify-center">
+      <div :key="locale" class="flex flex-col items-center justify-center">
         <!-- Title -->
         <div class="overflow-hidden mb-4">
           <h1
             class="font-wittgenstein text-2xl md:text-3xl text-white text-center select-none animate-item"
             :class="{ 'show': isVisible }"
           >
-            {{ regVedaCopy.title }}
+           {{ regVedaCopy.title }}
           </h1>
         </div>
 
@@ -173,4 +175,8 @@ onUnmounted(() => {
   }
 }
 
+/* Prevent FOIT */
+@font-face {
+  font-display: swap;
+}
 </style>
