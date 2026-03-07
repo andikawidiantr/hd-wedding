@@ -22,7 +22,6 @@ import Countdown from "./Partials/Countdown.vue";
 import Reservation from "./Partials/Reservation.vue";
 import Wallet from "./Components/Wallet.vue";
 import Music from "./Components/Music.vue";
-import { setLocale } from '@/i18n'; // Import fungsi setLocale
 
 gsap.registerPlugin(ScrollTrigger);
 

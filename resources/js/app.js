@@ -28,7 +28,13 @@ createInertiaApp({
     setup({ el, App, props, plugin }) {
         // Dapatkan terjemahan dan locale dari props Inertia
         const translations = props?.initialPage?.props?.translations || {};
-        const locale = props?.initialPage?.props?.locale || localStorage.getItem('locale') || 'en';
+        const persistedLocale = localStorage.getItem('locale');
+        const serverLocale = props?.initialPage?.props?.locale;
+        const availableLocales = Object.keys(translations);
+        const locale =
+            [persistedLocale, serverLocale, 'id', 'en'].find(
+                (candidate) => candidate && availableLocales.includes(candidate)
+            ) || 'en';
 
         // Buat instance i18n dengan data yang diambil dari props
         const i18n = createI18n({
