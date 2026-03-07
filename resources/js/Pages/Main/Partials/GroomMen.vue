@@ -1,11 +1,18 @@
 <script setup>
-import { onMounted, ref, onBeforeUnmount } from "vue";
+import { computed, onMounted, ref, onBeforeUnmount } from "vue";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
 import { useI18n } from 'vue-i18n'; // Import useI18n
 
 // Initialize i18n
-const { t } = useI18n();
+const { t, locale } = useI18n();
+
+const groomCopy = computed(() => ({
+  loading: t('common.loading', 'Loading...'),
+  title: t('groom.title', 'The Groom'),
+  name: t('groom.name', 'Ir. I Gede Agus Hendrawan, ST'),
+  description: t('groom.description', 'Putra Pertama dari Bapak I Made Rama & Ibu Ni Ketut Rumaheni')
+}));
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -238,24 +245,24 @@ onBeforeUnmount(() => {
   >
     <!-- Loading indicator -->
     <div v-if="isLoading" class="absolute inset-0 z-50 flex items-center justify-center bg-black/80">
-      <div class="text-white text-xl">{{ t('common.loading', 'Loading...') }}</div>
+      <div class="text-white text-xl">{{ groomCopy.loading }}</div>
     </div>
     
     <!-- Content -->
-    <div class="w-full h-screen flex items-end justify-start z-[2] px-4 py-12 relative">
+    <div :key="locale" class="w-full h-screen flex items-end justify-start z-[2] px-4 py-12 relative">
       <div class="flex flex-col gap-4 p-4">
         <h2
           ref="titleRef"
           class="text-xl uppercase font-wittgenstein text-white drop-shadow-lg"
         >
-          {{ t('groom.title', 'The Groom') }}
+          {{ groomCopy.title }}
         </h2>
         <div ref="lineRef" class="border-t w-48 border-white"></div>
         <h1 ref="nameRef" class="text-3xl font-wittgenstein text-white">
-          {{ t('groom.name', 'Ir. I Gede Agus Hendrawan, ST') }}
+          {{ groomCopy.name }}
         </h1>
         <p ref="descRef" class="font-wittgenstein text-white text-md">
-          {{ t('groom.description', 'Putra Pertama dari Bapak I Made Rama & Ibu Ni Ketut Rumaheni') }}
+          {{ groomCopy.description }}
         </p>
         <a
           ref="socialRef"

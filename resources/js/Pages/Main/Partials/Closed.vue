@@ -1,11 +1,20 @@
 <script setup>
-import { onMounted, ref, onBeforeUnmount } from "vue";
+import { computed, onMounted, ref, onBeforeUnmount } from "vue";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
 import { useI18n } from "vue-i18n"; // Import useI18n
 
 // Initialize i18n
-const { t } = useI18n();
+const { t, locale } = useI18n();
+
+const closedCopy = computed(() => ({
+  loading: t('closed.loading', 'Loading...'),
+  loadingError: t('closed.loading_error', 'Failed to load images. Please refresh the page.'),
+  heading: t('closed.heading', 'SEE YOU ON OUR BIG DAY'),
+  withLove: t('closed.with_love', 'With love,'),
+  groomName: t('closed.groom_name', 'Hendra'),
+  brideName: t('closed.bride_name', 'Dinda')
+}));
 
 // Register ScrollTrigger plugin
 gsap.registerPlugin(ScrollTrigger);
@@ -201,24 +210,24 @@ onBeforeUnmount(() => {
   >
     <!-- Loading overlay -->
     <div v-if="isLoading" class="absolute inset-0 bg-black flex items-center justify-center z-50">
-      <div class="text-white">{{ t('closed.loading', 'Loading...') }}</div>
+      <div class="text-white">{{ closedCopy.loading }}</div>
     </div>
     
     <!-- Error message -->
     <div v-if="loadingError" class="absolute inset-0 bg-black/80 flex items-center justify-center z-50">
-      <div class="text-white">{{ t('closed.loading_error', 'Failed to load images. Please refresh the page.') }}</div>
+      <div class="text-white">{{ closedCopy.loadingError }}</div>
     </div>
     
     <div class="absolute inset-0 bg-black/30 z-[1]"></div>
     
     <!-- Top heading with line -->
-    <div class="relative z-10 w-full pt-16 px-6 md:px-12">
+    <div :key="locale" class="relative z-10 w-full pt-16 px-6 md:px-12">
       <div class="flex items-center">
         <h2 
           ref="headingRef"
           class="text-white text-xl md:text-2xl font-light tracking-widest uppercase"
         >
-          {{ t('closed.heading', 'SEE YOU ON OUR BIG DAY') }}
+          {{ closedCopy.heading }}
         </h2>
         <div 
           ref="lineRef"
@@ -234,13 +243,13 @@ onBeforeUnmount(() => {
           ref="withLoveRef"
           class="text-white text-lg md:text-xl mb-2"
         >
-          {{ t('closed.with_love', 'With love,') }}
+          {{ closedCopy.withLove }}
         </p>
         <h1 
           ref="namesRef"
           class="text-white text-5xl md:text-7xl font-poly "
         >
-          {{  t('closed.groom_name', 'Hendra') }}<br>{{ t('closed.bride_name', 'Dinda') }}
+          {{ closedCopy.groomName }}<br>{{ closedCopy.brideName }}
         </h1>
       </div>
     </div>

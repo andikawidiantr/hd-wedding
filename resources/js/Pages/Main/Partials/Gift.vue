@@ -1,11 +1,21 @@
 <script setup>
-import { onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useI18n } from "vue-i18n"; // Import useI18n
 
 // Initialize i18n
-const { t } = useI18n();
+const { t, locale } = useI18n();
+
+const giftCopy = computed(() => ({
+  imageAlt: t('gift.image_alt', 'Couple on the beach'),
+  title: t('gift.title', 'WEDDING'),
+  subtitle: t('gift.subtitle', 'GIFT'),
+  message: t('gift.message', 'Your presence and prayers are the greatest wedding gifts we could ever ask for. No other gifts are needed nor expected. However, if giving is a sign of love, we are happy to receive it, and, of course, it will enhance our happiness even more.'),
+  copied: t('gift.copied', 'Copied'),
+  copy: t('gift.copy', 'Copy'),
+  address: t('gift.address', 'Home Address: Jalan Gunung Lebah I Gang VII No. 10, Denpasar, Bali')
+}));
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -18,7 +28,7 @@ const imageRef = ref(null);
 const copiedBank = ref(null);
 const copyTimeouts = ref({});
 
-const banks = [
+const banks = computed(() => [
   {
     name: t('gift.bank_bca', 'BANK BCA'),
     number: "6485670681",
@@ -29,7 +39,7 @@ const banks = [
   //   number: "123xxx",
   //   owner: "a.n. LOREM IPSUM"
   // }
-];
+]);
 
 
 const preloadImage = (url) => {
@@ -142,10 +152,10 @@ onMounted(async () => {
 
 <template>
   <!-- Image at the top -->
-  <div ref="imageRef" class="px-4 mt-20">
+  <div :key="locale" ref="imageRef" class="px-4 mt-20">
     <img 
       src="/assets/images/raw-1582.jpg" 
-      :alt="t('gift.image_alt', 'Couple on the beach')" 
+      :alt="giftCopy.imageAlt" 
       class="object-cover rounded-md pt-16"
     />
   </div>
@@ -156,19 +166,19 @@ onMounted(async () => {
     <div class="w-full max-w-md flex flex-col items-center z-[2] relative pb-8 mb-16">
       <!-- Title -->
       <h2 ref="titleRef" class="font-serif text-center text-white text-5xl tracking-wider my-8">
-        {{ t('gift.title', 'WEDDING') }}<br>{{ t('gift.subtitle', 'GIFT') }}
+        {{ giftCopy.title }}<br>{{ giftCopy.subtitle }}
       </h2>
       
       <!-- Message -->
       <p ref="messageRef" class="text-white text-center mb-10 mx-4 leading-relaxed">
-        {{ t('gift.message', 'Your presence and prayers are the greatest wedding gifts we could ever ask for. No other gifts are needed nor expected. However, if giving is a sign of love, we are happy to receive it, and, of course, it will enhance our happiness even more.') }}
+        {{ giftCopy.message }}
       </p>
       
       <!-- Bank Information -->
       <div ref="bankInfoRef" class="w-full flex flex-col gap-4 px-4">
         <!-- First Bank -->
         <div 
-          v-for="(bank, index) in banks" 
+          v-for="(bank, index) in banks"
           :key="bank.name"
           class="w-full border border-white/40 p-5 relative pb-16"
         >
@@ -188,17 +198,17 @@ onMounted(async () => {
                 class="mr-1"
                 width="16"
               />
-              {{ copiedBank === index ? t('gift.copied', 'Copied') : t('gift.copy', 'Copy') }}
+              {{ copiedBank === index ? giftCopy.copied : giftCopy.copy }}
             </span>
           </button>
         </div>
         
         <!-- Address -->
         <div class="w-full border border-white/40 p-5 relative pb-16">
-          <p class="text-white">Home Address: Jalan Gunung Lebah I Gang VII No. 10, Denpasar, Bali</p>
+          <p class="text-white">{{ giftCopy.address }}</p>
           <button 
             id="copy-btn-address"
-            @click="copyToClipboard('Home Address: Jalan Gunung Lebah I Gang VII No. 10, Denpasar, Bali', 'address')" 
+            @click="copyToClipboard(giftCopy.address, 'address')" 
             class="absolute bottom-4 right-4 text-white border border-white/40 px-4 py-1 text-sm hover:bg-white/10 transition-all duration-300"
           >
             <span class="flex items-center">
@@ -207,7 +217,7 @@ onMounted(async () => {
                 class="mr-1"
                 width="16"
               />
-              {{ copiedBank === 'address' ? t('gift.copied', 'Copied') : t('gift.copy', 'Copy') }}
+              {{ copiedBank === 'address' ? giftCopy.copied : giftCopy.copy }}
             </span>
           </button>
         </div>

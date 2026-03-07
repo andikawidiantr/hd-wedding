@@ -1,11 +1,25 @@
 <script setup>
 import { amplop, setAmplop } from "../Utils";
 import { router, useForm } from "@inertiajs/vue3";
-import { onMounted, ref, watch } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { useI18n } from 'vue-i18n'; // Import useI18n
 
 // Initialize i18n
-const { t } = useI18n();
+const { t, locale } = useI18n();
+
+const reservationCopy = computed(() => ({
+  title: t('reservation.title', 'RSVP'),
+  subtitle: t('reservation.subtitle', 'Please, fill confirmation of attendance below.'),
+  name: t('reservation.name', 'Name'),
+  namePlaceholder: t('reservation.name_placeholder', 'Name...'),
+  attendance: t('reservation.attendance', 'Confirmation of Attendance'),
+  select: t('reservation.select', 'Select...'),
+  attending: t('reservation.attending', 'Yes, I will attend'),
+  notAttending: t('reservation.not_attending', 'No, I am unable to attend'),
+  guests: t('reservation.guests', 'Number of Person(s)'),
+  loading: t('reservation.loading', 'Loading...'),
+  submit: t('reservation.submit', 'Submit')
+}));
 
 const imageLoaded = ref(false);
 const isVisible = ref(false);
@@ -104,7 +118,8 @@ onMounted(async () => {
       backgroundColor: 'transparent',  
     }" 
   >
-    <div 
+    <div
+      :key="locale"
       class="w-full flex flex-col items-center justify-center z-[2] px-4 py-12 transition-transform duration-1000 pt-16"
       :class="{ 'translate-y-20 opacity-0': !isVisible }"
     >
@@ -116,12 +131,12 @@ onMounted(async () => {
         >
           <div class="flex items-center justify-center w-full mb-12">
             <h2 class="font-serif text-white text-4xl">
-              {{ t('reservation.title', 'RSVP') }}
+              {{ reservationCopy.title }}
             </h2>
             <div class="flex-grow border-t border-white ml-2"></div>
           </div>
           <p class="text-center text-white text-sm mb-8">
-            {{ t('reservation.subtitle', 'Please, fill confirmation of attendance below.') }}
+            {{ reservationCopy.subtitle }}
           </p>
         </div>
 
@@ -134,7 +149,7 @@ onMounted(async () => {
           <!-- Nama Field -->
           <div class="flex flex-col gap-2">
             <label for="nama" class="text-white text-sm">
-              {{ t('reservation.name', 'Name') }}
+              {{ reservationCopy.name }}
             </label>
             <input
               v-model="form.name"
@@ -143,7 +158,7 @@ onMounted(async () => {
               :disabled="form.processing"
               class="form-input white-placeholder"
               :class="{ 'border-red-400': form.errors.name }"
-              :placeholder="t('reservation.name_placeholder', 'Name...')"
+              :placeholder="reservationCopy.namePlaceholder"
             />
             <span v-if="form.errors.name" class="text-red-500 text-xs mt-1">
               {{ form.errors.name }}
@@ -153,7 +168,7 @@ onMounted(async () => {
           <!-- Kehadiran Field -->
           <div class="flex flex-col gap-2">
             <label for="kehadiran" class="text-white text-sm flex">
-              {{ t('reservation.attendance', 'Confirmation of Attendance') }} <span class="text-red-500 ml-1">*</span>
+              {{ reservationCopy.attendance }} <span class="text-red-500 ml-1">*</span>
             </label>
             <select
               v-model="form.attendance"
@@ -162,9 +177,9 @@ onMounted(async () => {
               class="form-input"
               :class="{ 'border-red-400': form.errors.attendance }"
             >
-              <option value="" disabled>{{ t('reservation.select', 'Select...') }}</option>
-              <option value="1">{{ t('reservation.attending', 'Yes, I will attend') }}</option>
-              <option value="2">{{ t('reservation.not_attending', 'No, I am unable to attend') }}</option>
+              <option value="" disabled>{{ reservationCopy.select }}</option>
+              <option value="1">{{ reservationCopy.attending }}</option>
+              <option value="2">{{ reservationCopy.notAttending }}</option>
             </select>
             <span v-if="form.errors.attendance" class="text-red-500 text-xs mt-1">
               {{ form.errors.attendance }}
@@ -174,7 +189,7 @@ onMounted(async () => {
           <!-- Jumlah Tamu Field -->
           <div class="flex flex-col gap-2">
             <label for="jumlah_tamu" class="text-white text-sm">
-              {{ t('reservation.guests', 'Number of Person(s)') }}
+              {{ reservationCopy.guests }}
             </label>
             <select
               v-model="form.guest"
@@ -183,7 +198,7 @@ onMounted(async () => {
               class="form-input"
               :class="{ 'border-red-400': form.errors.guest }"
             >
-              <option value="" disabled>{{ t('reservation.select', 'Select...') }}</option>
+              <option value="" disabled>{{ reservationCopy.select }}</option>
               <option v-for="index in 4" :key="index" :value="index">
                 {{ index }}
               </option>
@@ -200,7 +215,7 @@ onMounted(async () => {
               class="submit-button"
               :class="{ 'opacity-50 cursor-not-allowed': form.processing }"
             >
-              {{ form.processing ? t('reservation.loading', 'Loading...') : t('reservation.submit', 'Submit') }}
+              {{ form.processing ? reservationCopy.loading : reservationCopy.submit }}
             </button>
           </div>
 

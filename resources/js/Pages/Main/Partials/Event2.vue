@@ -14,6 +14,11 @@ const eventDetailsRef = ref(null);
 // Initialize i18n
 const { t, locale } = useI18n();
 
+const event2Copy = computed(() => ({
+  locatedAt: t('common.located_at', 'Bertempat di'),
+  googleMaps: t('common.google_maps', 'Google Maps')
+}));
+
 const props = defineProps({
   code: String,
 });
@@ -177,13 +182,13 @@ onMounted(() => {
             class="decorative-image"  
           />  
         </div>
-        <div ref="eventDetailsRef" class="event-two">
+        <div ref="eventDetailsRef" :key="locale" class="event-two">
           <!-- Loop through events to show -->
           <div v-for="(event, index) in eventsToShow" :key="event.code" class="event-item" :class="{ 'mt-8': index > 0 }">
             <h2 class="event-title">{{ event.title }}</h2>
             <p class="event-date">{{ event.date }}</p>
             <p class="event-time">{{ event.time }}</p>
-            <p class="event-location">{{ t('common.located_at', 'Bertempat di') }}</p>
+            <p class="event-location">{{ event2Copy.locatedAt }}</p>
             <p class="event-venue">{{ event.venue }}</p>
             <p class="event-address">{{ event.address }}</p>
             
@@ -191,7 +196,7 @@ onMounted(() => {
                 :href="event.mapsUrl"
                 target="_blank"
                 class="map-button">
-              <span class="map-icon"></span> {{ t('common.google_maps', 'Google Maps') }}
+              <span class="map-icon"></span> {{ event2Copy.googleMaps }}
             </a>
             
             <!-- Add divider if not the last event -->

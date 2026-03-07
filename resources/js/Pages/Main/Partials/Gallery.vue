@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from "vue";
+import { computed, ref, onMounted, onUnmounted } from "vue";
 import { Swiper, SwiperSlide } from "swiper/vue";
 import { Autoplay, Navigation } from "swiper/modules";
 import "swiper/css";
@@ -11,7 +11,13 @@ import 'lightgallery/css/lg-zoom.css';
 import { useI18n } from 'vue-i18n'; // Import useI18n
 
 // Initialize i18n
-const { t } = useI18n();
+const { t, locale } = useI18n();
+
+const galleryCopy = computed(() => ({
+  title: t('gallery.title', 'Our Gallery'),
+  imageAlt: t('gallery.image_alt', 'Gallery Image'),
+  tapToView: t('gallery.tap_to_view', 'Tap image to view all photos')
+}));
 
 const imageLoaded = ref(false);
 const swiperRef = ref(null);
@@ -138,12 +144,12 @@ onUnmounted(() => {
       backgroundColor: 'transparent',  
     }"
   >
-    <div class="relative w-full h-full flex items-center justify-center z-[2] px-4 py-12">
+    <div :key="locale" class="relative w-full h-full flex items-center justify-center z-[2] px-4 py-12">
       <div class="h-full w-full flex flex-col gap-16">
         <!-- Header -->
         <div class="flex flex-col gap-2">
           <h1 class="text-4xl text-white text-center font-wittgenstein uppercase tracking-wider">
-            {{ t('gallery.title', 'Our Gallery') }}
+            {{ galleryCopy.title }}
           </h1>
           <h6 class="text-white text-center font-wittgenstein tracking-widest uppercase">
             Hendra & Dinda
@@ -169,7 +175,7 @@ onUnmounted(() => {
                 >
                   <img
                     :src="image.src"
-                    :alt="t('gallery.image_alt', 'Gallery Image') + ' ' + image.id"
+                    :alt="galleryCopy.imageAlt + ' ' + image.id"
                     class="w-full h-full object-cover"
                     loading="lazy"
                   />
@@ -188,7 +194,7 @@ onUnmounted(() => {
           </div>
 
           <p class="text-white text-center text-sm opacity-80">
-            {{ t('gallery.tap_to_view', 'Tap image to view all photos') }}
+            {{ galleryCopy.tapToView }}
           </p>
         </div>
       </div>

@@ -1,11 +1,18 @@
 <script setup>  
-import { onMounted, ref } from "vue";  
+import { computed, onMounted, ref } from "vue";  
 import gsap from 'gsap';  
 import ScrollTrigger from 'gsap/ScrollTrigger';  
 import { useI18n } from "vue-i18n"; // Import useI18n
 
 // Initialize i18n
-const { t } = useI18n();
+const { t, locale } = useI18n();
+
+const footerCopy = computed(() => ({
+  thankYou: t('footer.thank_you', 'Thank You'),
+  coupleNames: t('footer.couple_names', 'Hendra & Dinda'),
+  creditsPrefix: t('footer.credits_prefix', 'Designed and Developed by'),
+  developerName: t('footer.developer_name', 'andikawidiantr')
+}));
   
 gsap.registerPlugin(ScrollTrigger);  
   
@@ -78,19 +85,19 @@ onMounted(async () => {
     }"  
   >  
     <!-- Main content with thank you and names -->
-    <div class="flex-grow w-full flex flex-col items-center justify-center z-[2] px-4 py-12">
+    <div :key="locale" class="flex-grow w-full flex flex-col items-center justify-center z-[2] px-4 py-12">
       <div class="flex flex-col gap-0 mb-4">  
         <h2   
           ref="thankYouRef"  
           class="font-poly text-center font-light text-white text-4xl"  
         >  
-          {{ t('footer.thank_you', 'Thank You') }}  
+          {{ footerCopy.thankYou }}  
         </h2>  
         <h2   
           ref="namesRef"  
           class="font-playball text-center text-white text-3xl mt-2" 
         >  
-          {{ t('footer.couple_names', 'Hendra & Dinda') }}  
+          {{ footerCopy.coupleNames }}  
         </h2>  
       </div>
     </div>
@@ -101,12 +108,12 @@ onMounted(async () => {
       class="w-full pb-8 mt-auto"  
     >  
       <p class="text-gray-200 text-center mb-5">  
-        {{ t('footer.credits_prefix', 'Designed and Developed by') }} <br>
+        {{ footerCopy.creditsPrefix }} <br>
         <a  
           href="https://www.instagram.com/andikawidiantr/"  
           target="_blank"  
           class="underline hover:text-white transition-colors duration-300 hover:scale-105 inline-block"  
-        >{{ t('footer.developer_name', 'andikawidiantr') }}</a>  
+        >{{ footerCopy.developerName }}</a>  
       </p>  
     </div>
   </section>  

@@ -1,11 +1,20 @@
 <script setup>
-import { onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useI18n } from 'vue-i18n'; // Import useI18n
 
 // Initialize i18n
-const { t } = useI18n();
+const { t, locale } = useI18n();
+
+const storyCopy = computed(() => ({
+  titleLine1: t('story.title_line1', 'OUR'),
+  titleLine2: t('story.title_line2', 'STORY'),
+  paragraph1: t('story.paragraph1', 'Awalnya ini perkenalan biasa, tapi disinilah awal cerita dimulai, kami dipertemukan pada waktu yang tidak semua orang tahu ini tepat atau tidak, lewat obrolan ringan sampai percakapan yang penuh makna membuat kami saling mengenal pribadi kami masing masing'),
+  paragraph2: t('story.paragraph2', 'Perjalanan yang tidak selalu mudah, namun yang kami percaya tidak ada yang benar benar sempurna. Hari demi hari kami berjalan, proses demi proses terbentuk kami belajar untuk menerima dan memahami. Bentuk cinta dan kasih yang kami percaya adalah tentang bertahan dengan segala bentuk perbedaan yang sudah ada ataupun akan kami temui nanti.'),
+  paragraph3: t('story.paragraph3', 'Atas restu Ida Sang Hyang Widhi, leluhur, dan orang tua. Dengan segala keyakinan kami berdua, sebuah janji Dharma untuk saling menjaga, saling menghormati dan setia dalam segala kondisi. Kami berdua memantapkan untuk menjalani kehidupan Grahasta Asrama.'),
+  paragraph4: t('story.paragraph4', 'Semoga langkah kami hari ini menjadi awal dari perjalanan panjang yang penuh dengan berkah. menjalani kehidupan yang diwarnai dengan keharmonisan, kedamaian dan kebahagian. Kami mohon doa restunya')
+}));
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -52,7 +61,7 @@ onMounted(() => {
     ref="sectionRef"
     id="story"
     class="min-h-full px-4 py-1">
-    <div class="w-full max-w-md flex flex-col items-center z-[2] relative">
+    <div :key="locale" class="w-full max-w-md flex flex-col items-center z-[2] relative">
       <!-- Title with decorative elements -->
       <div class="flex items-center justify-center w-full my-8">
         <!-- Left decorative line -->
@@ -64,7 +73,7 @@ onMounted(() => {
         
         <!-- Title -->
         <h2 ref="titleRef" class="font-serif text-center text-white text-5xl tracking-wider">
-          {{ t('story.title_line1', 'OUR') }}<br>{{ t('story.title_line2', 'STORY') }}
+          {{ storyCopy.titleLine1 }}<br>{{ storyCopy.titleLine2 }}
         </h2>
         
         <!-- Right decorative line (flipped version of left) -->
@@ -77,13 +86,13 @@ onMounted(() => {
       
       <!-- Message -->
       <p ref="messageRef" class="text-white text-justify mb-8 mx-4 leading-relaxed">
-        {{ t('story.paragraph1', 'Awalnya ini perkenalan biasa, tapi disinilah awal cerita dimulai, kami dipertemukan pada waktu yang tidak semua orang tahu ini tepat atau tidak, lewat obrolan ringan sampai percakapan yang penuh makna membuat kami saling mengenal pribadi kami masing masing') }}
+        {{ storyCopy.paragraph1 }}
         <br><br>
-        {{ t('story.paragraph2', 'Perjalanan yang tidak selalu mudah, namun yang kami percaya tidak ada yang benar benar sempurna. Hari demi hari kami berjalan, proses demi proses terbentuk kami belajar untuk menerima dan memahami. Bentuk cinta dan kasih yang kami percaya adalah tentang bertahan dengan segala bentuk perbedaan yang sudah ada ataupun akan kami temui nanti.') }}
+        {{ storyCopy.paragraph2 }}
         <br><br>
-        {{ t('story.paragraph3', 'Atas restu Ida Sang Hyang Widhi, leluhur, dan orang tua. Dengan segala keyakinan kami berdua, sebuah janji Dharma untuk saling menjaga, saling menghormati dan setia dalam segala kondisi. Kami berdua memantapkan untuk menjalani kehidupan Grahasta Asrama.') }}
+        {{ storyCopy.paragraph3 }}
         <br><br>
-        {{ t('story.paragraph4', 'Semoga langkah kami hari ini menjadi awal dari perjalanan panjang yang penuh dengan berkah. menjalani kehidupan yang diwarnai dengan keharmonisan, kedamaian dan kebahagian. Kami mohon doa restunya') }}
+        {{ storyCopy.paragraph4 }}
       </p>
       
       <!-- Overlay gradient -->

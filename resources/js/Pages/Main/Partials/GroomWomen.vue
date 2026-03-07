@@ -1,11 +1,17 @@
 <script setup>
-import { onMounted, ref, onBeforeUnmount } from "vue";
+import { computed, onMounted, ref, onBeforeUnmount } from "vue";
 import gsap from 'gsap';
 import ScrollTrigger from 'gsap/ScrollTrigger';
 import { useI18n } from 'vue-i18n';
 
 // Initialize i18n
-const { t } = useI18n();
+const { t, locale } = useI18n();
+
+const brideCopy = computed(() => ({
+  title: t('bride.title', 'The Bride'),
+  name: t('bride.name', 'dr. Ni Luh Putu Dinda Rahayu Dermana, S.Ked'),
+  description: t('bride.description', 'Putri Pertama dari Bapak I Wayan Dermana Putra & Ibu Ns. Ni Wayan Sudianingsih, S.Kep')
+}));
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -206,20 +212,20 @@ onBeforeUnmount(() => {
     }"
   >
     <!-- Content -->
-    <div class="w-full h-screen flex items-end justify-end z-[2] px-4 py-12 relative"> <!-- Ubah justify-start menjadi justify-end -->
+    <div :key="locale" class="w-full h-screen flex items-end justify-end z-[2] px-4 py-12 relative"> <!-- Ubah justify-start menjadi justify-end -->
       <div class="flex flex-col gap-4 p-4 items-end"> <!-- Tambah items-end untuk align kanan -->
         <h2
           ref="titleRef"
           class="text-xl uppercase font-wittgenstein text-white drop-shadow-lg"
         >
-          {{ t('bride.title', 'The Bride') }}
+          {{ brideCopy.title }}
         </h2>
         <div ref="lineRef" class="border-t w-48 border-white"></div>
         <h1 ref="nameRef" class="text-3xl font-wittgenstein text-white">
-          {{ t('bride.name', 'dr. Ni Luh Putu Dinda Rahayu Dermana, S.Ked') }}
+          {{ brideCopy.name }}
         </h1>
         <p ref="descRef" class="font-wittgenstein text-white text-md text-right">
-          {{ t('bride.description', 'Putri Pertama dari Bapak I Wayan Dermana Putra & Ibu Ns. Ni Wayan Sudianingsih, S.Kep') }}
+          {{ brideCopy.description }}
         </p>
         <a  
           ref="socialRef"  

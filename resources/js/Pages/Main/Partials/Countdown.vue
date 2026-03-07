@@ -10,6 +10,16 @@ import 'moment/locale/en-gb';
 // Initialize i18n
 const { t, locale } = useI18n();
 
+const countdownCopy = computed(() => ({
+  titleLine1: t('countdown.title_line1', 'COUNTDOWN'),
+  titleLine2: t('countdown.title_line2', 'TIMER'),
+  days: t('countdown.days', 'Hari'),
+  hours: t('countdown.hours', 'Jam'),
+  minutes: t('countdown.minutes', 'Menit'),
+  seconds: t('countdown.seconds', 'Detik'),
+  saveTheDate: t('countdown.save_the_date', 'Save The Date')
+}));
+
 // Accept props including the code
 const props = defineProps({
   code: String
@@ -194,78 +204,80 @@ onBeforeUnmount(() => {
     ref="eventRef"        
     id="countdown"        
     class="h-[60vh] flex flex-col items-center justify-center relative z-[2] overflow-hidden px-4 py-6"        
-  >        
-    <!-- Title section at the top -->  
-    <div class="mb-8 mt-16 w-full">  
-      <!-- Line with small margins -->  
-      <div class="w-[100%] mx-auto border-t border-white mb-6"></div>  
-        
-      <!-- Title -->  
-      <div class="w-[90%] mx-auto">      
-        <div class="text-right">  
-          <h2 class="font-wittgenstein text-4xl md:text-5xl text-white drop-shadow-md">{{ t('countdown.title_line1', 'COUNTDOWN') }}</h2>        
-          <h2 class="font-wittgenstein text-4xl md:text-5xl text-white drop-shadow-md">{{ t('countdown.title_line2', 'TIMER') }}</h2>  
-        </div>        
+  >
+    <div :key="locale" class="w-full flex flex-col items-center">
+      <!-- Title section at the top -->  
+      <div class="mb-8 mt-16 w-full">  
+        <!-- Line with small margins -->  
+        <div class="w-[100%] mx-auto border-t border-white mb-6"></div>  
+          
+        <!-- Title -->  
+        <div class="w-[90%] mx-auto">      
+          <div class="text-right">  
+            <h2 class="font-wittgenstein text-4xl md:text-5xl text-white drop-shadow-md">{{ countdownCopy.titleLine1 }}</h2>        
+            <h2 class="font-wittgenstein text-4xl md:text-5xl text-white drop-shadow-md">{{ countdownCopy.titleLine2 }}</h2>  
+          </div>        
+        </div>  
       </div>  
-    </div>  
-          
-    <div ref="countdownRef" class="flex gap-4 justify-center items-center mb-8 pt-24">       
-      <!-- Days -->        
-      <div        
-        class="flex flex-col items-center bg-black/30 p-3 lg:p-4 rounded-lg backdrop-blur-sm transition-all duration-300 ease-in-out hover:bg-black/40 hover:scale-105"        
-      >        
-        <span class="font-poly text-2xl lg:text-3xl text-white countdown-number drop-shadow-md">        
-          {{ countdown.days }}        
-        </span>        
-        <span class="font-wittgenstein text-sm md:text-base text-white drop-shadow-sm">{{ t('countdown.days', 'Hari') }}</span>        
-      </div>        
-    
-      <span class="font-poly text-3xl text-white drop-shadow-md">:</span>        
-    
-      <!-- Hours -->        
-      <div        
-        class="flex flex-col items-center bg-black/30 p-3 lg:p-4 rounded-lg backdrop-blur-sm transition-all duration-300 ease-in-out hover:bg-black/40 hover:scale-105"        
-      >        
-        <span class="font-poly text-2xl lg:text-3xl text-white countdown-number drop-shadow-md">        
-          {{ countdown.hours }}        
-        </span>        
-        <span class="font-wittgenstein text-sm md:text-base text-white drop-shadow-sm">{{ t('countdown.hours', 'Jam') }}</span>        
-      </div>        
-    
-      <span class="font-poly text-3xl text-white drop-shadow-md">:</span>        
-    
-      <!-- Minutes -->        
-      <div        
-        class="flex flex-col items-center bg-black/30 p-3 lg:p-4 rounded-lg backdrop-blur-sm transition-all duration-300 ease-in-out hover:bg-black/40 hover:scale-105"        
-      >        
-        <span class="font-poly text-2xl lg:text-3xl text-white countdown-number drop-shadow-md">        
-          {{ countdown.minutes }}        
-        </span>        
-        <span class="font-wittgenstein text-sm md:text-base text-white drop-shadow-sm">{{ t('countdown.minutes', 'Menit') }}</span>        
-      </div>        
-    
-      <span class="font-poly text-2xl lg:text-3xl text-white drop-shadow-md">:</span>        
-    
-      <!-- Seconds -->        
-      <div        
-        class="flex flex-col items-center bg-black/30 p-3 lg:p-4 rounded-lg backdrop-blur-sm transition-all duration-300 ease-in-out hover:bg-black/40 hover:scale-105"        
-      >        
-        <span class="font-poly text-2xl lg:text-3xl text-white countdown-number drop-shadow-md">        
-          {{ countdown.seconds }}        
-        </span>        
-        <span class="font-wittgenstein text-sm md:text-base text-white drop-shadow-sm">{{ t('countdown.seconds', 'Detik') }}</span>        
-      </div>        
-    </div>      
-          
-    <div ref="saveTheDateRef" class="flex items-center justify-center pt-8 pb-10 md:pb-14">    
-      <a    
-        :href="createGoogleCalendarLink()"  
-        target="_blank"    
-        class="save-date-button border border-white rounded-xl px-6 py-1 text-white uppercase font-wittgenstein transition-all duration-300 hover:bg-white/20 backdrop-blur-sm"    
-      >    
-        {{ t('countdown.save_the_date', 'Save The Date') }}    
-      </a>    
-    </div>  
+            
+      <div ref="countdownRef" class="flex gap-4 justify-center items-center mb-8 pt-24">       
+        <!-- Days -->        
+        <div        
+          class="flex flex-col items-center bg-black/30 p-3 lg:p-4 rounded-lg backdrop-blur-sm transition-all duration-300 ease-in-out hover:bg-black/40 hover:scale-105"        
+        >        
+          <span class="font-poly text-2xl lg:text-3xl text-white countdown-number drop-shadow-md">        
+            {{ countdown.days }}        
+          </span>        
+          <span class="font-wittgenstein text-sm md:text-base text-white drop-shadow-sm">{{ countdownCopy.days }}</span>        
+        </div>        
+      
+        <span class="font-poly text-3xl text-white drop-shadow-md">:</span>        
+      
+        <!-- Hours -->        
+        <div        
+          class="flex flex-col items-center bg-black/30 p-3 lg:p-4 rounded-lg backdrop-blur-sm transition-all duration-300 ease-in-out hover:bg-black/40 hover:scale-105"        
+        >        
+          <span class="font-poly text-2xl lg:text-3xl text-white countdown-number drop-shadow-md">        
+            {{ countdown.hours }}        
+          </span>        
+          <span class="font-wittgenstein text-sm md:text-base text-white drop-shadow-sm">{{ countdownCopy.hours }}</span>        
+        </div>        
+      
+        <span class="font-poly text-3xl text-white drop-shadow-md">:</span>        
+      
+        <!-- Minutes -->        
+        <div        
+          class="flex flex-col items-center bg-black/30 p-3 lg:p-4 rounded-lg backdrop-blur-sm transition-all duration-300 ease-in-out hover:bg-black/40 hover:scale-105"        
+        >        
+          <span class="font-poly text-2xl lg:text-3xl text-white countdown-number drop-shadow-md">        
+            {{ countdown.minutes }}        
+          </span>        
+          <span class="font-wittgenstein text-sm md:text-base text-white drop-shadow-sm">{{ countdownCopy.minutes }}</span>        
+        </div>        
+      
+        <span class="font-poly text-2xl lg:text-3xl text-white drop-shadow-md">:</span>        
+      
+        <!-- Seconds -->        
+        <div        
+          class="flex flex-col items-center bg-black/30 p-3 lg:p-4 rounded-lg backdrop-blur-sm transition-all duration-300 ease-in-out hover:bg-black/40 hover:scale-105"        
+        >        
+          <span class="font-poly text-2xl lg:text-3xl text-white countdown-number drop-shadow-md">        
+            {{ countdown.seconds }}        
+          </span>        
+          <span class="font-wittgenstein text-sm md:text-base text-white drop-shadow-sm">{{ countdownCopy.seconds }}</span>        
+        </div>        
+      </div>      
+            
+      <div ref="saveTheDateRef" class="flex items-center justify-center pt-8 pb-10 md:pb-14">    
+        <a    
+          :href="createGoogleCalendarLink()"  
+          target="_blank"    
+          class="save-date-button border border-white rounded-xl px-6 py-1 text-white uppercase font-wittgenstein transition-all duration-300 hover:bg-white/20 backdrop-blur-sm"    
+        >    
+          {{ countdownCopy.saveTheDate }}    
+        </a>    
+      </div>
+    </div>
   </section>        
 </template>  
       
