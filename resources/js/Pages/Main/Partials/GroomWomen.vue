@@ -36,7 +36,7 @@ const currentImageIndex = ref(0);
 
 // Array of image URLs
 const imageUrls = [
-  "/assets/images/bride_1.jpeg",
+  "/assets/images/bride_1.jpg",
   "/assets/images/bride_2.JPG"
 ];
 
