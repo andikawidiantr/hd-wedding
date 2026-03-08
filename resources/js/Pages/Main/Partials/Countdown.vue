@@ -117,7 +117,7 @@ const calendarEventContent = {
     },
     "29": {
       title: 'Resepsi Pernikahan Hendra & Dinda',
-      description: 'Resepsi Pernikahan: 18:00 - Selesai\nLokasi: Villa D\'carik, Jalan Kaswari, Penatih, Denpasar Timur, Bali',
+      description: 'Resepsi Pernikahan: 16:00 - Selesai\nLokasi: Villa D\'carik, Jalan Kaswari, Penatih, Denpasar Timur, Bali',
       location: 'Villa D\'carik, Jalan Kaswari, Penatih, Denpasar Timur, Bali',
       start: "20260329T100000Z",
       end: "20260329T140000Z"
@@ -154,7 +154,7 @@ const calendarEventContent = {
     },
     "29": {
       title: 'Wedding Reception Hendra & Dinda',
-      description: 'Wedding Reception: 6:00 PM - Completion\nLocation: Villa D\'carik, Jalan Kaswari, Penatih, East Denpasar, Bali',
+      description: 'Wedding Reception: 4:00 PM - Completion\nLocation: Villa D\'carik, Jalan Kaswari, Penatih, East Denpasar, Bali',
       location: 'Villa D\'carik, Jalan Kaswari, Penatih, East Denpasar, Bali',
       start: "20260329T100000Z",
       end: "20260329T140000Z"

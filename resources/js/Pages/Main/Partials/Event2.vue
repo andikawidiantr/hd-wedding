@@ -55,7 +55,7 @@ const allEventContent = {
       code: "29",
       title: 'Resepsi',
       date: 'Minggu, 29 Maret 2026',
-      time: 'Pukul 18.00 - Selesai',
+      time: 'Pukul 16.00 - Selesai',
       venue: "Villa D'carik",
       address: 'Jalan Kaswari, Penatih, Denpasar Timur, Bali',
       mapsUrl: "https://maps.app.goo.gl/85hCXpMEsPaby18m7?g_st=iw"
@@ -84,7 +84,7 @@ const allEventContent = {
       code: "29",
       title: 'Reception',
       date: 'Sunday, March 29, 2026',
-      time: '6:00 PM - Finish',
+      time: '4:00 PM - Finish',
       venue: "Villa D'carik",
       address: 'Jalan Kaswari, Penatih, East Denpasar, Bali',
       mapsUrl: "https://maps.app.goo.gl/85hCXpMEsPaby18m7?g_st=iw"

@@ -46,7 +46,7 @@ return [
         'resepsi' => [
             'title' => 'Reception',
             'date' => 'Sunday, March 29, 2026',
-            'time' => '6:00 PM - Finish',
+            'time' => '4:00 PM - Finish',
             'venue' => 'Villa D\'carik',
             'address' => 'Jalan Kaswari, Penatih, East Denpasar, Bali',
         ],
