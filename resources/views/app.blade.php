@@ -5,7 +5,7 @@
     @php
         $metaTitle = $page['props']['meta']['title'] ?? 'Hendra & Dinda Wedding';
         $metaDescription = $page['props']['meta']['description'] ?? 'Kami mengundang Anda untuk menghadiri pernikahan kami.';
-        $metaImage = $page['props']['meta']['image'] ?? 'https://thehendradindawedding.my.id/assets/images/edit-26.jpg';
+        $metaImage = $page['props']['meta']['image'] ?? 'https://thehendradindawedding.my.id/assets/images/og-image.jpg';
         $metaUrl = url()->current();
     @endphp
 
@@ -25,8 +25,6 @@
     <meta property="og:image" content="{{ $metaImage }}">
     <meta property="og:image:secure_url" content="{{ $metaImage }}">
     <meta property="og:image:type" content="image/jpeg">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
     <meta property="og:site_name" content="Hendra & Dinda Wedding">
 
     <meta property="twitter:card" content="summary_large_image">

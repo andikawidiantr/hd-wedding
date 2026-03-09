@@ -37,7 +37,7 @@ class MainController extends Controller
         $data['meta'] = [
             'title' => $metaTitle,
             'description' => 'Kami mengundang Anda untuk menghadiri pernikahan kami.',
-            'image' => url('/assets/images/edit-26.jpg'),
+            'image' => url('/assets/images/og-image.jpg'),
         ];
 
         $data['greeting'] = Greeting::latest()->get();
