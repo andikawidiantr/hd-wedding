@@ -35,7 +35,7 @@ const allEventContent = {
   id: [
     {
       code: "23",
-      title: 'Memadik/Nyuwaka',
+      title: 'Memadik/\nNyuwaka',
       date: 'Senin, 23 Maret 2026',
       time: 'Pukul 10.00 - Selesai',
       venue: 'Desa Jagapati',
@@ -64,7 +64,7 @@ const allEventContent = {
   en: [
     {
       code: "23",
-      title: 'Memadik/Nyuwaka',
+      title: 'Memadik/\nNyuwaka',
       date: 'Monday, March 23, 2026',
       time: '10:00 AM - Finish',
       venue: 'Jagapati Village',
@@ -365,7 +365,7 @@ onMounted(() => {
   margin-bottom: 1.5rem;
   text-transform: uppercase;
   line-height: 1.25;
-  white-space: normal;
+  white-space: pre-line;
   overflow-wrap: anywhere;
   word-break: break-word;
   max-width: 100%;
