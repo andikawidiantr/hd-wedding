@@ -5,7 +5,7 @@
     @php
         $metaTitle = $page['props']['meta']['title'] ?? 'Hendra & Dinda Wedding';
         $metaDescription = $page['props']['meta']['description'] ?? 'Kami mengundang Anda untuk menghadiri pernikahan kami.';
-        $metaImage = $page['props']['meta']['image'] ?? url('/assets/images/edit-26.jpg');
+        $metaImage = $page['props']['meta']['image'] ?? 'https://thehendradindawedding.my.id/assets/images/edit-26.jpg';
         $metaUrl = url()->current();
     @endphp
 
