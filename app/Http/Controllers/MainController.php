@@ -27,6 +27,19 @@ class MainController extends Controller
             $data['code'] = $request->code;
         }
 
+        $guestName = trim((string) $data['guest']);
+        $baseTitle = 'Hendra & Dinda Wedding';
+        $metaTitle = $baseTitle;
+        if ($guestName !== '' && strcasecmp($guestName, 'Guest') !== 0) {
+            $metaTitle = "{$baseTitle} | Untuk {$guestName}";
+        }
+
+        $data['meta'] = [
+            'title' => $metaTitle,
+            'description' => 'Kami mengundang Anda untuk menghadiri pernikahan kami.',
+            'image' => url('/assets/images/edit-26.jpg'),
+        ];
+
         $data['greeting'] = Greeting::latest()->get();
         
         // Tambahkan data terjemahan dan locale
