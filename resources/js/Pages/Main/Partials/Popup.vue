@@ -199,7 +199,7 @@ onMounted(async () => {
           <!-- Title -->
           <h1
             ref="titleRef"
-            class="title font-fanwood text-4xl sm:text-4xl md:text-5xl tracking-wide text-center"
+            class="title font-fanwood text-4xl sm:text-4xl md:text-5xl tracking-wide text-center mt-16"
           >
             WEDDING <br />DAY
           </h1>
@@ -209,7 +209,7 @@ onMounted(async () => {
             ref="namesRef"
             class="names flex items-center justify-center flex-col gap-2 sm:gap-3 md:gap-4"
           >
-            <h2 class="font-playball text-3xl sm:text-3xl md:text-4xl tracking-wider font-light pt-56 sm:pt-2">
+            <h2 class="font-playball text-3xl sm:text-3xl md:text-4xl tracking-wider font-light pt-48 sm:pt-2">
               Hendra & Dinda
             </h2>
           </div>

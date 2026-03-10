@@ -177,11 +177,10 @@ onMounted(() => {
   
     <!-- Main Content -->
     <div class="relative w-full max-w-md mx-auto">
-      <Main />
+      <Main :code="code" />
       <RegVeda />
       <GroomMen />
       <GroomWomen />
-      <!-- <Countdown /> -->
       <Countdown :code="code"/>
       <Event2 :code="code"/>
       <Gallery />

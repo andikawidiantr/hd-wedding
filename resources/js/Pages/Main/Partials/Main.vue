@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, onUnmounted, ref, watch } from "vue";
+import { computed, onMounted, onUnmounted, ref, watch } from "vue";
 import gsap from "gsap";
 import ScrollToPlugin from "gsap/ScrollToPlugin";
 import { show } from "../Utils/index";
@@ -7,6 +7,24 @@ import { useI18n } from 'vue-i18n'; // Import useI18n
 
 // Initialize i18n
 const { t } = useI18n();
+const props = defineProps({
+  code: {
+    type: String,
+    default: null,
+  },
+});
+
+const weddingDate = computed(() => {
+  if (!props.code || props.code === "29") {
+    return "29.03.2026";
+  }
+
+  if (["23", "25", "2325"].includes(props.code)) {
+    return "25.03.2026";
+  }
+
+  return "29.03.2026";
+});
 
 gsap.registerPlugin(ScrollToPlugin);
 
@@ -194,7 +212,7 @@ onUnmounted(() => {
         class="date font-playball text-white text-center text-3xl opacity-0 transform-gpu"
         :class="{ 'blur-sm': show }"
       >
-        {{ t('wedding_date', '25.03.2026') }}
+        {{ weddingDate }}
       </p>
     </div>
 
